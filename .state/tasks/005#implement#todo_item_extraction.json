@@ -1,0 +1,12 @@
+{
+  "taskId": "005#implement#todo_item_extraction",
+  "status": "Done",
+  "error_message": null,
+  "output_references": [
+    "src/knowledgebase_processor/extractor/todo_item.py",
+    "src/knowledgebase_processor/extractor/__init__.py",
+    "tests/extractor/test_todo_item_extractor.py",
+    "tests/parser/test_markdown_parser.py"
+  ],
+  "new_tasks_to_integrate": []
+}

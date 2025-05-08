@@ -1,0 +1,177 @@
+"""Processor implementation for processing knowledge base content."""
+
+from typing import List, Dict, Any, Optional
+
+from ..models.content import Document, ContentElement
+from ..models.metadata import Metadata
+
+
+class Processor:
+    """Processor component for processing knowledge base content.
+    
+    The Processor is responsible for coordinating the extraction and analysis
+    of content from the knowledge base documents.
+    """
+    
+    def __init__(self):
+        """Initialize the Processor."""
+        self.extractors = []
+        self.analyzers = []
+        self.enrichers = []
+    
+    def register_extractor(self, extractor):
+        """Register an extractor component.
+        
+        Args:
+            extractor: An extractor component
+        """
+        self.extractors.append(extractor)
+    
+    def register_analyzer(self, analyzer):
+        """Register an analyzer component.
+        
+        Args:
+            analyzer: An analyzer component
+        """
+        self.analyzers.append(analyzer)
+    
+    def register_enricher(self, enricher):
+        """Register an enricher component.
+        
+        Args:
+            enricher: An enricher component
+        """
+        self.enrichers.append(enricher)
+    
+    def process_document(self, document: Document) -> Document:
+        """Process a document using registered components.
+        
+        Args:
+            document: The document to process
+            
+        Returns:
+            The processed document with extracted elements
+        """
+        # Extract content elements
+        for extractor in self.extractors:
+            elements = extractor.extract(document)
+            document.elements.extend(elements)
+        
+        # Update document title from frontmatter if available
+        self._update_document_title_from_frontmatter(document)
+        
+        # Preserve original content for all elements
+        document.preserve_content()
+        
+        # Analyze content
+        for analyzer in self.analyzers:
+            analyzer.analyze(document)
+        
+        # Enrich content
+        for enricher in self.enrichers:
+            enricher.enrich(document)
+        
+        return document
+    
+    def _update_document_title_from_frontmatter(self, document: Document) -> None:
+        """Update document title from frontmatter if available.
+        
+        Args:
+            document: The document to update
+        """
+        # Find frontmatter elements
+        frontmatter_elements = [e for e in document.elements if e.element_type == "frontmatter"]
+        
+        if not frontmatter_elements:
+            return
+        
+        # Get the first frontmatter element
+        frontmatter_element = frontmatter_elements[0]
+        
+        # Parse the frontmatter
+        format_type = frontmatter_element.metadata.get("format", "yaml")
+        
+        # Find the FrontmatterExtractor to use its parsing methods
+        frontmatter_extractor = None
+        for extractor in self.extractors:
+            if hasattr(extractor, "parse_frontmatter"):
+                frontmatter_extractor = extractor
+                break
+        
+        if not frontmatter_extractor:
+            return
+        
+        # Parse the frontmatter content
+        frontmatter_dict = frontmatter_extractor.parse_frontmatter(
+            frontmatter_element.content, format_type
+        )
+        
+        # Update document title if available in frontmatter
+        if "title" in frontmatter_dict and frontmatter_dict["title"]:
+            document.title = frontmatter_dict["title"]
+    
+    def extract_metadata(self, document: Document) -> Metadata:
+        """Extract metadata from a document.
+        
+        Args:
+            document: The document to extract metadata from
+            
+        Returns:
+            Metadata object containing the extracted metadata
+        """
+        metadata = Metadata(document_id=document.id or document.path)
+        
+        # Extract metadata from document elements
+        for element in document.elements:
+            # Process different element types
+            if element.element_type == "frontmatter":
+                # Process frontmatter
+                format_type = element.metadata.get("format", "yaml")
+                
+                # Find the FrontmatterExtractor to use its parsing methods
+                frontmatter_extractor = None
+                for extractor in self.extractors:
+                    if hasattr(extractor, "parse_frontmatter"):
+                        frontmatter_extractor = extractor
+                        break
+                
+                if frontmatter_extractor:
+                    # Parse the frontmatter content
+                    frontmatter_dict = frontmatter_extractor.parse_frontmatter(
+                        element.content, format_type
+                    )
+                    
+                    # Extract tags from frontmatter
+                    if "tags" in frontmatter_dict:
+                        tags = frontmatter_extractor._extract_tags_from_frontmatter(frontmatter_dict)
+                        for tag in tags:
+                            metadata.tags.add(tag)
+                    
+                    # Create frontmatter model
+                    frontmatter_model = frontmatter_extractor.create_frontmatter_model(frontmatter_dict)
+                    metadata.frontmatter = frontmatter_model
+            elif element.element_type == "tag":
+                # Process tag
+                metadata.tags.add(element.content)
+            elif element.element_type == "link":
+                # Process link
+                metadata.links.append({
+                    "text": element.content,
+                    "position": element.position
+                })
+        
+        # Store document content and structure in metadata
+        metadata.structure = {
+            "content": document.content,
+            "title": document.title,
+            "elements": [
+                {
+                    "element_type": e.element_type,
+                    "content": e.content,
+                    "position": e.position
+                }
+                for e in document.elements
+            ]
+        }
+        
+        return metadata

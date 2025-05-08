@@ -1,0 +1,13 @@
+{
+  "taskId": "008#implement#link_reference_extraction",
+  "status": "Done",
+  "error_message": null,
+  "output_references": [
+    "src/knowledgebase_processor/models/links.py",
+    "src/knowledgebase_processor/extractor/link_reference.py",
+    "tests/extractor/test_link_reference_extractor.py",
+    "src/knowledgebase_processor/extractor/__init__.py",
+    "src/knowledgebase_processor/models/__init__.py"
+  ],
+  "new_tasks_to_integrate": []
+}

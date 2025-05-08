@@ -1,0 +1,11 @@
+{
+  "taskId": "006#implement#code_quote_extraction",
+  "status": "Done",
+  "error_message": null,
+  "output_references": [
+    "src/knowledgebase_processor/extractor/code_quote.py",
+    "tests/extractor/test_code_quote_extractor.py",
+    "src/knowledgebase_processor/extractor/__init__.py"
+  ],
+  "new_tasks_to_integrate": []
+}

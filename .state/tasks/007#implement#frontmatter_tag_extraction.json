@@ -1,0 +1,14 @@
+{
+  "taskId": "007#implement#frontmatter_tag_extraction",
+  "status": "Done",
+  "error_message": null,
+  "output_references": [
+    "src/knowledgebase_processor/extractor/frontmatter.py",
+    "src/knowledgebase_processor/extractor/tags.py",
+    "src/knowledgebase_processor/models/content.py",
+    "src/knowledgebase_processor/models/metadata.py",
+    "tests/extractor/test_frontmatter_extractor.py",
+    "tests/extractor/test_tag_extractor.py"
+  ],
+  "new_tasks_to_integrate": []
+}

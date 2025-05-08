@@ -1,0 +1,163 @@
+"""End-to-end integration tests for the Knowledge Base Processor."""
+
+import os
+import shutil
+import tempfile
+import unittest
+from pathlib import Path
+
+from knowledgebase_processor.main import KnowledgeBaseProcessor
+from knowledgebase_processor.models.content import Document
+
+
+class TestKnowledgeBaseProcessorIntegration(unittest.TestCase):
+    """Test cases for the Knowledge Base Processor integration."""
+    
+    def setUp(self):
+        """Set up the test environment."""
+        # Create a temporary directory for the knowledge base
+        self.temp_dir = tempfile.mkdtemp()
+        
+        # Create a temporary directory for the metadata store
+        self.metadata_dir = os.path.join(self.temp_dir, ".metadata")
+        os.makedirs(self.metadata_dir, exist_ok=True)
+        
+        # Create the processor
+        self.processor = KnowledgeBaseProcessor(self.temp_dir, self.metadata_dir)
+        
+        # Create some test files
+        self.create_test_files()
+    
+    def tearDown(self):
+        """Clean up the test environment."""
+        shutil.rmtree(self.temp_dir)
+    
+    def create_test_files(self):
+        """Create test files for the knowledge base."""
+        # Create a simple markdown file
+        with open(os.path.join(self.temp_dir, "test1.md"), "w") as f:
+            f.write("""---
+title: Test Document 1
+tags: [test, markdown]
+---
+
+# Test Document 1
+
+This is a test document with some content.
+
+## Section 1
+
+- List item 1
+- List item 2
+- [ ] Todo item 1
+- [x] Todo item 2 (done)
+
+## Section 2
+
+```python
+def hello_world():
+    print("Hello, world!")
+```
+
+> This is a blockquote
+> With multiple lines
+
+[Link to another document](test2.md)
+""")
+        
+        # Create another markdown file
+        with open(os.path.join(self.temp_dir, "test2.md"), "w") as f:
+            f.write("""---
+title: Test Document 2
+tags: [test, related]
+---
+
+# Test Document 2
+
+This document is related to Test Document 1.
+
+## Related Content
+
+This section references [Test Document 1](test1.md).
+""")
+    
+    def test_process_file(self):
+        """Test processing a single file."""
+        # Process the first test file
+        document = self.processor.process_file("test1.md")
+        
+        # Check that the document was processed correctly
+        self.assertEqual(document.title, "Test Document 1")
+        self.assertGreater(len(document.elements), 0)
+        
+        # Check that different element types were extracted
+        element_types = set(e.element_type for e in document.elements)
+        expected_types = {"heading", "section", "list", "list_item", "todo_item", "code_block", "blockquote", "link"}
+        for expected_type in expected_types:
+            self.assertIn(expected_type, element_types, f"Expected element type {expected_type} not found")
+        
+        # Check that metadata was stored
+        metadata = self.processor.get_metadata(document.path)
+        self.assertIsNotNone(metadata)
+        self.assertEqual(metadata.document_id, document.path)
+        
+        # Check that tags were extracted
+        self.assertGreaterEqual(len(metadata.tags), 2)
+        self.assertIn("test", metadata.tags)
+        self.assertIn("markdown", metadata.tags)
+    
+    def test_process_all(self):
+        """Test processing all files."""
+        # Process all markdown files
+        documents = self.processor.process_all()
+        
+        # Check that both documents were processed
+        self.assertEqual(len(documents), 2)
+        
+        # Check that document IDs are correct
+        document_ids = [doc.path for doc in documents]
+        self.assertIn("test1.md", document_ids)
+        self.assertIn("test2.md", document_ids)
+    
+    def test_search(self):
+        """Test searching for documents."""
+        # Process all files first
+        self.processor.process_all()
+        
+        # Search for documents containing "related"
+        results = self.processor.search("related")
+        self.assertGreaterEqual(len(results), 1)
+        self.assertIn("test2.md", results)
+    
+    def test_find_by_tag(self):
+        """Test finding documents by tag."""
+        # Process all files first
+        self.processor.process_all()
+        
+        # Find documents with the "test" tag
+        results = self.processor.find_by_tag("test")
+        self.assertEqual(len(results), 2)
+        self.assertIn("test1.md", results)
+        self.assertIn("test2.md", results)
+        
+        # Find documents with the "markdown" tag
+        results = self.processor.find_by_tag("markdown")
+        self.assertEqual(len(results), 1)
+        self.assertIn("test1.md", results)
+    
+    def test_find_related(self):
+        """Test finding related documents."""
+        # Process all files first
+        self.processor.process_all()
+        
+        # Find documents related to test1.md
+        results = self.processor.find_related("test1.md")
+        self.assertGreaterEqual(len(results), 1)
+        
+        # Check that test2.md is related to test1.md
+        related_ids = [r["document_id"] for r in results]
+        self.assertIn("test2.md", related_ids)
+
+
+if __name__ == "__main__":
+    unittest.main()

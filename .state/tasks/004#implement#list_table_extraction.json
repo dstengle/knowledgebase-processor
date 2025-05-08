@@ -1,0 +1,12 @@
+{
+  "taskId": "004#implement#list_table_extraction",
+  "status": "Done",
+  "error_message": null,
+  "output_references": [
+    "src/knowledgebase_processor/extractor/list_table.py",
+    "tests/extractor/test_list_table_extractor.py",
+    "src/knowledgebase_processor/extractor/__init__.py",
+    "src/knowledgebase_processor/parser/markdown_parser.py"
+  ],
+  "new_tasks_to_integrate": []
+}
