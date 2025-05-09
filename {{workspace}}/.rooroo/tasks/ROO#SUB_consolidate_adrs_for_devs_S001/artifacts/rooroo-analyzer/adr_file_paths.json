@@ -1,0 +1,7 @@
+[
+  "docs/architecture/decisions/0001-python-as-implementation-language.md",
+  "docs/architecture/decisions/0002-pydantic-for-data-models.md",
+  "docs/architecture/decisions/0003-pydantic-model-versioning-strategy.md",
+  "docs/architecture/decisions/0004-package-structure.md",
+  "docs/architecture/decisions/0005-poetry-as-package-manager.md"
+]
