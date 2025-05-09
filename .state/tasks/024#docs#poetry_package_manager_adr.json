@@ -1,0 +1,9 @@
+{
+  "taskId": "024#docs#poetry_package_manager_adr",
+  "status": "Done",
+  "error_message": null,
+  "output_references": [
+    "docs/architecture/decisions/0005-poetry-as-package-manager.md"
+  ],
+  "new_tasks_to_integrate": []
+}
