@@ -33,7 +33,7 @@ This is a document with #tag1 and #tag2 hashtags.
         self.assertEqual(hashtags[1].content, "tag2")
     
     def test_extract_inline_tags(self):
-        """Test extracting inline tags."""
+        """Test that inline tags in square brackets are NOT extracted."""
         content = """
 # Document Title
 
@@ -42,12 +42,10 @@ This is a document with [tag1] and [tag2] inline tags.
         document = Document(path="test.md", content=content)
         elements = self.extractor.extract(document)
         
-        # Filter only inline tag elements
+        # Filter only tag elements
         inline_tags = [e for e in elements if e.element_type == "tag" and "source" not in e.position]
         
-        self.assertEqual(len(inline_tags), 2)
-        self.assertEqual(inline_tags[0].content, "tag1")
-        self.assertEqual(inline_tags[1].content, "tag2")
+        self.assertEqual(len(inline_tags), 0)
     
     def test_extract_category_tags(self):
         """Test extracting category tags."""
@@ -126,8 +124,8 @@ It also has @category/categorized tags.
                 
                 elements = self.extractor.extract(document)
                 
-                # We should have 5 tags: 2 from frontmatter, 1 hashtag, 1 inline, 1 category
-                self.assertEqual(len([e for e in elements if e.element_type == "tag"]), 5)
+                # We should have 4 tags: 2 from frontmatter, 1 hashtag, 1 category (no inline tag)
+                self.assertEqual(len([e for e in elements if e.element_type == "tag"]), 4)
     
     def test_get_all_tags(self):
         """Test getting all unique tags from a document."""
@@ -206,6 +204,86 @@ It also has @category/tag4 tags.
                     tag4 = next(tag for tag in tag_list if tag.name == "tag4")
                     self.assertEqual(tag4.category, "category")
 
+def test_bracketed_text_not_tag(self):
+        """Test that text like '  [Conversion]  ' does NOT produce a tag."""
+        content = "  [Conversion]  "
+        document = Document(path="test.md", content=content)
+        elements = self.extractor.extract(document)
+        # Filter only tag elements
+        tags = [e for e in elements if e.element_type == "tag" and "source" not in e.position]
+        # --- Step 1: Assert current (buggy) behavior: this will pass if bug exists ---
+        # self.assertEqual(len(tags), 1)
+        # self.assertEqual(tags[0].content, "Conversion")
+        # --- Step 2: Assert correct behavior: should NOT extract any tags ---
+        self.assertEqual(len(tags), 0)
 
+def test_hashtag_preceded_by_non_whitespace(self):
+        """Hashtags should only be extracted if preceded by whitespace or start-of-line."""
+        content = (
+            "#tag1 word #tag2 word#notatag\n"
+            "another#notatag2\n"
+            " #tag3\n"
+            "word\t#tag4"
+        )
+        document = Document(path="test.md", content=content)
+        elements = self.extractor.extract(document)
+        tags = [e.content for e in elements if e.element_type == "tag" and "source" not in e.position]
+        self.assertIn("tag1", tags)
+        self.assertIn("tag2", tags)
+        self.assertIn("tag3", tags)
+        self.assertIn("tag4", tags)
+        self.assertNotIn("notatag", tags)
+        self.assertNotIn("notatag2", tags)
+        def test_fixture_tag_cases(self):
+            """Test tag extraction against the markdown-to-html fixture cases."""
+            cases = [
+                # (input, expected_tags)
+                ("#hashtag", ["hashtag"]),
+                ("#HasHTAg", ["HasHTAg"]),
+                ("#hash #tag", ["hash", "tag"]),
+                ("multiple #hash #tags in one #line", ["hash", "tags", "line"]),
+                ("preceeding #space", ["space"]),
+                ("missing preceeding#space", []),
+                ("#test#tag", ["test"]),
+                ("#t-a_g", ["t"]),
+                ("#äöüß", []),
+                ("#<3", []),
+                ("#<3 and other #hashtags", ["hashtags"]),
+                ("#0", ["0"]),
+                ("there is no # hashtag", []),
+                ("still no #", []),
+                ("##notag", []),
+                ("hashtag #hashtag", ["hashtag"]),
+                ("not a#hashtag #hashtag", ["hashtag"]),
+                ("#tag1\n#tag2\n#tag3", ["tag1", "tag2", "tag3"]),
+            ]
+            extractor = TagExtractor()
+            for text, expected in cases:
+                doc = Document(path="test.md", content=text)
+                elements = extractor.extract(doc)
+                tags = [e.content for e in elements if e.element_type == "tag" and "source" not in e.position]
+                self.assertEqual(tags, expected, f"Failed for input: {text}")
+
+        def test_fixture_ignores_code_and_links(self):
+            """Test that hashtags in code, code blocks, links, images, and titles are ignored."""
+            extractor = TagExtractor()
+            code_cases = [
+                ("`don't render #hashtags in inline code`", []),
+                ("```\ndon't render #hashtags in code blocks\n```", []),
+                ("[#hashtag](http://awe.so.me)", []),
+                ("[there is a #hashtag](http://awe.so.me)", []),
+                ("[link](http://awe.so.me \"#title\")", []),
+                ("[link](http://awe.so.me \"there is a #title\")", []),
+                ("![a #hashtag](http://awe.so.me/image.gif)", []),
+                ("![image](http://awe.so.me/image.gif \"a #title\")", []),
+                ("# hashtag", ["hashtag"]),  # heading with space is a tag
+                ("<h1>hashtag</h1>", []),
+                ("<div>#</div>", []),
+            ]
+            for text, expected in code_cases:
+                doc = Document(path="test.md", content=text)
+                elements = extractor.extract(doc)
+                tags = [e.content for e in elements if e.element_type == "tag" and "source" not in e.position]
+                self.assertEqual(tags, expected, f"Failed for input: {text}")
 if __name__ == "__main__":
     unittest.main()
