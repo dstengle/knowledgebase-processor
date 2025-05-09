@@ -74,7 +74,11 @@ class Processor:
         return document
     
     def _update_document_title_from_frontmatter(self, document: Document) -> None:
-        """Update document title from frontmatter if available.
+        """Update document title from frontmatter if available, otherwise use filename.
+        
+        This method implements a fallback mechanism for document titles:
+        1. Use frontmatter title if available
+        2. If frontmatter title is not available, use the filename (minus extension)
         
         Args:
             document: The document to update
@@ -82,33 +86,43 @@ class Processor:
         # Find frontmatter elements
         frontmatter_elements = [e for e in document.elements if e.element_type == "frontmatter"]
         
-        if not frontmatter_elements:
-            return
+        # Check if we have frontmatter
+        if frontmatter_elements:
+            # Get the first frontmatter element
+            frontmatter_element = frontmatter_elements[0]
+            
+            # Parse the frontmatter
+            format_type = frontmatter_element.metadata.get("format", "yaml")
+            
+            # Find the FrontmatterExtractor to use its parsing methods
+            frontmatter_extractor = None
+            for extractor in self.extractors:
+                if hasattr(extractor, "parse_frontmatter"):
+                    frontmatter_extractor = extractor
+                    break
+            
+            if frontmatter_extractor:
+                # Parse the frontmatter content
+                frontmatter_dict = frontmatter_extractor.parse_frontmatter(
+                    frontmatter_element.content, format_type
+                )
+                
+                # Update document title if available in frontmatter
+                if "title" in frontmatter_dict and frontmatter_dict["title"]:
+                    document.title = frontmatter_dict["title"]
+                    return
         
-        # Get the first frontmatter element
-        frontmatter_element = frontmatter_elements[0]
-        
-        # Parse the frontmatter
-        format_type = frontmatter_element.metadata.get("format", "yaml")
-        
-        # Find the FrontmatterExtractor to use its parsing methods
-        frontmatter_extractor = None
-        for extractor in self.extractors:
-            if hasattr(extractor, "parse_frontmatter"):
-                frontmatter_extractor = extractor
-                break
-        
-        if not frontmatter_extractor:
-            return
-        
-        # Parse the frontmatter content
-        frontmatter_dict = frontmatter_extractor.parse_frontmatter(
-            frontmatter_element.content, format_type
-        )
-        
-        # Update document title if available in frontmatter
-        if "title" in frontmatter_dict and frontmatter_dict["title"]:
-            document.title = frontmatter_dict["title"]
+        # Fallback: If no frontmatter title was found, use the filename (minus extension)
+        if document.path:
+            import os
+            # Extract filename without extension
+            filename = os.path.basename(document.path)
+            name_without_ext = os.path.splitext(filename)[0]
+            
+            # Convert filename to title format (replace underscores/hyphens with spaces)
+            title_from_filename = name_without_ext.replace('_', ' ').replace('-', ' ')
+            
+            document.title = title_from_filename
     
     def extract_metadata(self, document: Document) -> Metadata:
         """Extract metadata from a document.

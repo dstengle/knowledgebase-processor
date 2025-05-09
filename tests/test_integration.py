@@ -80,6 +80,18 @@ This document is related to Test Document 1.
 
 This section references [Test Document 1](test1.md).
 """)
+        
+        # Create a markdown file without frontmatter title
+        with open(os.path.join(self.temp_dir, "no-frontmatter-title.md"), "w") as f:
+            f.write("""---
+author: Test Author
+tags: [test, no-title]
+---
+
+# Document Content
+
+This document has no title in frontmatter.
+""")
     
     def test_process_file(self):
         """Test processing a single file."""
@@ -111,13 +123,14 @@ This section references [Test Document 1](test1.md).
         # Process all markdown files
         documents = self.processor.process_all()
         
-        # Check that both documents were processed
-        self.assertEqual(len(documents), 2)
+        # Check that all documents were processed
+        self.assertEqual(len(documents), 3)
         
         # Check that document IDs are correct
         document_ids = [doc.path for doc in documents]
         self.assertIn("test1.md", document_ids)
         self.assertIn("test2.md", document_ids)
+        self.assertIn("no-frontmatter-title.md", document_ids)
     
     def test_search(self):
         """Test searching for documents."""
@@ -136,14 +149,33 @@ This section references [Test Document 1](test1.md).
         
         # Find documents with the "test" tag
         results = self.processor.find_by_tag("test")
-        self.assertEqual(len(results), 2)
+        self.assertEqual(len(results), 3)  # Updated to include the new test file
         self.assertIn("test1.md", results)
         self.assertIn("test2.md", results)
+        self.assertIn("no-frontmatter-title.md", results)
         
         # Find documents with the "markdown" tag
         results = self.processor.find_by_tag("markdown")
         self.assertEqual(len(results), 1)
         self.assertIn("test1.md", results)
+        
+    def test_title_fallback(self):
+        """Test document title fallback mechanism."""
+        # Process all files first
+        documents = self.processor.process_all()
+        
+        # Find the document without frontmatter title
+        no_title_doc = None
+        for doc in documents:
+            if doc.path == "no-frontmatter-title.md":
+                no_title_doc = doc
+                break
+        
+        # Check that the document was found
+        self.assertIsNotNone(no_title_doc)
+        
+        # Check that the title was set from the filename
+        self.assertEqual(no_title_doc.title, "no frontmatter title")
     
     def test_find_related(self):
         """Test finding related documents."""
