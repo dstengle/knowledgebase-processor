@@ -36,6 +36,8 @@ class Metadata(BaseKnowledgeModel):
     """Represents the complete metadata for a document."""
     
     document_id: str = Field(..., description="ID of the associated document")
+    title: Optional[str] = Field(None, description="Document title")
+    path: Optional[str] = Field(None, description="Document path")
     frontmatter: Optional[Frontmatter] = Field(None, description="Frontmatter metadata")
     tags: Set[str] = Field(default_factory=set, description="All tags in the document")
     links: List[Dict[str, Any]] = Field(default_factory=list, description="Links in the document")

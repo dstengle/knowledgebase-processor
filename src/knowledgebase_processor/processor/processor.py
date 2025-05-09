@@ -133,7 +133,11 @@ class Processor:
         Returns:
             Metadata object containing the extracted metadata
         """
-        metadata = Metadata(document_id=document.id or document.path)
+        metadata = Metadata(
+            document_id=document.id or document.path,
+            title=getattr(document, "title", None),
+            path=getattr(document, "path", None)
+        )
         
         # Extract metadata from document elements
         for element in document.elements:
