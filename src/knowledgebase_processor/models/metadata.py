@@ -43,3 +43,4 @@ class Metadata(BaseKnowledgeModel):
     links: List[Dict[str, Any]] = Field(default_factory=list, description="Links in the document")
     references: List[Dict[str, Any]] = Field(default_factory=list, description="References in the document")
     structure: Dict[str, Any] = Field(default_factory=dict, description="Document structure metadata")
+    wikilinks: List[Dict[str, Any]] = Field(default_factory=list, description="Wikilinks in the document")
