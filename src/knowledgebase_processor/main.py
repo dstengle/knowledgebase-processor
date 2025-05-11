@@ -18,6 +18,7 @@ from .extractor.code_quote import CodeQuoteExtractor
 from .extractor.todo_item import TodoItemExtractor
 from .extractor.tags import TagExtractor
 from .extractor.list_table import ListTableExtractor
+from .extractor.wikilink_extractor import WikiLinkExtractor
 from .analyzer.topics import TopicAnalyzer
 from .analyzer.entities import EntityAnalyzer
 from .enricher.relationships import RelationshipEnricher
@@ -62,6 +63,7 @@ class KnowledgeBaseProcessor:
         self.processor.register_extractor(TodoItemExtractor())
         self.processor.register_extractor(TagExtractor())
         self.processor.register_extractor(ListTableExtractor())
+        self.processor.register_extractor(WikiLinkExtractor())
         
         # Register analyzers
         self.processor.register_analyzer(TopicAnalyzer())
