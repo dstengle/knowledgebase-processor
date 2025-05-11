@@ -3,4 +3,11 @@
 - Unit tests
     - The unit tests use the unittest framework and the tests are in the tests/ directory.
     - Prior to running any unit tests, run the poetry install command
-    - The command to run all tests is python -m unittest discover -s tests. Make 
+    - The command to run all tests is python -m unittest discover -s tests. 
+- Implementing github issues
+    - Plan the implementation and add a comment with details to issue
+    - Create and check out a branch
+    - Implement changes
+    - Commit and push branch to origin
+    - Create pull request referencing that it will close issue
+    - Update the issue to indicate the PR is ready for review

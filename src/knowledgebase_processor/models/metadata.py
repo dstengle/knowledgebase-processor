@@ -32,6 +32,13 @@ class Frontmatter(BaseKnowledgeModel):
     custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom frontmatter fields")
 
 
+class Entity(BaseKnowledgeModel):
+    """Represents a named entity extracted from text."""
+    text: str
+    label: str
+    start_char: int
+    end_char: int
+
 class Metadata(BaseKnowledgeModel):
     """Represents the complete metadata for a document."""
     
@@ -44,3 +51,4 @@ class Metadata(BaseKnowledgeModel):
     references: List[Dict[str, Any]] = Field(default_factory=list, description="References in the document")
     structure: Dict[str, Any] = Field(default_factory=dict, description="Document structure metadata")
     wikilinks: List[Dict[str, Any]] = Field(default_factory=list, description="Wikilinks in the document")
+    entities: Optional[List[Entity]] = Field(default=None, description="Extracted entities from the content")

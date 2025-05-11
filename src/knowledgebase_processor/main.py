@@ -20,7 +20,7 @@ from .extractor.tags import TagExtractor
 from .extractor.list_table import ListTableExtractor
 from .extractor.wikilink_extractor import WikiLinkExtractor
 from .analyzer.topics import TopicAnalyzer
-from .analyzer.entities import EntityAnalyzer
+from .analyzer.entities import EntityRecognizer
 from .enricher.relationships import RelationshipEnricher
 from .metadata_store.store import MetadataStore
 from .query_interface.query import QueryInterface
@@ -67,7 +67,7 @@ class KnowledgeBaseProcessor:
         
         # Register analyzers
         self.processor.register_analyzer(TopicAnalyzer())
-        self.processor.register_analyzer(EntityAnalyzer())
+        self.processor.register_analyzer(EntityRecognizer())
         
         # Register enrichers
         self.processor.register_enricher(RelationshipEnricher())
