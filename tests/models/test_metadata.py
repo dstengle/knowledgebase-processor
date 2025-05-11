@@ -13,3 +13,14 @@ class TestMetadata(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+def test_wikilinks_field(self):
+        from src.knowledgebase_processor.models.metadata import Metadata
+        wikilinks = [
+            {"text": "Some Page", "position": {"line": 1, "col": 5}},
+            {"text": "Another Page", "position": {"line": 2, "col": 10}}
+        ]
+        metadata = Metadata(
+            document_id="doc1",
+            wikilinks=wikilinks
+        )
+        self.assertEqual(metadata.wikilinks, wikilinks)

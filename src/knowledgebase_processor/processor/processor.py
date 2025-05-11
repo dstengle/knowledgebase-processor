@@ -178,6 +178,13 @@ class Processor:
                     "position": element.position
                 })
         
+            elif element.element_type == "wikilink":
+                # Process wikilink
+                metadata.wikilinks.append({
+                    "text": element.content,
+                    "position": element.position
+                })
+        
         # Store document content and structure in metadata
         metadata.structure = {
             "content": document.content,
