@@ -4,6 +4,7 @@ from typing import List, Dict, Any, Optional
 
 from ..models.content import Document, ContentElement
 from ..models.metadata import Metadata
+from knowledgebase_processor.analyzer.entities import EntityRecognizer
 
 
 class Processor:
@@ -18,6 +19,7 @@ class Processor:
         self.extractors = []
         self.analyzers = []
         self.enrichers = []
+        self.entity_recognizer = EntityRecognizer()
     
     def register_extractor(self, extractor):
         """Register an extractor component.
@@ -198,5 +200,16 @@ class Processor:
                 for e in document.elements
             ]
         }
+# Extract entities from the document content
+        if hasattr(document, "content") and document.content:
+            metadata.entities = self.entity_recognizer.extract_entities(document.content)
+        else:
+            metadata.entities = None
         
+        # Extract entities from the document content
+        if hasattr(document, "content") and document.content:
+            metadata.entities = self.entity_recognizer.extract_entities(document.content)
+        else:
+            metadata.entities = None
+
         return metadata

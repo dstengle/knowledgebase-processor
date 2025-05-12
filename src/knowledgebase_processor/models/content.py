@@ -5,6 +5,7 @@ from typing import Optional, List, Dict, Any, TYPE_CHECKING
 import uuid
 from .common import BaseKnowledgeModel
 from .preservation import ContentPreservationMixin
+from .metadata import Entity
 
 
 class ContentElement(BaseKnowledgeModel, ContentPreservationMixin):
@@ -50,6 +51,8 @@ class Document(BaseKnowledgeModel):
     title: Optional[str] = Field(None, description="Document title")
     content: str = Field(..., description="Raw content of the document")
     elements: List[ContentElement] = Field(default_factory=list, description="Structured elements of the document")
+    
+    entities: Optional[List[Entity]] = None
     
     def preserve_content(self) -> None:
         """Preserve the original content for all elements in the document."""
