@@ -25,7 +25,7 @@ from .enricher.relationships import RelationshipEnricher
 from .metadata_store.store import MetadataStore
 from .query_interface.query import QueryInterface
 from .models.content import Document
-from .models.metadata import Metadata
+from .models.metadata import DocumentMetadata
 
 
 class KnowledgeBaseProcessor:
@@ -116,7 +116,7 @@ class KnowledgeBaseProcessor:
         
         return documents
     
-    def get_metadata(self, document_id: str) -> Optional[Metadata]:
+    def get_metadata(self, document_id: str) -> Optional[DocumentMetadata]:
         """Get metadata for a document.
         
         Args:

@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional, Set
 
 from ..metadata_store.store import MetadataStore
 from ..models.content import Document
-from ..models.metadata import Metadata
+from ..models.metadata import DocumentMetadata
 
 
 class QueryInterface:

@@ -1,6 +1,6 @@
 """Metadata data models for the Knowledge Base Processor."""
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any, Set
 from datetime import datetime
 from .common import BaseKnowledgeModel
@@ -32,6 +32,14 @@ class Frontmatter(BaseKnowledgeModel):
     custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom frontmatter fields")
 
 
+class ExtractedEntity(BaseModel):
+    """Represents an entity extracted from text, with character offsets."""
+    text: str = Field(..., description="The actual text of the entity")
+    label: str = Field(..., description="The type or label of the entity (e.g., PERSON, ORG)")
+    start_char: int = Field(..., description="The starting character offset of the entity in the source text")
+    end_char: int = Field(..., description="The ending character offset of the entity in the source text")
+
+
 class Entity(BaseKnowledgeModel):
     """Represents a named entity extracted from text."""
     text: str
@@ -39,7 +47,7 @@ class Entity(BaseKnowledgeModel):
     start_char: int
     end_char: int
 
-class Metadata(BaseKnowledgeModel):
+class DocumentMetadata(BaseKnowledgeModel):
     """Represents the complete metadata for a document."""
     
     document_id: str = Field(..., description="ID of the associated document")
@@ -51,4 +59,4 @@ class Metadata(BaseKnowledgeModel):
     references: List[Dict[str, Any]] = Field(default_factory=list, description="References in the document")
     structure: Dict[str, Any] = Field(default_factory=dict, description="Document structure metadata")
     wikilinks: List[Dict[str, Any]] = Field(default_factory=list, description="Wikilinks in the document")
-    entities: Optional[List[Entity]] = Field(default=None, description="Extracted entities from the content")
+    entities: List[ExtractedEntity] = Field(default_factory=list, description="Extracted entities from the content, including text, label, and character offsets.")

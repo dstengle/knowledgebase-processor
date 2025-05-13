@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Set
 from datetime import datetime
 
-from ..models.metadata import Metadata
+from ..models.metadata import DocumentMetadata
 
 
 class MetadataStore:
@@ -26,7 +26,7 @@ class MetadataStore:
         self.store_path.mkdir(parents=True, exist_ok=True)
         self.metadata_cache = {}  # In-memory cache of metadata
     
-    def save(self, metadata: Metadata) -> None:
+    def save(self, metadata: DocumentMetadata) -> None:
         """Save metadata to the store.
         
         Args:
@@ -46,7 +46,7 @@ class MetadataStore:
         # Update the cache
         self.metadata_cache[metadata.document_id] = metadata
     
-    def get(self, document_id: str) -> Optional[Metadata]:
+    def get(self, document_id: str) -> Optional[DocumentMetadata]:
         """Get metadata for a document.
         
         Args:
@@ -72,7 +72,7 @@ class MetadataStore:
             metadata_dict = json.load(f)
         
         # Create a Metadata object
-        metadata = Metadata.model_validate(metadata_dict)
+        metadata = DocumentMetadata.model_validate(metadata_dict)
         
         # Update the cache
         self.metadata_cache[document_id] = metadata
