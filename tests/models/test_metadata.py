@@ -1,9 +1,9 @@
 import unittest
-from src.knowledgebase_processor.models.metadata import Metadata
+from src.knowledgebase_processor.models.metadata import DocumentMetadata
 
-class TestMetadata(unittest.TestCase):
+class TestDocumentMetadata(unittest.TestCase): # Renamed class for clarity
     def test_title_and_path(self):
-        meta = Metadata(
+        meta = DocumentMetadata(
             document_id="doc-1",
             title="Sample Title",
             path="/docs/sample.md"
@@ -13,13 +13,13 @@ class TestMetadata(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-def test_wikilinks_field(self):
-        from src.knowledgebase_processor.models.metadata import Metadata
+    def test_wikilinks_field(self): # Indented to be part of the class
+        # from src.knowledgebase_processor.models.metadata import DocumentMetadata # Import already at top
         wikilinks = [
             {"text": "Some Page", "position": {"line": 1, "col": 5}},
             {"text": "Another Page", "position": {"line": 2, "col": 10}}
         ]
-        metadata = Metadata(
+        metadata = DocumentMetadata(
             document_id="doc1",
             wikilinks=wikilinks
         )

@@ -3,8 +3,8 @@
 from typing import List, Dict, Any, Optional
 
 from ..models.content import Document, ContentElement
-from ..models.metadata import Metadata
-from knowledgebase_processor.analyzer.entities import EntityRecognizer
+from ..models.metadata import DocumentMetadata
+from knowledgebase_processor.analyzer.entity_recognizer import EntityRecognizer
 
 
 class Processor:
@@ -18,6 +18,7 @@ class Processor:
         """Initialize the Processor."""
         self.extractors = []
         self.analyzers = []
+        self.analyzers.append(EntityRecognizer())
         self.enrichers = []
         self.entity_recognizer = EntityRecognizer()
     
@@ -66,8 +67,18 @@ class Processor:
         document.preserve_content()
         
         # Analyze content
+        # Create/retrieve metadata for the document
+        # This metadata object will be passed to analyzers that require it.
+        doc_metadata = self.extract_metadata(document)
+
         for analyzer in self.analyzers:
-            analyzer.analyze(document)
+            if isinstance(analyzer, EntityRecognizer):
+                if document.content: # Ensure content exists
+                    analyzer.analyze(document.content, doc_metadata) # Pass the created doc_metadata
+            else:
+                # Assuming other analyzers expect the Document object directly
+                # or handle metadata internally if needed.
+                analyzer.analyze(document)
         
         # Enrich content
         for enricher in self.enrichers:
@@ -126,7 +137,7 @@ class Processor:
             
             document.title = title_from_filename
     
-    def extract_metadata(self, document: Document) -> Metadata:
+    def extract_metadata(self, document: Document) -> DocumentMetadata:
         """Extract metadata from a document.
         
         Args:
@@ -135,7 +146,7 @@ class Processor:
         Returns:
             Metadata object containing the extracted metadata
         """
-        metadata = Metadata(
+        metadata = DocumentMetadata(
             document_id=document.id or document.path,
             title=getattr(document, "title", None),
             path=getattr(document, "path", None)
@@ -200,16 +211,7 @@ class Processor:
                 for e in document.elements
             ]
         }
-# Extract entities from the document content
-        if hasattr(document, "content") and document.content:
-            metadata.entities = self.entity_recognizer.extract_entities(document.content)
-        else:
-            metadata.entities = None
-        
-        # Extract entities from the document content
-        if hasattr(document, "content") and document.content:
-            metadata.entities = self.entity_recognizer.extract_entities(document.content)
-        else:
-            metadata.entities = None
-
+        # Entity extraction is now handled by the EntityRecognizer's analyze method
+        # called in the main processing loop.
+        # The metadata.entities field will be populated there.
         return metadata
