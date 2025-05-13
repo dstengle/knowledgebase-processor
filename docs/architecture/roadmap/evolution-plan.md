@@ -10,6 +10,10 @@
 
 This document outlines the planned evolution of the Knowledge Base Processor system. It provides a roadmap for incremental development, focusing on delivering value at each stage while maintaining alignment with the architectural principles.
 
+## Core Use Cases
+
+The development and prioritization of features in this evolution plan are significantly guided by a set of core use cases and target questions the system aims to address. These are detailed in the [Core Use Cases and Desired Outcomes document](../use-cases.md). Refer to that document for specific examples of questions the system should help answer and the types of insights it should provide.
+
 ## Expanded Concept of Metadata
 
 In this system, "metadata" encompasses all aspects of the knowledge base content:
@@ -65,6 +69,7 @@ The goal is to transform the entire knowledge base content into a rich, structur
 - Todo items are analyzed for patterns and relationships
 - Semantic metadata adds value beyond the explicit structure
 - The knowledge base structure is represented as both hierarchy and network
+- The analysis provides foundational data to support answering questions outlined in the [Core Use Cases document](../use-cases.md).
 
 **Timeframe**: [Estimated timeframe]
 
@@ -85,6 +90,7 @@ The goal is to transform the entire knowledge base content into a rich, structur
 - Todo items can be viewed and managed across the knowledge base
 - Navigation using the enhanced structure is intuitive and valuable
 - Integration with at least one external tool is demonstrated
+- The system can effectively answer a significant portion of the target questions defined in the [Core Use Cases document](../use-cases.md).
 
 **Timeframe**: [Estimated timeframe]
 
@@ -189,7 +195,8 @@ The overall success of the system evolution will be measured by:
    - Does the processed knowledge enable more effective use of the knowledge base?
    - Does it improve task management and todo tracking?
    - Does it integrate well with existing workflows?
+   - Does it effectively answer the key questions outlined in the [Core Use Cases document](../use-cases.md)?
 
 4. **Personal Value**:
    - Does it provide sufficient value to justify its existence?
-   - Does it make personal knowledge management more effective?
+   - Does it make personal knowledge management more effective by addressing the scenarios in the [Core Use Cases document](../use-cases.md)?

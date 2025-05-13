@@ -133,6 +133,22 @@ Stored Metadata: Persisted data with appropriate indexing
 Stored Metadata: Indexed, persisted metadata
 ↓
 Queryable Metadata: Results formatted for specific query needs
+
+### Conceptual Query Examples (Illustrative)
+
+The following examples illustrate conceptually how the [Core Use Cases](../../use-cases.md) might be addressed by querying the `Queryable Metadata`. These are not literal query syntax but demonstrate the type of logic involved.
+
+*   **Use Case:** "When was my last meeting with Jane Doe?"
+    *   **Conceptual Query:** `SELECT MAX(date) FROM metadata WHERE metadata.analyzed.entities CONTAINS {name: "Jane Doe", type: "person"} AND (metadata.extracted.tags CONTAINS "meeting" OR metadata.analyzed.topics CONTAINS "meeting")`
+
+*   **Use Case:** "What are my meeting follow-ups from my last meeting about Project Alpha?"
+    *   **Conceptual Query:** `SELECT todo_item.text FROM metadata JOIN todo_items ON metadata.content_id = todo_item.content_id WHERE metadata.analyzed.topics CONTAINS {name: "Project Alpha"} AND todo_item.status = "open" AND todo_item.context_is_meeting_follow_up` (Assumes `todo_items` are extracted and linkable).
+
+*   **Use Case:** "How do I know John Smith?"
+    *   **Conceptual Query:** `SELECT metadata.analyzed.entities.mentions.context, metadata.content_id FROM metadata WHERE metadata.analyzed.entities CONTAINS {name: "John Smith", type: "person"} ORDER BY date LIMIT 5`
+
+*   **Use Case:** "What is my list of writing ideas that haven't been completed?"
+    *   **Conceptual Query:** `SELECT todo_item.text FROM todo_items WHERE todo_item.tags CONTAINS "writing_idea" AND todo_item.status = "open"` (Assumes `todo_items` are extracted with tags/types).
 ```
 
 ## Data Models
@@ -189,6 +205,9 @@ The representation of processed metadata:
       "created": "2023-04-15T10:30:00Z",
       "mentioned": ["2023-05-10", "2022-11-30"]
     }
+    // Note: To fully support use cases like task tracking, this section would also include
+    // extracted to-do items with their status, context, and any associated dates or projects.
+    // e.g., "todo_items": [{ "text": "Draft proposal", "status": "open", "project": "Project Alpha" }]
   },
   "analyzed": {
     "topics": [
@@ -230,6 +249,9 @@ The representation of processed metadata:
     },
     "summary": "Brief generated summary of the content"
   }
+  // Note: To fully support use cases like "employee of" or "organization is part of",
+  // this section could include a more generic "relationships" array.
+  // e.g., "relationships": [{ "type": "employee_of", "source_id": "entity_person_X", "target_id": "entity_org_Y" }]
 }
 ```
 

@@ -85,6 +85,7 @@ graph TD
 - Extract entities (people, places, concepts)
 - Determine content categories
 - Calculate relevance scores for extracted metadata
+- Perform analysis to support answering questions and deriving information as outlined in the [Core Use Cases document](../../use-cases.md) (e.g., concept inference, synonym detection).
 
 **Interfaces**:
 - Input: Content from Processor
@@ -99,6 +100,8 @@ graph TD
 - Establish hierarchical relationships
 - Enhance metadata with additional context
 - Generate summaries or abstracts
+- Establish and model relationships (e.g., "employee of", "organization is part of") needed to support the [Core Use Cases document](../../use-cases.md).
+- Suggest placeholder links or content aggregations as per the use cases.
 
 **Interfaces**:
 - Input: Content and metadata from Processor
@@ -127,6 +130,7 @@ graph TD
 - Enable filtering and sorting
 - Provide integration points for external tools
 - Support both programmatic and user-friendly access
+- Enable queries that can address the scenarios outlined in the [Core Use Cases document](../../use-cases.md) (e.g., temporal queries, relationship-based queries, task-oriented queries).
 
 **Interfaces**:
 - Input: Query parameters
