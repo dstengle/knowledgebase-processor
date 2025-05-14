@@ -36,9 +36,9 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--metadata-store", "-m",
-        help="Path to metadata SQLite database file (e.g., knowledgebase.db). "
-             "Defaults to 'knowledgebase.db' in the knowledge base directory if -k is set, "
-             "or in the current directory otherwise.",
+        help="Path to metadata store directory (e.g., ~/.kbp/metadata). "
+             "The database file 'knowledgebase.db' will be created/used within this directory. "
+             "Defaults to the directory specified in the config file, or '~/.kbp/metadata' if not set.",
         type=str
     )
     
@@ -104,33 +104,43 @@ def main(args: Optional[List[str]] = None) -> int:
     # Override config with command-line arguments
     if parsed_args.knowledge_base:
         config.knowledge_base_path = parsed_args.knowledge_base
-    elif not hasattr(config, 'knowledge_base_path') or config.knowledge_base_path is None:
+    elif not hasattr(config, 'knowledge_base_path') or not config.knowledge_base_path:
         # Default knowledge_base_path to current working directory if not set
         config.knowledge_base_path = str(Path.cwd())
         logger.info(f"Knowledge base path not specified, defaulting to current directory: {config.knowledge_base_path}")
 
+    # Determine the metadata store directory
+    db_directory_path_str: str
     if parsed_args.metadata_store:
-        config.metadata_store_path = parsed_args.metadata_store
-    elif not hasattr(config, 'metadata_store_path') or config.metadata_store_path is None:
-        # Default metadata_store_path if not set by arg or config
-        # Uses MetadataStore's default filename "knowledgebase.db"
-        kb_path = Path(config.knowledge_base_path)
-        # Ensure kb_path is a directory before joining. If it's a file, use its parent.
-        # However, knowledge_base_path should always be a directory.
-        if kb_path.is_file():
-            kb_path = kb_path.parent
-        config.metadata_store_path = str(kb_path / "knowledgebase.db")
-        logger.info(f"Metadata store path not specified, defaulting to: {config.metadata_store_path}")
+        db_directory_path_str = parsed_args.metadata_store
+        logger.info(f"Using metadata store directory from command line: {db_directory_path_str}")
+    elif hasattr(config, 'metadata_store_path') and config.metadata_store_path:
+        db_directory_path_str = config.metadata_store_path
+        logger.info(f"Using metadata store directory from config: {db_directory_path_str}")
+    else:
+        # This case should ideally not be hit if config has a default for metadata_store_path
+        # (which it does: ~/.kbp/metadata)
+        # However, as a robust fallback:
+        default_dir = Path.home() / ".kbp" / "metadata"
+        db_directory_path_str = str(default_dir)
+        logger.warning(
+            f"Metadata store directory not specified via CLI or config, "
+            f"or config value is empty. Defaulting to: {db_directory_path_str}"
+        )
+
+    # Construct the full database file path
+    db_directory_path = Path(db_directory_path_str)
+    db_filename = "knowledgebase.db" # Standard filename
+    db_file_path = db_directory_path / db_filename
     
-    # Ensure paths are absolute for consistency, though KnowledgeBaseProcessor can handle relative.
-    # config.knowledge_base_path = str(Path(config.knowledge_base_path).resolve())
-    # config.metadata_store_path = str(Path(config.metadata_store_path).resolve())
+    logger.info(f"Final database file path: {db_file_path}")
 
 
     # Create the knowledge base processor
+    # The KnowledgeBaseProcessor itself takes the full db_file_path for its metadata_store_path argument
     kb_processor = KnowledgeBaseProcessor(
-        config.knowledge_base_path,
-        config.metadata_store_path
+        knowledge_base_dir=config.knowledge_base_path,
+        metadata_store_path=str(db_file_path)
     )
     
     # Execute command
@@ -139,7 +149,11 @@ def main(args: Optional[List[str]] = None) -> int:
     elif parsed_args.command == "query":
         return query_command(parsed_args, config, kb_processor)
     else:
-        logger.error("No command specified")
+        # If no command is given, ArgumentParser usually handles this.
+        # If it reaches here, it means subparsers might not be required.
+        # For safety, log and exit.
+        logger.error("No command specified. Use 'process' or 'query'.")
+        # parser.print_help() #  parse_args would have exited if no command was given and command is required.
         return 1
 
 
@@ -163,11 +177,14 @@ def process_command(args: argparse.Namespace, config, kb_processor) -> int:
     logger.info(f"Knowledge base path: {config.knowledge_base_path}")
     
     # Process files
-    documents = kb_processor.process_all(pattern)
-    count = len(documents)
-    
-    logger.info(f"Processed {count} documents")
-    return 0
+    try:
+        documents = kb_processor.process_all(pattern)
+        count = len(documents)
+        logger.info(f"Processed {count} documents")
+        return 0
+    except Exception as e:
+        logger.error(f"An error occurred during processing: {e}", exc_info=True)
+        return 1
 
 
 def query_command(args: argparse.Namespace, config, kb_processor) -> int:
@@ -190,22 +207,29 @@ def query_command(args: argparse.Namespace, config, kb_processor) -> int:
     logger.info(f"Querying with {query_type} query: {query_string}")
     
     # Execute the query
-    if query_type == "tag":
-        results = kb_processor.find_by_tag(query_string)
-    elif query_type == "topic":
-        results = kb_processor.find_by_topic(query_string)
-    else:  # text query
-        results = kb_processor.search(query_string)
-    
-    # Print results
-    if results:
-        print(f"Found {len(results)} results:")
-        for doc_id in results:
-            print(f"- {doc_id}")
-    else:
-        print("No results found")
-    
-    return 0
+    try:
+        if query_type == "tag":
+            results = kb_processor.find_by_tag(query_string)
+        elif query_type == "topic":
+            # Assuming find_by_topic exists or will be added
+            # results = kb_processor.find_by_topic(query_string) 
+            logger.warning("Topic-based querying is not fully implemented yet.")
+            results = [] # Placeholder
+        else:  # text query
+            results = kb_processor.search(query_string)
+        
+        # Print results
+        if results:
+            print(f"Found {len(results)} results:")
+            for item in results: # Assuming results are document IDs or similar printable items
+                print(f"- {item}")
+        else:
+            print("No results found")
+        
+        return 0
+    except Exception as e:
+        logger.error(f"An error occurred during query execution: {e}", exc_info=True)
+        return 1
 
 
 if __name__ == "__main__":
