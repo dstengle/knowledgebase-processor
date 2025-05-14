@@ -1,0 +1,1 @@
+This document mentions [[Simple Link]] but also talks about Paris and a person named Alex.

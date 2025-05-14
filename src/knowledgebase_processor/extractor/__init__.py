@@ -9,3 +9,4 @@ from .list_table import ListTableExtractor
 from .todo_item import TodoItemExtractor
 from .code_quote import CodeQuoteExtractor
 from .link_reference import LinkReferenceExtractor
+from .wikilink_extractor import WikiLinkExtractor

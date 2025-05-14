@@ -14,7 +14,8 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_PERSONAL_ACCESS_TOKEN}"
       },
       "alwaysAllow": [
-        "add_issue_comment"
+        "add_issue_comment",
+        "get_issue"
       ]
     },
     "context7": {

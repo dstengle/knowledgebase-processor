@@ -96,5 +96,57 @@ class TestEntityRecognizer(unittest.TestCase):
         self.assertTrue(isinstance(metadata.entities, list))
 
 
+    def test_analyze_text_for_entities_john_doe_acme_new_york(self):
+        """Test analyze_text_for_entities with a sentence containing multiple entities."""
+        text_to_analyze = "John Doe works at Acme Corp in New York."
+        entities: List[ExtractedEntity] = self.analyzer.analyze_text_for_entities(text_to_analyze)
+
+        expected_entities_data = [
+            {"text": "John Doe", "label": "PERSON", "start_char": 0, "end_char": 8},
+            {"text": "Acme Corp", "label": "ORG", "start_char": 18, "end_char": 27},
+            {"text": "New York", "label": "GPE", "start_char": 31, "end_char": 39},
+        ]
+
+        # Convert to a set of tuples for easier comparison if order doesn't matter
+        # or if spaCy might find them in a different order.
+        # For this specific case, order is likely preserved but comparing sets is robust.
+        
+        actual_entities_set = {(e.text, e.label, e.start_char, e.end_char) for e in entities}
+        expected_entities_set = {(d["text"], d["label"], d["start_char"], d["end_char"]) for d in expected_entities_data}
+
+        self.assertEqual(actual_entities_set, expected_entities_set,
+                         f"Expected entities {expected_entities_set} but got {actual_entities_set}")
+
+    def test_analyze_text_for_entities_jane_smith_wikilink_alias(self):
+        """Test analyze_text_for_entities with a wikilink alias."""
+        text_to_analyze = "Dr. Smith" # Simulating the text part of "[[Jane Smith|Dr. Smith]]"
+        entities: List[ExtractedEntity] = self.analyzer.analyze_text_for_entities(text_to_analyze)
+        
+        self.assertEqual(len(entities), 1, f"Expected 1 entity, got {len(entities)}")
+        entity = entities[0]
+        self.assertEqual(entity.text, "Smith") # spaCy model 'en_core_web_sm' extracts "Smith"
+        self.assertEqual(entity.label, "PERSON")
+        self.assertEqual(entity.start_char, 4) # "Smith" in "Dr. Smith" (D=0,r=1,.=2, =3,S=4)
+        self.assertEqual(entity.end_char, 9)   # "Smith"
+
+    def test_analyze_text_for_entities_simple_phrase_no_entities(self):
+        """Test analyze_text_for_entities with a phrase containing no entities."""
+        text_to_analyze = "A simple phrase"
+        entities: List[ExtractedEntity] = self.analyzer.analyze_text_for_entities(text_to_analyze)
+        self.assertEqual(len(entities), 0)
+
+    def test_analyze_text_for_entities_london_wikilink(self):
+        """Test analyze_text_for_entities with a GPE from a wikilink."""
+        text_to_analyze = "London" # Simulating the text part of "[[London]]"
+        entities: List[ExtractedEntity] = self.analyzer.analyze_text_for_entities(text_to_analyze)
+        
+        self.assertEqual(len(entities), 1, f"Expected 1 entity, got {len(entities)}")
+        entity = entities[0]
+        self.assertEqual(entity.text, "London")
+        self.assertIn(entity.label, ["GPE", "LOC"], f"Expected GPE or LOC, got {entity.label}") # spaCy usually labels cities as GPE
+        self.assertEqual(entity.start_char, 0)
+        self.assertEqual(entity.end_char, 6)
+
+
 if __name__ == '__main__':
     unittest.main()

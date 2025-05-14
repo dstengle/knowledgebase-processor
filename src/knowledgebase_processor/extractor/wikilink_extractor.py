@@ -1,7 +1,7 @@
 import re
 from typing import List
 from knowledgebase_processor.models.links import WikiLink
-from knowledgebase_processor.extractor.base import BaseExtractor
+from knowledgebase_processor.extractor.base import BaseExtractor # Revert to absolute import
 from knowledgebase_processor.models.content import Document
 
 class WikiLinkExtractor(BaseExtractor):

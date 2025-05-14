@@ -45,3 +45,30 @@ class EntityRecognizer(BaseAnalyzer):
             extracted_entities.append(entity)
         
         metadata.entities.extend(extracted_entities)
+    def analyze_text_for_entities(self, text_to_analyze: str) -> List[ExtractedEntity]:
+        """
+        Analyzes a specific text string to extract named entities.
+
+        Args:
+            text_to_analyze: The text string to analyze.
+
+        Returns:
+            A list of ExtractedEntity objects found in the text.
+            Returns an empty list if no entities are found.
+        """
+        if not text_to_analyze:
+            return []
+
+        doc = self.nlp(text_to_analyze)
+        
+        extracted_entities: List[ExtractedEntity] = []
+        for ent in doc.ents:
+            entity = ExtractedEntity(
+                text=ent.text,
+                label=ent.label_,
+                start_char=ent.start_char,
+                end_char=ent.end_char,
+            )
+            extracted_entities.append(entity)
+        
+        return extracted_entities
