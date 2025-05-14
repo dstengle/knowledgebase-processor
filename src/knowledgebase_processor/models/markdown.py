@@ -3,7 +3,7 @@
 from pydantic import Field
 from typing import Optional, List, Dict, Any
 from .common import BaseKnowledgeModel
-from .content import ContentElement
+from .elements import ContentElement
 
 
 class MarkdownElement(ContentElement):

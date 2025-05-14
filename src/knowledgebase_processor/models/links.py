@@ -2,6 +2,7 @@
 
 from pydantic import Field
 from typing import Optional, List
+from .entities import ExtractedEntity
 from .markdown import MarkdownElement
 
 
@@ -29,9 +30,11 @@ class Citation(MarkdownElement):
     element_type: str = "citation"
     text: str = Field(..., description="Citation text")
     reference_key: Optional[str] = Field(None, description="Key to a reference if available")
+
 class WikiLink(MarkdownElement):
     """Represents a wikilink ([[Page Name]] or [[Page Name|Display Text]])."""
 
     element_type: str = "wikilink"
     target_page: str = Field(..., description="Target page name")
     display_text: str = Field(..., description="Display text for the link (may be same as target_page)")
+    entities: List[ExtractedEntity] = Field(default_factory=list, description="Entities extracted from this wikilink's display text or target page")
