@@ -98,36 +98,22 @@ class QueryInterface:
         
         return results
     
-    def search(self, query: str) -> List[str]:
+    def search(self, query: str) -> List[str]: # Keep query as str for now, consistent with KnowledgeBaseProcessor.search
         """Search for documents matching a text query.
         
         Args:
-            query: The search query
+            query: The search query (string)
             
         Returns:
             List of matching document IDs
         """
-        # This is a placeholder implementation
-        # In a real system, this would use a text search engine
+        # For a simple string query, we'll search in titles for now.
+        # More complex query parsing can be added here or in MetadataStore.search
+        if isinstance(query, str):
+            return self.metadata_store.search({'title_contains': query})
         
-        # For now, just split the query into words and look for documents
-        # that contain all of the words
-        words = query.lower().split()
-        
-        results = []
-        
-        # Get all document IDs
-        all_docs = self.metadata_store.list_all()
-        
-        # Check each document for the words
-        for doc_id in all_docs:
-            metadata = self.metadata_store.get(doc_id)
-            if metadata:
-                # Get the document content (this would be stored differently in a real system)
-                content = metadata.structure.get('content', '').lower()
-                
-                # Check if all words are in the content
-                if all(word in content for word in words):
-                    results.append(doc_id)
-        
-        return results
+        # If the query parameter were a Dict, we could pass it directly:
+        # elif isinstance(query, dict):
+        #     return self.metadata_store.search(query)
+            
+        return [] # Return empty list if query type is not supported

@@ -40,13 +40,13 @@ class KnowledgeBaseProcessor:
         
         Args:
             base_path: Path to the knowledge base directory
-            metadata_path: Path to the metadata store directory (default: {base_path}/.metadata)
+            metadata_path: Path to the metadata SQLite database file.
+                           If None, MetadataStore will use its default (e.g., "knowledgebase.db").
         """
         self.base_path = Path(base_path)
         
-        # Set up metadata path
-        if metadata_path is None:
-            metadata_path = os.path.join(base_path, ".metadata")
+        # metadata_path is now passed directly to MetadataStore.
+        # If it's None, MetadataStore will use its own default.
         
         # Initialize components
         self.reader = Reader(base_path)

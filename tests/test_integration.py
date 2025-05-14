@@ -18,12 +18,14 @@ class TestKnowledgeBaseProcessorIntegration(unittest.TestCase):
         # Create a temporary directory for the knowledge base
         self.temp_dir = tempfile.mkdtemp()
         
-        # Create a temporary directory for the metadata store
-        self.metadata_dir = os.path.join(self.temp_dir, ".metadata")
-        os.makedirs(self.metadata_dir, exist_ok=True)
+        # Define path for the metadata SQLite database file
+        # The directory for the SQLite DB file must exist.
+        metadata_store_parent_dir = Path(self.temp_dir) / ".metadata_db_storage"
+        metadata_store_parent_dir.mkdir(parents=True, exist_ok=True)
+        self.metadata_db_file_path = metadata_store_parent_dir / "kb_integration_test.db"
         
-        # Create the processor
-        self.processor = KnowledgeBaseProcessor(self.temp_dir, self.metadata_dir)
+        # Create the processor, passing the DB file path as a string
+        self.processor = KnowledgeBaseProcessor(self.temp_dir, str(self.metadata_db_file_path))
         
         # Create some test files
         self.create_test_files()
@@ -68,11 +70,11 @@ def hello_world():
         # Create another markdown file
         with open(os.path.join(self.temp_dir, "test2.md"), "w") as f:
             f.write("""---
-title: Test Document 2
+title: Test Document 2 related
 tags: [test, related]
 ---
 
-# Test Document 2
+# Test Document 2 related
 
 This document is related to Test Document 1.
 

@@ -34,12 +34,14 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         help="Path to knowledge base directory",
         type=str
     )
-    
     parser.add_argument(
         "--metadata-store", "-m",
-        help="Path to metadata store directory",
+        help="Path to metadata SQLite database file (e.g., knowledgebase.db). "
+             "Defaults to 'knowledgebase.db' in the knowledge base directory if -k is set, "
+             "or in the current directory otherwise.",
         type=str
     )
+    
     
     parser.add_argument(
         "--log-level", "-l",
@@ -102,9 +104,29 @@ def main(args: Optional[List[str]] = None) -> int:
     # Override config with command-line arguments
     if parsed_args.knowledge_base:
         config.knowledge_base_path = parsed_args.knowledge_base
+    elif not hasattr(config, 'knowledge_base_path') or config.knowledge_base_path is None:
+        # Default knowledge_base_path to current working directory if not set
+        config.knowledge_base_path = str(Path.cwd())
+        logger.info(f"Knowledge base path not specified, defaulting to current directory: {config.knowledge_base_path}")
+
     if parsed_args.metadata_store:
         config.metadata_store_path = parsed_args.metadata_store
+    elif not hasattr(config, 'metadata_store_path') or config.metadata_store_path is None:
+        # Default metadata_store_path if not set by arg or config
+        # Uses MetadataStore's default filename "knowledgebase.db"
+        kb_path = Path(config.knowledge_base_path)
+        # Ensure kb_path is a directory before joining. If it's a file, use its parent.
+        # However, knowledge_base_path should always be a directory.
+        if kb_path.is_file():
+            kb_path = kb_path.parent
+        config.metadata_store_path = str(kb_path / "knowledgebase.db")
+        logger.info(f"Metadata store path not specified, defaulting to: {config.metadata_store_path}")
     
+    # Ensure paths are absolute for consistency, though KnowledgeBaseProcessor can handle relative.
+    # config.knowledge_base_path = str(Path(config.knowledge_base_path).resolve())
+    # config.metadata_store_path = str(Path(config.metadata_store_path).resolve())
+
+
     # Create the knowledge base processor
     kb_processor = KnowledgeBaseProcessor(
         config.knowledge_base_path,
