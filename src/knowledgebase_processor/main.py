@@ -20,7 +20,7 @@ from .extractor.tags import TagExtractor
 from .extractor.list_table import ListTableExtractor
 from .extractor.wikilink_extractor import WikiLinkExtractor
 from .analyzer.topics import TopicAnalyzer
-from .analyzer.entities import EntityRecognizer
+from .analyzer.entity_recognizer import EntityRecognizer # Corrected import
 from .enricher.relationships import RelationshipEnricher
 from .metadata_store.store import MetadataStore
 from .query_interface.query import QueryInterface
@@ -88,9 +88,9 @@ class KnowledgeBaseProcessor:
         document = self.reader.read_file(path)
         processed_document = self.processor.process_document(document)
         
-        # Extract and store metadata
-        metadata = self.processor.extract_metadata(processed_document)
-        self.metadata_store.save(metadata)
+        # Metadata is now part of the processed_document
+        if processed_document.metadata:
+            self.metadata_store.save(processed_document.metadata)
         
         return processed_document
     
@@ -108,9 +108,9 @@ class KnowledgeBaseProcessor:
         for document in self.reader.read_all(pattern):
             processed_document = self.processor.process_document(document)
             
-            # Extract and store metadata
-            metadata = self.processor.extract_metadata(processed_document)
-            self.metadata_store.save(metadata)
+            # Metadata is now part of the processed_document
+            if processed_document.metadata:
+                self.metadata_store.save(processed_document.metadata)
             
             documents.append(processed_document)
         

@@ -9,3 +9,11 @@ from .markdown import *      # Depends on elements
 from .links import *         # Depends on markdown, entities
 from .metadata import *      # Depends on links, entities, common
 from .content import *       # Depends on metadata, elements, preservation
+
+# Resolve forward references
+Document.model_rebuild()
+DocumentMetadata.model_rebuild()
+# Potentially add for Link, WikiLink if they also use forward refs and cause issues
+# Link.model_rebuild()
+# WikiLink.model_rebuild()
+

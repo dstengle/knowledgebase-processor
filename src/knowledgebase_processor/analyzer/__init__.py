@@ -2,4 +2,4 @@
 
 from .base import BaseAnalyzer
 from .topics import TopicAnalyzer
-from .entities import EntityRecognizer
+from .entity_recognizer import EntityRecognizer # Changed from .entities

@@ -34,12 +34,6 @@ class Frontmatter(BaseKnowledgeModel):
     custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom frontmatter fields")
 
 
-class Entity(BaseKnowledgeModel):
-    """Represents a named entity extracted from text."""
-    text: str
-    label: str
-    start_char: int
-    end_char: int
 
 class DocumentMetadata(BaseKnowledgeModel):
     """Represents the complete metadata for a document."""
