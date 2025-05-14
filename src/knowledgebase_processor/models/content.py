@@ -12,6 +12,8 @@ from .entities import ExtractedEntity
 if TYPE_CHECKING:
     from .metadata import DocumentMetadata
 
+if TYPE_CHECKING:
+    from .metadata import Entity
 class Document(BaseKnowledgeModel):
     """Represents a document in the knowledge base."""
     

@@ -16,3 +16,4 @@ DocumentMetadata.model_rebuild()
 # Potentially add for Link, WikiLink if they also use forward refs and cause issues
 # Link.model_rebuild()
 # WikiLink.model_rebuild()
+

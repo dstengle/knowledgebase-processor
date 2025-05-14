@@ -38,9 +38,11 @@ class TestWikilinkEntityProcessing(unittest.TestCase):
         current_processor = processor_instance if processor_instance else self.processor
         # First, process the document. This modifies doc_obj in place and returns it.
         processed_doc = current_processor.process_document(doc_obj)
+
         # Metadata is now attached to the processed document.
         metadata = processed_doc.metadata
         self.assertIsNotNone(metadata, "Metadata should be attached to the processed document.")
+
         return metadata
 
     def test_person_link_fixture(self):

@@ -34,6 +34,7 @@ class Frontmatter(BaseKnowledgeModel):
     custom_fields: Dict[str, Any] = Field(default_factory=dict, description="Custom frontmatter fields")
 
 
+
 class DocumentMetadata(BaseKnowledgeModel):
     """Represents the complete metadata for a document."""
     

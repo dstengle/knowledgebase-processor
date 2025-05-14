@@ -125,6 +125,7 @@ class Processor:
             if isinstance(analyzer, EntityRecognizer):
                 if document.content: # Ensure content exists
                     analyzer.analyze(document.content, doc_metadata) # Modifies doc_metadata.entities
+
             else:
                 # Assuming other analyzers expect the Document object directly
                 # or handle metadata internally if needed.
@@ -138,6 +139,7 @@ class Processor:
         document.metadata = doc_metadata
         
         # 9. Return Document
+
         return document
     
     def _update_document_title_from_frontmatter(self, document: Document) -> None:
@@ -191,4 +193,3 @@ class Processor:
             
             document.title = title_from_filename
     
-    # The extract_metadata method is now removed as its logic is integrated into process_document.
