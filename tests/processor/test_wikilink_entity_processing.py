@@ -38,8 +38,9 @@ class TestWikilinkEntityProcessing(unittest.TestCase):
         current_processor = processor_instance if processor_instance else self.processor
         # First, process the document. This modifies doc_obj in place and returns it.
         processed_doc = current_processor.process_document(doc_obj)
-        # Then, extract metadata from the processed document.
-        metadata = current_processor.extract_metadata(processed_doc)
+        # Metadata is now attached to the processed document.
+        metadata = processed_doc.metadata
+        self.assertIsNotNone(metadata, "Metadata should be attached to the processed document.")
         return metadata
 
     def test_person_link_fixture(self):
@@ -172,7 +173,6 @@ class TestWikilinkEntityProcessing(unittest.TestCase):
         self.assertTrue(david_copperfield_found, "David Copperfield link not processed.")
         self.assertTrue(another_page_found, "Another Page link not processed.")
 
-    @unittest.skip("Skipping this test temporarily")
     def test_entities_in_doc_not_link_fixture(self):
         """
         Test 'entities_in_doc_not_link.md'.

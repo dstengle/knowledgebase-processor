@@ -5,11 +5,13 @@ from typing import Optional, List, Dict, Any, TYPE_CHECKING
 import uuid
 from .common import BaseKnowledgeModel
 from .preservation import ContentPreservationMixin
-from .metadata import Entity # Moved under TYPE_CHECKING
 from .elements import ContentElement
+# Import ExtractedEntity directly, DocumentMetadata under TYPE_CHECKING
+from .entities import ExtractedEntity
 
 if TYPE_CHECKING:
-    from .metadata import Entity
+    from .metadata import DocumentMetadata
+
 class Document(BaseKnowledgeModel):
     """Represents a document in the knowledge base."""
     
@@ -18,7 +20,8 @@ class Document(BaseKnowledgeModel):
     content: str = Field(..., description="Raw content of the document")
     elements: List[ContentElement] = Field(default_factory=list, description="Structured elements of the document")
     
-    entities: Optional[List[Entity]] = None
+    entities: Optional[List[ExtractedEntity]] = None # Changed to ExtractedEntity
+    metadata: Optional["DocumentMetadata"] = Field(None, description="Full metadata of the document") # Added metadata field
     
     def preserve_content(self) -> None:
         """Preserve the original content for all elements in the document."""
