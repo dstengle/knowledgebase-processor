@@ -35,23 +35,21 @@ class KnowledgeBaseProcessor:
     and provides a simple interface for using them.
     """
     
-    def __init__(self, base_path: str, metadata_path: Optional[str] = None):
+    def __init__(self, knowledge_base_dir: str, metadata_store_path: str):
         """Initialize the Knowledge Base Processor.
         
         Args:
-            base_path: Path to the knowledge base directory
-            metadata_path: Path to the metadata SQLite database file.
-                           If None, MetadataStore will use its default (e.g., "knowledgebase.db").
+            knowledge_base_dir: Path to the knowledge base directory.
+            metadata_store_path: Full path to the metadata SQLite database file (e.g., /path/to/knowledgebase.db).
+                                 The MetadataStore will use this path directly.
         """
-        self.base_path = Path(base_path)
-        
-        # metadata_path is now passed directly to MetadataStore.
-        # If it's None, MetadataStore will use its own default.
+        self.base_path = Path(knowledge_base_dir)
         
         # Initialize components
-        self.reader = Reader(base_path)
+        self.reader = Reader(knowledge_base_dir)
         self.processor = Processor()
-        self.metadata_store = MetadataStore(metadata_path)
+        # MetadataStore now receives the full, resolved path to the DB file.
+        self.metadata_store = MetadataStore(db_path=metadata_store_path)
         self.query_interface = QueryInterface(self.metadata_store)
         
         # Register extractors

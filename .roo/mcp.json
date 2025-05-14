@@ -15,7 +15,8 @@
       },
       "alwaysAllow": [
         "add_issue_comment",
-        "get_issue"
+        "get_issue",
+        "get_issue_comments"
       ]
     },
     "context7": {

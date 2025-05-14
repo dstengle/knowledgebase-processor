@@ -3,6 +3,8 @@ import sqlite3
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Set
+import tempfile
+import os
 
 from knowledgebase_processor.metadata_store.store import MetadataStore
 from knowledgebase_processor.models.metadata import DocumentMetadata, Frontmatter
@@ -12,68 +14,167 @@ from knowledgebase_processor.models.links import Link, WikiLink
 class TestMetadataStore(unittest.TestCase):
 
     def setUp(self):
-        """Set up an in-memory SQLite database for each test."""
-        self.db_path = ":memory:"
-        self.store = MetadataStore(db_path=self.db_path)
-        # Ensure tables are created (though __init__ does this)
-        self.store._create_tables()
+        """Set up for tests. Some tests use in-memory, others use temp files."""
+        self.temp_db_instances_paths = [] # To keep track of (store_instance, path_obj) for cleanup
+        
+        # Default in-memory store for tests not specifically testing file creation
+        self.db_path_memory = ":memory:"
+        self.store_memory = MetadataStore(db_path=self.db_path_memory)
+        # __init__ of MetadataStore now handles _create_tables, so explicit call might be redundant
+        # but harmless if _create_tables is idempotent.
+        # self.store_memory._create_tables() 
 
     def tearDown(self):
-        """Close the database connection after each test."""
-        self.store.close()
+        """Close database connections and clean up temporary files."""
+        if hasattr(self, 'store_memory') and self.store_memory and self.store_memory.conn:
+            self.store_memory.close()
+        
+        for store_instance, file_path_obj in self.temp_db_instances_paths:
+            if store_instance and store_instance.conn:
+                store_instance.close()
+            if file_path_obj and file_path_obj.exists():
+                try:
+                    # Ensure the connection is closed by the store instance before removing
+                    if store_instance and store_instance.conn:
+                         store_instance.close() # Double check, though should be closed above
+                    os.remove(file_path_obj)
+                except OSError as e:
+                    # This can happen on Windows if the file is still locked
+                    print(f"Warning: Could not remove temp db file {file_path_obj}: {e}")
+        self.temp_db_instances_paths = []
 
+    def _create_temp_db_path(self) -> Path:
+        """Creates a temporary file path for a database and returns it.
+        The file itself is not created by this helper, only its path.
+        """
+        # Create a named temporary file, close it, and then use its path.
+        # This ensures the name is unique and OS handles temp dir.
+        # We delete it immediately so MetadataStore can create it.
+        fd, path_str = tempfile.mkstemp(suffix=".db", prefix="test_kb_")
+        os.close(fd) 
+        path_obj = Path(path_str)
+        if path_obj.exists(): # Should exist after mkstemp
+            os.remove(path_obj) # Remove it so MetadataStore can test creation
+        return path_obj
+
+    def test_initialize_new_db_file(self):
+        """Test that MetadataStore creates a new DB file and schema if it doesn't exist."""
+        temp_db_path = self._create_temp_db_path()
+        self.assertFalse(temp_db_path.exists(), "Temporary DB file should not exist before store initialization")
+
+        store = None
+        try:
+            store = MetadataStore(db_path=str(temp_db_path))
+            self.temp_db_instances_paths.append((store, temp_db_path))
+
+            self.assertTrue(temp_db_path.exists(), "DB file should be created by MetadataStore")
+            
+            # Verify schema by checking for expected tables
+            conn_verify = sqlite3.connect(temp_db_path)
+            cursor_verify = conn_verify.cursor()
+            cursor_verify.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            tables_in_db = {row[0] for row in cursor_verify.fetchall()}
+            conn_verify.close()
+
+            expected_tables = {"documents", "entities", "document_entities", "tags", "document_tags", "tasks", "links"}
+            self.assertTrue(expected_tables.issubset(tables_in_db), f"Expected tables {expected_tables} not found in {tables_in_db}")
+
+        finally:
+            # Cleanup is handled by tearDown
+            pass
+
+    def test_connect_existing_db_file(self):
+        """Test that MetadataStore connects to an existing DB file and can use it."""
+        temp_db_path = self._create_temp_db_path()
+        
+        store1 = None
+        try:
+            # 1. Create an initial store, save data, and close it. This creates the DB file.
+            store1 = MetadataStore(db_path=str(temp_db_path))
+            # Don't add to self.temp_db_instances_paths yet, will be managed by its own try/finally
+            initial_doc = DocumentMetadata(document_id="existing_doc_1", title="Existing Doc")
+            store1.save(initial_doc)
+        finally:
+            if store1 and store1.conn:
+                store1.close()
+        
+        self.assertTrue(temp_db_path.exists(), "DB file should exist after initial setup and store1.close()")
+
+        store2 = None
+        try:
+            # 2. Create a new store instance pointing to the *existing* DB file.
+            store2 = MetadataStore(db_path=str(temp_db_path))
+            self.temp_db_instances_paths.append((store2, temp_db_path)) # Now add for cleanup
+
+            # Verify it can read the data saved by the first store
+            retrieved_meta = store2.get("existing_doc_1")
+            self.assertIsNotNone(retrieved_meta)
+            self.assertEqual(retrieved_meta.title, "Existing Doc")
+
+            # Verify it can write new data
+            new_doc = DocumentMetadata(document_id="new_doc_in_existing_db", title="New Doc")
+            store2.save(new_doc)
+            retrieved_new_meta = store2.get("new_doc_in_existing_db")
+            self.assertIsNotNone(retrieved_new_meta)
+            self.assertEqual(retrieved_new_meta.title, "New Doc")
+        finally:
+            # Cleanup handled by tearDown
+            pass
+
+    # --- Existing tests adapted to use self.store_memory (in-memory DB) ---
     def test_save_and_get_new_document(self):
-        """Test saving a new document and retrieving it."""
+        store = self.store_memory
         now = datetime.now(timezone.utc)
         doc_meta = DocumentMetadata(
             document_id="test_doc_1",
             title="Test Document 1",
             path="/path/to/test_doc_1.md",
             frontmatter=Frontmatter(
-                title="FM Title 1",
+                title="FM Title 1", # This specific FM title might not be directly retrievable if doc_meta.title is set
                 date=now,
-                tags=["fm_tag1", "fm_tag2"],
-                custom_fields={"custom_key": "custom_value"}
+                tags=["fm_tag1", "fm_tag2"], # These are illustrative; store saves doc_meta.tags
+                custom_fields={"custom_key": "custom_value"} # Not stored
             ),
             tags={"tag1", "tag2"},
-            links=[Link(url="http://example.com/link1", text="Example Link 1")],
-            wikilinks=[WikiLink(target="Another Doc", text="Link to Another Doc")],
+            links=[Link(url="http://example.com/link1", text="Example Link 1", content="[Example Link 1](http://example.com/link1)")],
+            wikilinks=[WikiLink(target_page="Another Doc", display_text="Link to Another Doc", content="[[Another Doc|Link to Another Doc]]")],
             entities=[ExtractedEntity(text="Test Entity", label="PERSON", start_char=0, end_char=10)]
         )
 
-        self.store.save(doc_meta)
-        retrieved_meta = self.store.get("test_doc_1")
+        store.save(doc_meta)
+        retrieved_meta = store.get("test_doc_1")
 
         self.assertIsNotNone(retrieved_meta)
         self.assertEqual(retrieved_meta.document_id, "test_doc_1")
-        self.assertEqual(retrieved_meta.title, "Test Document 1") # Title from doc_meta.title
+        self.assertEqual(retrieved_meta.title, "Test Document 1") 
         self.assertEqual(retrieved_meta.path, "/path/to/test_doc_1.md")
         
-        # Verify frontmatter (partially, as not all fields are stored directly)
         self.assertIsNotNone(retrieved_meta.frontmatter)
-        self.assertEqual(retrieved_meta.frontmatter.title, "Test Document 1") # Title in FM is doc title
+        self.assertEqual(retrieved_meta.frontmatter.title, "Test Document 1") # Reconstructed FM uses doc title
         self.assertEqual(retrieved_meta.frontmatter.date.replace(microsecond=0), now.replace(microsecond=0))
-        self.assertEqual(set(retrieved_meta.frontmatter.tags), {"tag1", "tag2"}) # Uses all doc tags
+        self.assertEqual(set(retrieved_meta.frontmatter.tags), {"tag1", "tag2"}) # Reconstructed FM uses doc tags
 
         self.assertEqual(retrieved_meta.tags, {"tag1", "tag2"})
         
         self.assertEqual(len(retrieved_meta.links), 1)
         self.assertEqual(retrieved_meta.links[0].url, "http://example.com/link1")
+        self.assertEqual(retrieved_meta.links[0].text, "Example Link 1")
         
         self.assertEqual(len(retrieved_meta.wikilinks), 1)
-        self.assertEqual(retrieved_meta.wikilinks[0].target, "Another Doc")
+        self.assertEqual(retrieved_meta.wikilinks[0].target_page, "Another Doc")
+        self.assertEqual(retrieved_meta.wikilinks[0].display_text, "Link to Another Doc")
 
         self.assertEqual(len(retrieved_meta.entities), 1)
         self.assertEqual(retrieved_meta.entities[0].text, "Test Entity")
         self.assertEqual(retrieved_meta.entities[0].label, "PERSON")
 
     def test_get_non_existent_document(self):
-        """Test getting a document that does not exist."""
-        retrieved_meta = self.store.get("non_existent_doc")
+        store = self.store_memory
+        retrieved_meta = store.get("non_existent_doc")
         self.assertIsNone(retrieved_meta)
 
     def test_save_updates_existing_document(self):
-        """Test that saving an existing document updates it."""
+        store = self.store_memory
         now = datetime.now(timezone.utc)
         initial_doc_meta = DocumentMetadata(
             document_id="update_doc_1",
@@ -82,32 +183,28 @@ class TestMetadataStore(unittest.TestCase):
             frontmatter=Frontmatter(date=now),
             tags={"initial_tag"},
         )
-        self.store.save(initial_doc_meta)
+        store.save(initial_doc_meta)
         
-        retrieved_initial = self.store.get("update_doc_1")
+        retrieved_initial = store.get("update_doc_1")
         self.assertIsNotNone(retrieved_initial)
-        initial_modified_at_str = self.store.cursor.execute(
+        
+        # Fetch modified_at directly for comparison
+        initial_modified_at_str = store.cursor.execute(
             "SELECT modified_at FROM documents WHERE document_id = ?", ("update_doc_1",)
         ).fetchone()['modified_at']
         initial_modified_at = datetime.fromisoformat(initial_modified_at_str)
 
-        # Make some changes and save again
-        # Simulate a slight delay for modified_at to change
-        # In a real scenario, time.sleep might be too flaky for tests.
-        # For robustness, one might mock datetime.now() or check that modified_at is GREATER.
-        # Here, we rely on the fact that save() generates a new datetime.now().
-
         updated_doc_meta = DocumentMetadata(
-            document_id="update_doc_1", # Same ID
+            document_id="update_doc_1", 
             title="Updated Title",
             path="/path/updated.md",
             frontmatter=Frontmatter(date=now), # Keep original date for created_at check
             tags={"updated_tag", "another_tag"},
             entities=[ExtractedEntity(text="Updated Entity", label="ORG", start_char=0, end_char=0)]
         )
-        self.store.save(updated_doc_meta)
+        store.save(updated_doc_meta)
 
-        retrieved_updated = self.store.get("update_doc_1")
+        retrieved_updated = store.get("update_doc_1")
         self.assertIsNotNone(retrieved_updated)
         self.assertEqual(retrieved_updated.title, "Updated Title")
         self.assertEqual(retrieved_updated.path, "/path/updated.md")
@@ -115,48 +212,45 @@ class TestMetadataStore(unittest.TestCase):
         self.assertEqual(len(retrieved_updated.entities), 1)
         self.assertEqual(retrieved_updated.entities[0].text, "Updated Entity")
 
-        # Check created_at is preserved (from initial frontmatter.date)
         self.assertIsNotNone(retrieved_updated.frontmatter)
         self.assertEqual(retrieved_updated.frontmatter.date.replace(microsecond=0), now.replace(microsecond=0))
         
-        # Check modified_at has changed (or is later)
-        updated_modified_at_str = self.store.cursor.execute(
+        updated_modified_at_str = store.cursor.execute(
             "SELECT modified_at FROM documents WHERE document_id = ?", ("update_doc_1",)
         ).fetchone()['modified_at']
         updated_modified_at = datetime.fromisoformat(updated_modified_at_str)
         self.assertTrue(updated_modified_at > initial_modified_at)
 
     def test_save_document_with_no_frontmatter_date(self):
-        """Test saving a document where frontmatter or its date is None."""
-        doc_meta = DocumentMetadata(
+        store = self.store_memory
+        doc_meta_no_fm = DocumentMetadata(
             document_id="no_fm_date_doc",
             title="No FM Date Doc",
-            frontmatter=None # No frontmatter at all
+            frontmatter=None 
         )
-        self.store.save(doc_meta)
-        retrieved_meta = self.store.get("no_fm_date_doc")
-        self.assertIsNotNone(retrieved_meta)
-        self.assertIsNotNone(retrieved_meta.frontmatter) # get reconstructs a basic one
-        self.assertIsNone(retrieved_meta.frontmatter.date) # Date should be None
+        store.save(doc_meta_no_fm)
+        retrieved_meta_1 = store.get("no_fm_date_doc")
+        self.assertIsNotNone(retrieved_meta_1)
+        self.assertIsNotNone(retrieved_meta_1.frontmatter) 
+        self.assertIsNone(retrieved_meta_1.frontmatter.date)
 
-        # Check created_at in DB is NULL
-        db_created_at = self.store.cursor.execute(
+        db_created_at_1 = store.cursor.execute(
             "SELECT created_at FROM documents WHERE document_id = ?", ("no_fm_date_doc",)
         ).fetchone()['created_at']
-        self.assertIsNone(db_created_at)
+        self.assertIsNone(db_created_at_1)
 
         doc_meta_fm_no_date = DocumentMetadata(
             document_id="fm_no_date_doc",
             title="FM No Date Doc",
-            frontmatter=Frontmatter(title="FM Title") # Frontmatter exists, but no date field
+            frontmatter=Frontmatter(title="FM Title Only") 
         )
-        self.store.save(doc_meta_fm_no_date)
-        retrieved_meta_2 = self.store.get("fm_no_date_doc")
+        store.save(doc_meta_fm_no_date)
+        retrieved_meta_2 = store.get("fm_no_date_doc")
         self.assertIsNotNone(retrieved_meta_2)
         self.assertIsNotNone(retrieved_meta_2.frontmatter)
         self.assertIsNone(retrieved_meta_2.frontmatter.date)
         
-        db_created_at_2 = self.store.cursor.execute(
+        db_created_at_2 = store.cursor.execute(
             "SELECT created_at FROM documents WHERE document_id = ?", ("fm_no_date_doc",)
         ).fetchone()['created_at']
         self.assertIsNone(db_created_at_2)
