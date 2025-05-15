@@ -2,7 +2,7 @@
 
 from typing import List, Dict, Any, Optional, Set
 
-from ..metadata_store.store import MetadataStore
+from ..metadata_store.interface import MetadataStoreInterface
 from ..models.content import Document
 from ..models.metadata import DocumentMetadata
 
@@ -14,7 +14,7 @@ class QueryInterface:
     based on various criteria.
     """
     
-    def __init__(self, metadata_store: MetadataStore):
+    def __init__(self, metadata_store: MetadataStoreInterface):
         """Initialize the QueryInterface.
         
         Args:

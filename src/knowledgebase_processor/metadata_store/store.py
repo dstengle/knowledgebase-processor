@@ -13,11 +13,13 @@ from ..models.links import Link, WikiLink
 logger = logging.getLogger(__name__)
 
 
-class MetadataStore:
+from .interface import MetadataStoreInterface
+
+class SQLiteMetadataStore(MetadataStoreInterface):
     """Store for document metadata using an SQLite database."""
 
     def __init__(self, db_path: str = "knowledgebase.db"):
-        """Initialize the MetadataStore and connect to the SQLite database.
+        """Initialize the SQLiteMetadataStore and connect to the SQLite database.
 
         Args:
             db_path: Path to the SQLite database file.
@@ -55,7 +57,7 @@ class MetadataStore:
                 # No further action like _create_tables() if connection failed.
 
         except RuntimeError as e: # Catch error from _connect()
-            logger.error(f"Failed to initialize MetadataStore due to connection error: {e}")
+            logger.error(f"Failed to initialize SQLiteMetadataStore due to connection error: {e}")
             # self.conn remains None, store is not operational.
 
     def _connect(self):

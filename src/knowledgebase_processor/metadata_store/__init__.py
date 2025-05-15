@@ -1,3 +1,4 @@
-"""Metadata store component for storing and retrieving metadata."""
-
-from .store import MetadataStore
+from .interface import MetadataStoreInterface
+from .inmemory import InMemoryMetadataStore
+from .store import SQLiteMetadataStore
+from .factory import get_metadata_store

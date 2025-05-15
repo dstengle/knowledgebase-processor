@@ -22,7 +22,7 @@ from .extractor.wikilink_extractor import WikiLinkExtractor
 from .analyzer.topics import TopicAnalyzer
 from .analyzer.entity_recognizer import EntityRecognizer # Corrected import
 from .enricher.relationships import RelationshipEnricher
-from .metadata_store.store import MetadataStore
+from .metadata_store.factory import get_metadata_store
 from .query_interface.query import QueryInterface
 from .models.content import Document
 from .models.metadata import DocumentMetadata
@@ -35,7 +35,7 @@ class KnowledgeBaseProcessor:
     and provides a simple interface for using them.
     """
     
-    def __init__(self, knowledge_base_dir: str, metadata_store_path: str):
+    def __init__(self, knowledge_base_dir: str, metadata_store_path: str, metadata_store_backend: str = "sqlite"):
         """Initialize the Knowledge Base Processor.
         
         Args:
@@ -49,7 +49,7 @@ class KnowledgeBaseProcessor:
         self.reader = Reader(knowledge_base_dir)
         self.processor = Processor()
         # MetadataStore now receives the full, resolved path to the DB file.
-        self.metadata_store = MetadataStore(db_path=metadata_store_path)
+        self.metadata_store = get_metadata_store(backend=metadata_store_backend, db_path=metadata_store_path)
         self.query_interface = QueryInterface(self.metadata_store)
         
         # Register extractors
