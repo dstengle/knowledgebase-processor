@@ -276,15 +276,15 @@ class MetadataStore:
                     # Assuming WikiLink has 'target' (for target_document_id or part of link_text)
                     # and 'text'. target_document_id might need resolution logic not present here.
                     # For now, storing target as link_text if specific target_id isn't resolved.
-                    link_text = wikilink_obj.text or wikilink_obj.target
+                    link_text = wikilink_obj.display_text or wikilink_obj.target_page
                     target_doc_id = None # Placeholder: wikilink_obj.resolved_target_id if available
                     # If wikilink_obj.target is an ID, it could be target_doc_id.
                     # For now, we'll assume target_document_id is not directly available from WikiLink model
                     # and store the raw target in link_text or a dedicated column if schema changes.
                     # Current schema has target_document_id, so if wikilink_obj.target is an ID, use it.
                     # Let's assume wikilink_obj.target might be the ID for now.
-                    if isinstance(wikilink_obj.target, str) and "/" in wikilink_obj.target: # Heuristic for ID-like target
-                        target_doc_id = wikilink_obj.target
+                    if isinstance(wikilink_obj.target_page, str) and "/" in wikilink_obj.target_page: # Heuristic for ID-like target
+                        target_doc_id = wikilink_obj.target_page
 
                     self.cursor.execute(
                         """

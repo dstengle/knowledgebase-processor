@@ -255,5 +255,26 @@ class TestMetadataStore(unittest.TestCase):
         ).fetchone()['created_at']
         self.assertIsNone(db_created_at_2)
 
+def test_save_wikilink_triggers_attribute_error(self):
+        """
+        Tests that saving a DocumentMetadata with a WikiLink that uses
+        display_text and target_page (as per the model) triggers an AttributeError
+        in the current store.save() method due to incorrect attribute access.
+        """
+        store = self.store_memory
+        wikilink_obj = WikiLink(
+            target_page="TargetPage",
+            display_text="DisplayText",
+            content="[[TargetPage|DisplayText]]"
+        )
+        doc_meta = DocumentMetadata(
+            document_id="wikilink_attr_error_doc",
+            title="Wikilink Attribute Error Test",
+            wikilinks=[wikilink_obj]
+        )
+
+        # Expect AttributeError because store.py tries to access wikilink_obj.text
+        with self.assertRaisesRegex(AttributeError, "'WikiLink' object has no attribute 'text'"):
+            store.save(doc_meta)
 if __name__ == '__main__':
     unittest.main()
