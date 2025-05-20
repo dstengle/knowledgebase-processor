@@ -18,11 +18,11 @@ The new data flow emphasizes a multi-stage process, transforming raw documents i
 ```mermaid
 flowchart LR
     A[Raw Markdown Document] --> B[Parsed Document Model]
-    B --> C[Document-Level Inference (Topics, Tags, etc.)]
+    B --> C[Document-Level Inference - Topics, Tags, etc.]
     C --> D[Entity & Relationship Extraction]
-    D --> E[Typed Graph Nodes & Edges (RDF Triples/Quads)]
+    D --> E[Typed Graph Nodes & Edges RDF Triples/Quads]
     E --> F[RDF Triple/Quad Store]
-    F --> G[Graph Query Interface (SPARQL)]
+    F --> G[Graph Query Interface - SPARQL]
 
     style A fill:#f5f5f5,stroke:#333,stroke-width:1px
     style B fill:#d4f1f9,stroke:#333,stroke-width:1px
