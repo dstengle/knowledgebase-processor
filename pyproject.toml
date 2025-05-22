@@ -13,6 +13,7 @@ markdown-it-py = "^3.0.0"
 pyyaml = "^6.0.2"
 tomli = "^2.2.1"
 spacy = "^3.7.0"
+rdflib = "^7.0.0"
 
 [tool.poetry.scripts]
 kbp = "knowledgebase_processor.cli:main"
