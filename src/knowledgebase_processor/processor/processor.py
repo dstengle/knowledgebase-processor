@@ -9,10 +9,11 @@ from rdflib import Graph
 from rdflib.namespace import SDO as SCHEMA, RDFS, XSD
 
 from ..models.content import Document, ContentElement
+from ..models.markdown import TodoItem # Added this import
 from ..models.metadata import DocumentMetadata, ExtractedEntity as ModelExtractedEntity # Renamed to avoid clash
 from ..models.links import WikiLink, Link
 from ..analyzer.entity_recognizer import EntityRecognizer
-from ..models.kb_entities import KbBaseEntity, KbPerson, KbOrganization, KbLocation, KbDateEntity, KB
+from ..models.kb_entities import KbBaseEntity, KbPerson, KbOrganization, KbLocation, KbDateEntity, KbTodoItem, KB
 # from ..models.entities import ExtractedEntity # This is now ModelExtractedEntity
 from ..rdf_converter import RdfConverter
 from ..reader.reader import Reader
@@ -311,6 +312,7 @@ class Processor:
 
                     logger_proc_rdf.debug(f"Generating RDF for document: {doc.path}")
                     entities_converted_count = 0
+                    # Convert extracted entities (PERSON, ORG, etc.)
                     for extracted_entity in doc.metadata.entities:
                         # doc.path is already the relative path string
                         kb_entity = self._extracted_entity_to_kb_entity(extracted_entity, str(doc.path))
@@ -324,7 +326,40 @@ class Processor:
                             except Exception as e_conv:
                                 logger_proc_rdf.error(f"Error converting entity '{kb_entity.label}' to RDF: {e_conv}", exc_info=True)
                     
-                    logger_proc_rdf.debug(f"Converted {entities_converted_count} entities for {doc.path}.")
+                    # Convert TodoItems from document elements
+                    for element in doc.elements:
+                        if element.element_type == "todo_item":
+                            # Assuming element is a models.markdown.TodoItem
+                            markdown_todo = cast("TodoItem", element) # Add import: from ..models.markdown import TodoItem
+                            
+                            # Create KbTodoItem from markdown.TodoItem
+                            # Ensure kb_id is unique and well-formed
+                            todo_kb_id_text = f"todo_{markdown_todo.text[:30]}" # Simple ID generation
+                            kb_todo_id = self._generate_kb_id("TodoItem", todo_kb_id_text)
+                            
+                            normalized_path = str(doc.path).replace("\\", "/")
+                            safe_path_segment = quote(normalized_path.replace(" ", "_"))
+                            full_document_uri = str(KB[f"Document/{safe_path_segment}"])
+
+                            kb_todo_item = KbTodoItem(
+                                kb_id=kb_todo_id,
+                                description=markdown_todo.text,
+                                is_completed=markdown_todo.is_checked,
+                                label=markdown_todo.text, # Use description as label
+                                source_document_uri=full_document_uri,
+                                # extracted_from_text_span can be set if position is available and needed
+                                # extracted_from_text_span=(markdown_todo.position['start'], markdown_todo.position['end']) if markdown_todo.position else None
+                            )
+                            try:
+                                todo_entity_graph = rdf_converter.kb_entity_to_graph(kb_todo_item, base_uri_str=str(KB))
+                                for triple in todo_entity_graph:
+                                    doc_graph.add(triple)
+                                entities_converted_count +=1
+                                logger_proc_rdf.debug(f"Converted TodoItem '{kb_todo_item.description}' to RDF.")
+                            except Exception as e_conv_todo:
+                                logger_proc_rdf.error(f"Error converting TodoItem '{kb_todo_item.description}' to RDF: {e_conv_todo}", exc_info=True)
+
+                    logger_proc_rdf.debug(f"Converted {entities_converted_count} total entities (including ToDos) for {doc.path}.")
 
                     if len(doc_graph) > 0:
                         # doc.path is like "folder/file.md". We want "file.ttl"

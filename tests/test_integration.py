@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from rdflib import Graph
 from knowledgebase_processor.models.kb_entities import KB
-from rdflib import Namespace, RDF
+from rdflib import Namespace, RDF, SDO
 
 from knowledgebase_processor.main import KnowledgeBaseProcessor
 from knowledgebase_processor.models.content import Document
@@ -249,6 +249,23 @@ This document has no title in frontmatter.
         # Check for KbOrganization (Project Alpha might be one)
         orgs_found = list(rdf_graph.subjects(predicate=RDF.type, object=KB.Organization))
         self.assertGreater(len(orgs_found), 0, "No kb:Organization found in the RDF graph from the fixture.")
+
+        # Check for KbTodoItem entities and specifically for "Journalling"
+        todo_items_found = list(rdf_graph.subjects(predicate=RDF.type, object=KB.TodoItem))
+        self.assertGreater(len(todo_items_found), 0, "No kb:TodoItem found in the RDF graph from the fixture.")
+
+        found_journaling_todo = False
+        # Assuming the description/text of the TodoItem is mapped to KB.description
+        # If this fails, the predicate might be different (e.g., RDFS.label or a custom one)
+        for todo_item_uri in todo_items_found:
+            for s, p, o in rdf_graph.triples((todo_item_uri, SDO.description, None)):
+                if str(o) == "Journaling":
+                    found_journaling_todo = True
+                    break
+            if found_journaling_todo:
+                break
+        
+        self.assertTrue(found_journaling_todo, "TodoItem with description 'Journalling' not found in the RDF graph.")
 
 
 if __name__ == "__main__":
