@@ -1,14 +1,14 @@
-from datetime import datetime
-from typing import Optional, List, Tuple, Union
+from datetime import date, datetime
+from typing import Any, Union, List, Optional
 
+from pydantic import BaseModel
 from rdflib import Graph, Literal, Namespace, URIRef
-from rdflib.namespace import RDF, RDFS, XSD
+from rdflib.namespace import RDF, RDFS, XSD, SDO as SCHEMA
 
-from knowledgebase_processor.models.kb_entities import KbBaseEntity, KbPerson, KbTodoItem
+from knowledgebase_processor.models.kb_entities import KbBaseEntity
 
 # Define Namespaces
-KB = Namespace("http://example.org/knowledgebase/")
-SCHEMA = Namespace("http://schema.org/")
+KB = Namespace("http://example.org/kb/") # Ensure this matches kb_entities.py
 
 
 class RdfConverter:
@@ -18,7 +18,8 @@ class RdfConverter:
 
     def kb_entity_to_graph(self, entity: KbBaseEntity, base_uri_str: str = "http://example.org/kb/") -> Graph:
         """
-        Converts a KB entity instance to an rdflib.Graph.
+        Converts a KB entity instance to an rdflib.Graph by dynamically processing
+        RDF metadata defined in the Pydantic model's fields and class configuration.
 
         Args:
             entity: The KbBaseEntity instance to convert.
@@ -40,62 +41,141 @@ class RdfConverter:
         else:
             entity_uri = URIRef(base_uri_str.rstrip('/') + "/" + entity.kb_id.lstrip('/'))
 
-        # Common properties for all KbBaseEntity instances
-        if entity.label:
-            g.add((entity_uri, RDFS.label, Literal(entity.label)))
-        if entity.source_document_uri:
-            g.add((entity_uri, KB.sourceDocument, URIRef(entity.source_document_uri)))
-        if entity.extracted_from_text_span:
-            # This could be modeled more richly, e.g., using a blank node for the span
-            g.add((entity_uri, KB.extractedFromTextSpanStart, Literal(entity.extracted_from_text_span[0], datatype=XSD.integer)))
-            g.add((entity_uri, KB.extractedFromTextSpanEnd, Literal(entity.extracted_from_text_span[1], datatype=XSD.integer)))
-        g.add((entity_uri, KB.creationTimestamp, Literal(entity.creation_timestamp, datatype=XSD.dateTime)))
-        g.add((entity_uri, KB.lastModifiedTimestamp, Literal(entity.last_modified_timestamp, datatype=XSD.dateTime)))
+        added_rdf_types = set()
+        rdfs_label_fallback_field_names: List[str] = []
+        
+        # 1. Process class-level configurations by iterating through MRO
+        # rdf_types are cumulative.
+        # rdfs_label_fallback_fields are taken from the most specific class defining them.
+        
+        # First, find the most specific rdfs_label_fallback_fields
+        for cls in type(entity).mro():
+            if not issubclass(cls, BaseModel):
+                continue
 
-        if isinstance(entity, KbPerson):
-            g.add((entity_uri, RDF.type, KB.Person))
-            g.add((entity_uri, RDF.type, SCHEMA.Person)) # Also typing as schema:Person
+            class_config_data: Optional[dict] = None
+            if hasattr(cls, 'model_config') and isinstance(getattr(cls, 'model_config', None), dict): # Pydantic v2
+                class_config_data = cls.model_config.get('json_schema_extra')
+            elif hasattr(cls, 'Config') and hasattr(cls.Config, 'json_schema_extra'): # Pydantic v1
+                class_config_data = getattr(cls.Config, 'json_schema_extra', None)
 
-            if entity.full_name:
-                g.add((entity_uri, SCHEMA.name, Literal(entity.full_name)))
-                g.add((entity_uri, KB.fullName, Literal(entity.full_name))) # Using KB for specific if needed
-                if not entity.label: # Use full_name as rdfs:label if label is not set
-                    g.add((entity_uri, RDFS.label, Literal(entity.full_name)))
-            if entity.given_name:
-                g.add((entity_uri, SCHEMA.givenName, Literal(entity.given_name)))
-            if entity.family_name:
-                g.add((entity_uri, SCHEMA.familyName, Literal(entity.family_name)))
-            if entity.aliases:
-                for alias in entity.aliases:
-                    g.add((entity_uri, SCHEMA.alternateName, Literal(alias)))
-            if entity.email:
-                g.add((entity_uri, SCHEMA.email, Literal(entity.email)))
-            if entity.roles:
-                for role in entity.roles:
-                    g.add((entity_uri, KB.role, Literal(role))) # Using KB for role, could be schema:role
+            if isinstance(class_config_data, dict):
+                if 'rdfs_label_fallback_fields' in class_config_data:
+                    potential_fallback_fields = class_config_data.get('rdfs_label_fallback_fields')
+                    if isinstance(potential_fallback_fields, list):
+                        rdfs_label_fallback_field_names = potential_fallback_fields
+                        break # Found the most specific, stop.
+        
+        # Then, accumulate all rdf_types from MRO
+        for cls in type(entity).mro():
+            if not issubclass(cls, BaseModel):
+                continue
 
-        elif isinstance(entity, KbTodoItem):
-            g.add((entity_uri, RDF.type, KB.TodoItem))
-            g.add((entity_uri, RDF.type, SCHEMA.Action)) # Typing as schema:Action
+            class_config_data: Optional[dict] = None
+            if hasattr(cls, 'model_config') and isinstance(getattr(cls, 'model_config', None), dict): # Pydantic v2
+                class_config_data = cls.model_config.get('json_schema_extra')
+            elif hasattr(cls, 'Config') and hasattr(cls.Config, 'json_schema_extra'): # Pydantic v1
+                class_config_data = getattr(cls.Config, 'json_schema_extra', None)
 
-            g.add((entity_uri, SCHEMA.description, Literal(entity.description)))
-            if not entity.label: # Use description as rdfs:label if label is not set
-                 g.add((entity_uri, RDFS.label, Literal(entity.description)))
+            if isinstance(class_config_data, dict):
+                rdf_types_for_class = class_config_data.get('rdf_types', [])
+                if isinstance(rdf_types_for_class, list):
+                    for type_uri_val in rdf_types_for_class:
+                        type_uri = URIRef(type_uri_val) if isinstance(type_uri_val, str) else type_uri_val
+                        if isinstance(type_uri, URIRef) and type_uri not in added_rdf_types:
+                            g.add((entity_uri, RDF.type, type_uri))
+                            added_rdf_types.add(type_uri)
 
-            g.add((entity_uri, KB.isCompleted, Literal(entity.is_completed, datatype=XSD.boolean)))
-            if entity.due_date:
-                g.add((entity_uri, SCHEMA.dueDate, Literal(entity.due_date, datatype=XSD.dateTime)))
-            if entity.priority:
-                g.add((entity_uri, KB.priority, Literal(entity.priority))) # Could map to schema:actionPriority
-            if entity.context:
-                g.add((entity_uri, KB.context, Literal(entity.context))) # Could be schema:object or similar
-            if entity.assigned_to_uris:
-                for assignee_uri_str in entity.assigned_to_uris:
-                    assignee_uri = URIRef(assignee_uri_str) if "://" in assignee_uri_str else URIRef(base_uri_str.rstrip('/') + "/" + assignee_uri_str.lstrip('/'))
-                    g.add((entity_uri, SCHEMA.assignee, assignee_uri)) # schema:assignee expects schema:Person or schema:Organization
-                    g.add((entity_uri, KB.assignedTo, assignee_uri))
-            if entity.related_project_uri:
-                project_uri = URIRef(entity.related_project_uri) if "://" in entity.related_project_uri else URIRef(base_uri_str.rstrip('/') + "/" + entity.related_project_uri.lstrip('/'))
-                g.add((entity_uri, KB.relatedProject, project_uri)) # Could be schema:target or partOfProject
+        label_added_for_entity = False # True if an explicit label is added from fields
+
+        # 2. Determine how to access model fields based on Pydantic version
+        model_fields_accessor: dict = {}
+        is_pydantic_v2 = False
+        if hasattr(type(entity), 'model_fields'):  # Pydantic v2
+            model_fields_accessor = type(entity).model_fields
+            is_pydantic_v2 = True
+        elif hasattr(entity, '__fields__'):  # Pydantic v1
+            model_fields_accessor = entity.__fields__
+
+        # 3. Process field-level properties
+        for field_name, field_obj in model_fields_accessor.items():
+            value = getattr(entity, field_name, None)
+
+            if value is None:
+                continue
+
+            rdf_meta: Optional[dict] = None
+            if is_pydantic_v2: # Pydantic v2: field_obj is FieldInfo
+                rdf_meta = getattr(field_obj, 'json_schema_extra', None)
+                if rdf_meta is None and hasattr(field_obj, 'extra'): 
+                    rdf_meta = field_obj.extra
+            else: # Pydantic v1: field_obj is ModelField
+                if hasattr(field_obj, 'field_info') and hasattr(field_obj.field_info, 'extra'):
+                    rdf_meta = field_obj.field_info.extra
+            
+            if not isinstance(rdf_meta, dict): 
+                rdf_meta = {}
+
+            properties_to_process_uris: List[URIRef] = []
+            raw_props = rdf_meta.get('rdf_properties', [])
+            if isinstance(raw_props, list):
+                for p in raw_props:
+                    properties_to_process_uris.append(URIRef(p) if isinstance(p, str) else p)
+            
+            raw_prop = rdf_meta.get('rdf_property')
+            if raw_prop:
+                properties_to_process_uris.append(URIRef(raw_prop) if isinstance(raw_prop, str) else raw_prop)
+
+            is_object_prop = rdf_meta.get('is_object_property', False)
+            rdf_datatype_uri_str = rdf_meta.get('rdf_datatype')
+            rdf_datatype_uri = URIRef(rdf_datatype_uri_str) if rdf_datatype_uri_str else None
+            
+            current_field_values: List[Any] = []
+            if isinstance(value, list):
+                current_field_values.extend(value)
+            else:
+                current_field_values.append(value)
+
+            for p_uri in properties_to_process_uris:
+                if not isinstance(p_uri, URIRef): continue
+
+                for item_val in current_field_values:
+                    if item_val is None:
+                        continue
+
+                    rdf_object: Union[URIRef, Literal]
+                    if is_object_prop:
+                        item_val_str = str(getattr(item_val, 'kb_id', item_val))
+                        
+                        if "://" in item_val_str:
+                            rdf_object = URIRef(item_val_str)
+                        else:
+                            rdf_object = URIRef(base_uri_str.rstrip('/') + "/" + item_val_str.lstrip('/'))
+                    else:
+                        effective_datatype = rdf_datatype_uri
+                        if isinstance(item_val, str) and effective_datatype is None:
+                            effective_datatype = XSD.string
+                        rdf_object = Literal(item_val, datatype=effective_datatype)
+                    
+                    g.add((entity_uri, p_uri, rdf_object))
+                    if p_uri == RDFS.label and item_val is not None: 
+                        if isinstance(item_val, str) and item_val.strip() == "":
+                            pass 
+                        else:
+                            label_added_for_entity = True
+        
+        # 4. Apply class-defined rdfs:label fallback if no explicit label was added
+        if not label_added_for_entity and rdfs_label_fallback_field_names:
+            for fallback_field_name in rdfs_label_fallback_field_names:
+                # Defensive check: ensure fallback_field_name is a string and an attribute
+                if not isinstance(fallback_field_name, str) or not hasattr(entity, fallback_field_name):
+                    continue
+                
+                fallback_value = getattr(entity, fallback_field_name, None)
+                if fallback_value is not None:
+                    fallback_value_str = str(fallback_value)
+                    if fallback_value_str.strip(): 
+                        g.add((entity_uri, RDFS.label, Literal(fallback_value_str, datatype=XSD.string)))
+                        break # Stop after the first successful fallback
 
         return g
