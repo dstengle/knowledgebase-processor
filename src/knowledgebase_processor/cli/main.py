@@ -7,12 +7,12 @@ from typing import List, Optional
 import uuid
 
 from rdflib import Graph
-from rdflib.namespace import SCHEMA, RDFS, XSD
+from rdflib.namespace import SDO as SCHEMA, RDFS, XSD
 
 from ..config import load_config
 from ..main import KnowledgeBaseProcessor
 from ..utils.logging import setup_logging, get_logger
-from ..rdf_converter import RDFConverter
+from ..rdf_converter import RdfConverter
 from ..models.kb_entities import KbBaseEntity, KbPerson, KbOrganization, KbLocation, KbDateEntity, KB
 from ..models.entities import ExtractedEntity
 # from ..processor.processor import ProcessedDocument # For type hinting if needed
@@ -41,7 +41,7 @@ def _extracted_entity_to_kb_entity(
     common_args = {
         "label": extracted_entity.text,
         "source_document_uri": source_doc_uri,
-        "extracted_from_text_span": (extracted_entity.span_start, extracted_entity.span_end),
+        "extracted_from_text_span": (extracted_entity.start_char, extracted_entity.end_char),
     }
 
     if entity_label_upper == "PERSON":
@@ -210,7 +210,7 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
     logger_proc.info(f"Processing files matching pattern: {pattern}")
     logger_proc.info(f"Knowledge base path: {config.knowledge_base_path}")
 
-    rdf_converter: Optional[RDFConverter] = None
+    rdf_converter: Optional[RdfConverter] = None
     rdf_output_path: Optional[Path] = None
 
     if rdf_output_dir_str:
@@ -218,7 +218,7 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
         try:
             rdf_output_path.mkdir(parents=True, exist_ok=True)
             logger_proc.info(f"RDF output will be saved to: {rdf_output_path.resolve()}")
-            rdf_converter = RDFConverter(base_uri=str(KB))
+            rdf_converter = RdfConverter()
         except OSError as e:
             logger_proc.error(f"Could not create RDF output directory {rdf_output_path}: {e}", exc_info=True)
             return 1 # Exit if directory creation fails
@@ -232,7 +232,7 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
             logger_proc.info(f"Starting RDF generation for {count} documents...")
             for doc_idx, doc in enumerate(documents):
                 # Ensure doc.source_uri and doc.source_path are available
-                if not doc.source_uri or not doc.source_path:
+                if not doc.path:
                     logger_proc.warning(f"Document at index {doc_idx} missing source_uri or source_path, skipping RDF generation.")
                     continue
 
@@ -246,32 +246,35 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
                 doc_graph.bind("rdfs", RDFS)
                 doc_graph.bind("xsd", XSD)
 
-                logger_proc.debug(f"Generating RDF for document: {doc.source_uri} ({doc.source_path.name})")
+                logger_proc.debug(f"Generating RDF for document: {doc.path}")
                 entities_converted_count = 0
                 for extracted_entity in doc.metadata.entities:
                     # Use doc.source_uri (which should be an absolute path string or file URI)
                     # for the source_document_uri field of the KbEntity.
-                    kb_entity = _extracted_entity_to_kb_entity(extracted_entity, str(doc.source_uri))
+                    kb_entity = _extracted_entity_to_kb_entity(extracted_entity, str(doc.path))
                     if kb_entity:
                         try:
-                            rdf_converter.kb_entity_to_graph(kb_entity, doc_graph)
-                            entities_converted_count +=1
+                            entity_graph = rdf_converter.kb_entity_to_graph(kb_entity, str(doc.path))
+                            for triple in entity_graph:
+                                doc_graph.add(triple)
+                            # Increment count and log only if conversion and triple addition were successful for this entity
+                            entities_converted_count +=1 
                             logger_proc.debug(f"Converted entity '{kb_entity.label}' ({kb_entity.kb_id}) to RDF.")
                         except Exception as e_conv:
                             logger_proc.error(f"Error converting entity '{kb_entity.label}' to RDF: {e_conv}", exc_info=True)
                 
-                logger_proc.debug(f"Converted {entities_converted_count} entities for {doc.source_path.name}.")
+                logger_proc.debug(f"Converted {entities_converted_count} entities for {doc.path}.")
 
                 if len(doc_graph) > 0:
-                    output_filename = Path(doc.source_path.name).with_suffix(".ttl")
+                    output_filename = Path(Path(doc.path).name).with_suffix(".ttl")
                     output_file_path = rdf_output_path / output_filename
                     try:
                         doc_graph.serialize(destination=str(output_file_path), format="turtle")
-                        logger_proc.info(f"Saved RDF for {doc.source_path.name} to {output_file_path}")
+                        logger_proc.info(f"Saved RDF for {Path(doc.path).name} to {output_file_path}")
                     except Exception as e_ser:
-                        logger_proc.error(f"Error serializing RDF for {doc.source_path.name} to {output_file_path}: {e_ser}", exc_info=True)
+                        logger_proc.error(f"Error serializing RDF for {Path(doc.path).name} to {output_file_path}: {e_ser}", exc_info=True)
                 else:
-                    logger_proc.info(f"No RDF triples generated for document: {doc.source_uri}")
+                    logger_proc.info(f"No RDF triples generated for document: {doc.path}")
         return 0
     except Exception as e:
         logger_proc.error(f"An error occurred during processing: {e}", exc_info=True)
