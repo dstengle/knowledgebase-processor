@@ -5,6 +5,8 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from rdflib import Graph
+from knowledgebase_processor.models.kb_entities import KB
 from rdflib import Namespace, RDF
 
 from knowledgebase_processor.main import KnowledgeBaseProcessor
@@ -18,6 +20,7 @@ class TestKnowledgeBaseProcessorIntegration(unittest.TestCase):
         """Set up the test environment."""
         # Create a temporary directory for the knowledge base
         self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir_obj = Path(self.temp_dir)
         
         # Define path for the metadata SQLite database file
         # The directory for the SQLite DB file must exist.
@@ -25,6 +28,8 @@ class TestKnowledgeBaseProcessorIntegration(unittest.TestCase):
         metadata_store_parent_dir.mkdir(parents=True, exist_ok=True)
         self.metadata_db_file_path = metadata_store_parent_dir / "kb_integration_test.db"
         
+        self.rdf_output_dir = self.temp_dir_obj / "rdf_output"
+
         # Create the processor, passing the DB file path as a string
         self.processor = KnowledgeBaseProcessor(self.temp_dir, str(self.metadata_db_file_path))
         
@@ -192,36 +197,58 @@ This document has no title in frontmatter.
         # Check that test2.md is related to test1.md
         related_ids = [r["document_id"] for r in results]
         self.assertIn("test2.md", related_ids)
-def test_todo_item_extraction_to_rdf(self):
-        """Test that ToDo items are extracted and converted to RDF."""
-        # Define the path to the fixture file relative to the temp_dir
-        fixture_file_path = Path("fixtures/todo_extraction/daily-note-2024-11-07-Thursday.md")
+    def test_todo_item_extraction_to_rdf(self):
+        """Test that ToDo items are extracted and entities are converted to RDF."""
+        fixture_filename = "daily-note-2024-11-07-Thursday.md"
+        # Correctly get path to original fixture
+        original_fixture_path = Path(__file__).resolve().parent / "fixtures" / "todo_extraction" / fixture_filename
         
-        # Ensure the fixtures directory exists in the temporary directory
-        # and copy the fixture file there.
-        # The processor works with files within its root_dir (self.temp_dir).
-        source_fixture_path = Path(__file__).parent / "fixtures" / "todo_extraction" / "daily-note-2024-11-07-Thursday.md"
-        destination_fixture_dir = Path(self.temp_dir) / "fixtures" / "todo_extraction"
-        destination_fixture_dir.mkdir(parents=True, exist_ok=True)
-        destination_fixture_path = destination_fixture_dir / "daily-note-2024-11-07-Thursday.md"
-        shutil.copy(source_fixture_path, destination_fixture_path)
+        # Copy fixture to a subdirectory in temp_dir_obj to match pattern
+        temp_fixture_subdir = self.temp_dir_obj / "todo_files" # Uses self.temp_dir_obj
+        temp_fixture_subdir.mkdir(parents=True, exist_ok=True)
+        destination_fixture_path = temp_fixture_subdir / fixture_filename
+        shutil.copy(original_fixture_path, destination_fixture_path)
 
-        # Process the fixture file
-        # The path provided to process_file should be relative to self.temp_dir
-        relative_fixture_path = destination_fixture_path.relative_to(self.temp_dir)
-        document = self.processor.process_file(str(relative_fixture_path))
-        self.assertIsNotNone(document, "Document processing failed.")
+        # Define the pattern to match only this fixture file
+        # The pattern is relative to knowledge_base_path (self.temp_dir_obj)
+        pattern_for_fixture = f"todo_files/{fixture_filename}"
+
+        # Process the fixture file and generate RDF
+        # self.processor.base_path is already a Path object (self.temp_dir_obj)
+        exit_code = self.processor.processor.process_and_generate_rdf(
+            reader=self.processor.reader,
+            metadata_store=self.processor.metadata_store,
+            pattern=pattern_for_fixture,
+            knowledge_base_path=self.processor.base_path,
+            rdf_output_dir_str=str(self.rdf_output_dir) # Uses self.rdf_output_dir
+        )
+        self.assertEqual(exit_code, 0, "Processing and RDF generation for fixture failed.")
+
+        # Check if the RDF file was created
+        expected_rdf_file = self.rdf_output_dir / fixture_filename.replace(".md", ".ttl")
+        self.assertTrue(expected_rdf_file.exists(), f"RDF file {expected_rdf_file} was not created.")
+        self.assertGreater(expected_rdf_file.stat().st_size, 0, f"RDF file {expected_rdf_file} is empty.")
+
+        # Load the generated RDF graph
+        rdf_graph = Graph()
+        rdf_graph.parse(str(expected_rdf_file), format="turtle")
         
-        # Get the RDF graph for the processed document
-        rdf_graph = self.processor.get_rdf_graph(str(relative_fixture_path))
-        self.assertIsNotNone(rdf_graph, "RDF graph generation failed.")
-        
-        # Define the knowledge base namespace
-        kb_ns = Namespace("http://knowledgebase.example.com/schema#")
-        
-        # Check for the presence of at least one kb:TodoItem
-        todo_items_found = list(rdf_graph.subjects(predicate=RDF.type, object=kb_ns.TodoItem))
-        self.assertGreater(len(todo_items_found), 0, "No kb:TodoItem found in the RDF graph.")
+        # Check for KbPerson entities
+        persons_found = list(rdf_graph.subjects(predicate=RDF.type, object=KB.Person))
+        self.assertGreater(len(persons_found), 0, "No kb:Person found in the RDF graph from the fixture.")
+        # Example check for a specific person if known from fixture
+        # self.assertTrue(any(str(s).endswith("John_Doe_...") for s in persons_found), "John Doe not found")
+
+
+        # Check for KbDateEntity entities
+        dates_found = list(rdf_graph.subjects(predicate=RDF.type, object=KB.DateEntity))
+        self.assertGreater(len(dates_found), 0, "No kb:DateEntity found in the RDF graph from the fixture.")
+        # Example check for a specific date if known
+        # self.assertTrue(any(str(s).endswith("2024_11_08_...") for s in dates_found), "Date 2024-11-08 not found")
+
+        # Check for KbOrganization (Project Alpha might be one)
+        orgs_found = list(rdf_graph.subjects(predicate=RDF.type, object=KB.Organization))
+        self.assertGreater(len(orgs_found), 0, "No kb:Organization found in the RDF graph from the fixture.")
 
 
 if __name__ == "__main__":

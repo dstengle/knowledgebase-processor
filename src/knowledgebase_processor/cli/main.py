@@ -212,82 +212,27 @@ def main(args: Optional[List[str]] = None) -> int:
 
 def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBaseProcessor) -> int:
     """Execute the process command."""
-    logger_proc = get_logger("knowledgebase_processor.cli.process")
+    logger_proc = get_logger("knowledgebase_processor.cli.process") # Renamed from logger_cli
     pattern = args.pattern
     rdf_output_dir_str = args.rdf_output_dir
 
-    logger_proc.info(f"Processing files matching pattern: {pattern}")
-    logger_proc.info(f"Knowledge base path: {config.knowledge_base_path}")
-
-    rdf_converter: Optional[RdfConverter] = None
-    rdf_output_path: Optional[Path] = None
-
+    logger_proc.info(f"Processing files matching pattern: {pattern} in knowledge base: {config.knowledge_base_path}")
     if rdf_output_dir_str:
-        rdf_output_path = Path(rdf_output_dir_str)
-        try:
-            rdf_output_path.mkdir(parents=True, exist_ok=True)
-            logger_proc.info(f"RDF output will be saved to: {rdf_output_path.resolve()}")
-            rdf_converter = RdfConverter()
-        except OSError as e:
-            logger_proc.error(f"Could not create RDF output directory {rdf_output_path}: {e}", exc_info=True)
-            return 1 # Exit if directory creation fails
+        logger_proc.info(f"RDF output directory specified: {rdf_output_dir_str}")
 
-    try:
-        documents = kb_processor.process_all(pattern) # List[ProcessedDocument]
-        count = len(documents)
-        logger_proc.info(f"Processed {count} documents from storage.")
+    # The kb_processor instance contains the reader, metadata_store, and the processor (which has the new method)
+    # config.knowledge_base_path is a string, convert to Path for the method
+    knowledge_base_path_obj = Path(config.knowledge_base_path)
 
-        if rdf_converter and rdf_output_path and documents:
-            logger_proc.info(f"Starting RDF generation for {count} documents...")
-            for doc_idx, doc in enumerate(documents):
-                # Ensure doc.source_uri and doc.source_path are available
-                if not doc.path:
-                    logger_proc.warning(f"Document at index {doc_idx} missing source_uri or source_path, skipping RDF generation.")
-                    continue
-
-                if not doc.metadata or not doc.metadata.entities:
-                    logger_proc.debug(f"No entities to convert for document: {doc.path}")
-                    continue
-
-                doc_graph = Graph()
-                doc_graph.bind("kb", KB)
-                doc_graph.bind("schema", SCHEMA)
-                doc_graph.bind("rdfs", RDFS)
-                doc_graph.bind("xsd", XSD)
-
-                logger_proc.debug(f"Generating RDF for document: {doc.path}")
-                entities_converted_count = 0
-                for extracted_entity in doc.metadata.entities:
-                    # Pass the relative document path for URI construction within _extracted_entity_to_kb_entity
-                    kb_entity = _extracted_entity_to_kb_entity(extracted_entity, str(doc.path))
-                    if kb_entity:
-                        try:
-                            # Pass the KB namespace as the base_uri_str for the converter
-                            entity_graph = rdf_converter.kb_entity_to_graph(kb_entity, base_uri_str=str(KB))
-                            for triple in entity_graph:
-                                doc_graph.add(triple)
-                            # Increment count and log only if conversion and triple addition were successful for this entity
-                            entities_converted_count +=1 
-                            logger_proc.debug(f"Converted entity '{kb_entity.label}' ({kb_entity.kb_id}) to RDF.")
-                        except Exception as e_conv:
-                            logger_proc.error(f"Error converting entity '{kb_entity.label}' to RDF: {e_conv}", exc_info=True)
-                
-                logger_proc.debug(f"Converted {entities_converted_count} entities for {doc.path}.")
-
-                if len(doc_graph) > 0:
-                    output_filename = Path(Path(doc.path).name).with_suffix(".ttl")
-                    output_file_path = rdf_output_path / output_filename
-                    try:
-                        doc_graph.serialize(destination=str(output_file_path), format="turtle")
-                        logger_proc.info(f"Saved RDF for {Path(doc.path).name} to {output_file_path}")
-                    except Exception as e_ser:
-                        logger_proc.error(f"Error serializing RDF for {Path(doc.path).name} to {output_file_path}: {e_ser}", exc_info=True)
-                else:
-                    logger_proc.info(f"No RDF triples generated for document: {doc.path}")
-        return 0
-    except Exception as e:
-        logger_proc.error(f"An error occurred during processing: {e}", exc_info=True)
-        return 1
+    # Call the new method on the Processor instance within KnowledgeBaseProcessor
+    return_code = kb_processor.processor.process_and_generate_rdf(
+        reader=kb_processor.reader,
+        metadata_store=kb_processor.metadata_store,
+        pattern=pattern,
+        knowledge_base_path=knowledge_base_path_obj,
+        rdf_output_dir_str=rdf_output_dir_str
+    )
+    return return_code
 
 
 def query_command(args: argparse.Namespace, config, kb_processor: KnowledgeBaseProcessor) -> int:
