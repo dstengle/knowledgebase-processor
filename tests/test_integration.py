@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from rdflib import Namespace, RDF
 
 from knowledgebase_processor.main import KnowledgeBaseProcessor
 from knowledgebase_processor.models.content import Document
@@ -191,6 +192,36 @@ This document has no title in frontmatter.
         # Check that test2.md is related to test1.md
         related_ids = [r["document_id"] for r in results]
         self.assertIn("test2.md", related_ids)
+def test_todo_item_extraction_to_rdf(self):
+        """Test that ToDo items are extracted and converted to RDF."""
+        # Define the path to the fixture file relative to the temp_dir
+        fixture_file_path = Path("fixtures/todo_extraction/daily-note-2024-11-07-Thursday.md")
+        
+        # Ensure the fixtures directory exists in the temporary directory
+        # and copy the fixture file there.
+        # The processor works with files within its root_dir (self.temp_dir).
+        source_fixture_path = Path(__file__).parent / "fixtures" / "todo_extraction" / "daily-note-2024-11-07-Thursday.md"
+        destination_fixture_dir = Path(self.temp_dir) / "fixtures" / "todo_extraction"
+        destination_fixture_dir.mkdir(parents=True, exist_ok=True)
+        destination_fixture_path = destination_fixture_dir / "daily-note-2024-11-07-Thursday.md"
+        shutil.copy(source_fixture_path, destination_fixture_path)
+
+        # Process the fixture file
+        # The path provided to process_file should be relative to self.temp_dir
+        relative_fixture_path = destination_fixture_path.relative_to(self.temp_dir)
+        document = self.processor.process_file(str(relative_fixture_path))
+        self.assertIsNotNone(document, "Document processing failed.")
+        
+        # Get the RDF graph for the processed document
+        rdf_graph = self.processor.get_rdf_graph(str(relative_fixture_path))
+        self.assertIsNotNone(rdf_graph, "RDF graph generation failed.")
+        
+        # Define the knowledge base namespace
+        kb_ns = Namespace("http://knowledgebase.example.com/schema#")
+        
+        # Check for the presence of at least one kb:TodoItem
+        todo_items_found = list(rdf_graph.subjects(predicate=RDF.type, object=kb_ns.TodoItem))
+        self.assertGreater(len(todo_items_found), 0, "No kb:TodoItem found in the RDF graph.")
 
 
 if __name__ == "__main__":
