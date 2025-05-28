@@ -19,7 +19,8 @@
         "get_issue_comments",
         "get_pull_request",
         "get_pull_request_files",
-        "get_pull_request_comments"
+        "get_pull_request_comments",
+        "list_pull_requests"
       ],
       "disabled": false
     },

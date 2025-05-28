@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 import uuid
+from urllib.parse import quote
 
 from rdflib import Graph
 from rdflib.namespace import SDO as SCHEMA, RDFS, XSD
@@ -32,15 +33,23 @@ def _generate_kb_id(entity_type_str: str, text: str) -> str:
 
 def _extracted_entity_to_kb_entity(
     extracted_entity: ExtractedEntity,
-    source_doc_uri: str
+    source_doc_relative_path: str
 ) -> Optional[KbBaseEntity]:
     """Transforms an ExtractedEntity to a corresponding KbBaseEntity subclass instance."""
     kb_id_text = extracted_entity.text
     entity_label_upper = extracted_entity.label.upper()
+    logger_cli.info(f"Processing entity: {kb_id_text} of type {entity_label_upper}")
+
+    # Create a full URI for the source document
+    # Replace spaces with underscores and quote for URI safety.
+    # Ensure consistent path separators (/) before quoting.
+    normalized_path = source_doc_relative_path.replace("\\", "/")
+    safe_path_segment = quote(normalized_path.replace(" ", "_"))
+    full_document_uri = str(KB[f"Document/{safe_path_segment}"])
 
     common_args = {
         "label": extracted_entity.text,
-        "source_document_uri": source_doc_uri,
+        "source_document_uri": full_document_uri, # Use the generated full URI
         "extracted_from_text_span": (extracted_entity.start_char, extracted_entity.end_char),
     }
 
@@ -237,7 +246,7 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
                     continue
 
                 if not doc.metadata or not doc.metadata.entities:
-                    logger_proc.debug(f"No entities to convert for document: {doc.source_uri}")
+                    logger_proc.debug(f"No entities to convert for document: {doc.path}")
                     continue
 
                 doc_graph = Graph()
@@ -249,12 +258,12 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
                 logger_proc.debug(f"Generating RDF for document: {doc.path}")
                 entities_converted_count = 0
                 for extracted_entity in doc.metadata.entities:
-                    # Use doc.source_uri (which should be an absolute path string or file URI)
-                    # for the source_document_uri field of the KbEntity.
+                    # Pass the relative document path for URI construction within _extracted_entity_to_kb_entity
                     kb_entity = _extracted_entity_to_kb_entity(extracted_entity, str(doc.path))
                     if kb_entity:
                         try:
-                            entity_graph = rdf_converter.kb_entity_to_graph(kb_entity, str(doc.path))
+                            # Pass the KB namespace as the base_uri_str for the converter
+                            entity_graph = rdf_converter.kb_entity_to_graph(kb_entity, base_uri_str=str(KB))
                             for triple in entity_graph:
                                 doc_graph.add(triple)
                             # Increment count and log only if conversion and triple addition were successful for this entity

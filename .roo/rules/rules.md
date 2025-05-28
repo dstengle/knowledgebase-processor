@@ -1,5 +1,5 @@
 - Project repo: You are working on a project where the repo is at https://github.com/dstengle/knowledgebase-processor
-- Whenever issues or pull requests are mentioned, use github.
+- Whenever issues, PR, PRs or pull requests are mentioned, use github.
 - Python commands and dependencies: This python project is managed by poetry and all commands should use poetry run
 - Unit tests
     - The unit tests use the unittest framework and the tests are in the tests/ directory.
