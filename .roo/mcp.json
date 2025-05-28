@@ -16,8 +16,12 @@
       "alwaysAllow": [
         "add_issue_comment",
         "get_issue",
-        "get_issue_comments"
-      ]
+        "get_issue_comments",
+        "get_pull_request",
+        "get_pull_request_files",
+        "get_pull_request_comments"
+      ],
+      "disabled": false
     },
     "context7": {
       "command": "npx",

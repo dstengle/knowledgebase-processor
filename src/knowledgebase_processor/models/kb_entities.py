@@ -183,6 +183,73 @@ class KbPerson(KbBaseEntity):
 
     class Config:
         json_schema_extra = {
-            "rdf_types": [KB.Person],
-            "rdfs_label_fallback_fields": ["full_name"]
+            "rdf_types": [KB.Person, SCHEMA.Person], # Added SCHEMA.Person
+            "rdfs_label_fallback_fields": ["full_name", "label"] # Added label
+        }
+
+
+class KbOrganization(KbBaseEntity):
+    """
+    Pydantic model for organization entities.
+    """
+    name: Optional[str] = Field(
+        None,
+        json_schema_extra={
+            "rdf_property": SCHEMA.name,
+            "rdf_datatype": XSD.string
+        }
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Organization, SCHEMA.Organization],
+            "rdfs_label_fallback_fields": ["name", "label"]
+        }
+
+
+class KbLocation(KbBaseEntity):
+    """
+    Pydantic model for location entities.
+    """
+    name: Optional[str] = Field(
+        None,
+        json_schema_extra={
+            "rdf_property": SCHEMA.name,
+            "rdf_datatype": XSD.string
+        }
+    )
+    address: Optional[str] = Field(
+        None,
+        json_schema_extra={
+            "rdf_property": SCHEMA.address,
+            "rdf_datatype": XSD.string
+        }
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Location, SCHEMA.Place],
+            "rdfs_label_fallback_fields": ["name", "label"]
+        }
+
+
+class KbDateEntity(KbBaseEntity):
+    """
+    Pydantic model for date entities.
+    """
+    date_value: Optional[str] = Field( # Using str for flexibility with date formats from NER
+        None,
+        description="The string representation of the date.",
+        json_schema_extra={
+            "rdf_property": KB.dateValue, # Custom property for the date string
+            "rdf_datatype": XSD.string
+        }
+    )
+    # If a structured date is needed, consider adding a datetime field
+    # structured_date: Optional[datetime] = Field(None, json_schema_extra={"rdf_property": SCHEMA.dateCreated, "rdf_datatype": XSD.date})
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.DateEntity, SCHEMA.Date], # SCHEMA.Date might be too specific if date_value is just a string
+            "rdfs_label_fallback_fields": ["date_value", "label"]
         }

@@ -5,7 +5,11 @@ import os
 def main():
     input_dir = "docs/"
     output_dir = "tmp/"
+    rdf_output_dir_value = "rdf_output/" # New RDF output directory
+
     os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(rdf_output_dir_value, exist_ok=True) # Create RDF output dir
+
     cmd = [
         "poetry",
         "run",
@@ -17,6 +21,8 @@ def main():
         "--metadata-store",
         output_dir,
         "process",
+        "--rdf-output-dir", # Add the new argument
+        rdf_output_dir_value # Add its value
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     print(result.stdout)
