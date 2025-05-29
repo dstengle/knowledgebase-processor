@@ -26,7 +26,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"RooVeterinaryInc.roo-cline"
+				"RooVeterinaryInc.roo-cline",
+				"bierner.markdown-mermaid"
 			]
 		}
 	},
