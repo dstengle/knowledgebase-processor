@@ -1,10 +1,11 @@
 """Query interface implementation."""
 
-from typing import List, Dict, Any, Optional, Set
+from typing import List, Dict, Any, Optional, Set, Union
 
 from ..metadata_store.interface import MetadataStoreInterface
 from ..models.content import Document
 from ..models.metadata import DocumentMetadata
+from .sparql_interface import SparqlQueryInterface
 
 
 class QueryInterface:
@@ -14,13 +15,15 @@ class QueryInterface:
     based on various criteria.
     """
     
-    def __init__(self, metadata_store: MetadataStoreInterface):
+    def __init__(self, metadata_store: MetadataStoreInterface, sparql_endpoint: Optional[str] = None):
         """Initialize the QueryInterface.
         
         Args:
             metadata_store: The metadata store to query
+            sparql_endpoint: Optional SPARQL endpoint URL for advanced queries
         """
         self.metadata_store = metadata_store
+        self.sparql_interface = SparqlQueryInterface(sparql_endpoint) if sparql_endpoint else None
     
     def find_by_tag(self, tag: str) -> List[str]:
         """Find documents with a specific tag.
@@ -117,3 +120,121 @@ class QueryInterface:
         #     return self.metadata_store.search(query)
             
         return [] # Return empty list if query type is not supported
+    
+    def sparql_select(self, query: str, timeout: int = 30) -> List[Dict[str, Any]]:
+        """Execute a SPARQL SELECT query.
+        
+        Args:
+            query: The SPARQL SELECT query string
+            timeout: Query timeout in seconds
+            
+        Returns:
+            List of dictionaries representing the query results
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        return self.sparql_interface.select(query, timeout)
+    
+    def sparql_ask(self, query: str, timeout: int = 30) -> bool:
+        """Execute a SPARQL ASK query.
+        
+        Args:
+            query: The SPARQL ASK query string
+            timeout: Query timeout in seconds
+            
+        Returns:
+            Boolean result of the ASK query
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        return self.sparql_interface.ask(query, timeout)
+    
+    def sparql_construct(self, query: str, timeout: int = 30):
+        """Execute a SPARQL CONSTRUCT query.
+        
+        Args:
+            query: The SPARQL CONSTRUCT query string
+            timeout: Query timeout in seconds
+            
+        Returns:
+            RDFLib Graph containing the constructed triples
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        return self.sparql_interface.construct(query, timeout)
+    
+    def sparql_describe(self, query: str, timeout: int = 30):
+        """Execute a SPARQL DESCRIBE query.
+        
+        Args:
+            query: The SPARQL DESCRIBE query string
+            timeout: Query timeout in seconds
+            
+        Returns:
+            RDFLib Graph containing the described resources
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        return self.sparql_interface.describe(query, timeout)
+    
+    def sparql_update(self, query: str, timeout: int = 30) -> None:
+        """Execute a SPARQL UPDATE query.
+        
+        Args:
+            query: The SPARQL UPDATE query string
+            timeout: Query timeout in seconds
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        self.sparql_interface.update(query, timeout)
+    
+    def load_rdf_data(self, graph, graph_uri: Optional[str] = None) -> None:
+        """Load RDF data into the SPARQL store.
+        
+        Args:
+            graph: RDFLib Graph containing the data to load
+            graph_uri: Optional named graph URI to load data into
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        self.sparql_interface.load_data(graph, graph_uri)
+    
+    def load_rdf_file(self, file_path: str, graph_uri: Optional[str] = None, format: str = 'turtle') -> None:
+        """Load RDF data from a file into the SPARQL store.
+        
+        Args:
+            file_path: Path to the RDF file
+            graph_uri: Optional named graph URI to load data into
+            format: RDF format of the file (default: turtle)
+            
+        Raises:
+            ValueError: If SPARQL interface is not configured
+        """
+        if not self.sparql_interface:
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+        
+        self.sparql_interface.load_file(file_path, graph_uri, format)

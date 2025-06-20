@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List, Optional
 import uuid
 from urllib.parse import quote
+import json
 
 from rdflib import Graph
 from rdflib.namespace import SDO as SCHEMA, RDFS, XSD
@@ -16,6 +17,8 @@ from ..utils.logging import setup_logging, get_logger
 from ..rdf_converter import RdfConverter
 from ..models.kb_entities import KbBaseEntity, KbPerson, KbOrganization, KbLocation, KbDateEntity, KB
 from ..models.entities import ExtractedEntity
+from ..query_interface.sparql_interface import SparqlQueryInterface
+from SPARQLWrapper.SPARQLExceptions import SPARQLWrapperException
 # from ..processor.processor import ProcessedDocument # For type hinting if needed
 
 
@@ -145,7 +148,221 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         default="text"
     )
     
+    # SPARQL command group
+    sparql_parser = subparsers.add_parser("sparql", help="SPARQL operations")
+    sparql_subparsers = sparql_parser.add_subparsers(dest="sparql_command", help="SPARQL command to execute", required=True)
+    
+    # SPARQL query command
+    sparql_query_parser = sparql_subparsers.add_parser("query", help="Execute a SPARQL query")
+    sparql_query_parser.add_argument(
+        "sparql_query",
+        help="SPARQL query string"
+    )
+    sparql_query_parser.add_argument(
+        "--endpoint", "-e",
+        help="SPARQL endpoint URL (overrides config)",
+        type=str
+    )
+    sparql_query_parser.add_argument(
+        "--timeout", "-t",
+        help="Query timeout in seconds",
+        type=int,
+        default=30
+    )
+    sparql_query_parser.add_argument(
+        "--format", "-f",
+        help="Output format for results",
+        choices=["json", "table", "turtle"],
+        default="table"
+    )
+    
+    # SPARQL load-file command
+    sparql_load_parser = sparql_subparsers.add_parser("load-file", help="Load an RDF file into the SPARQL store")
+    sparql_load_parser.add_argument(
+        "file_path",
+        help="Path to the RDF file to load"
+    )
+    sparql_load_parser.add_argument(
+        "--graph", "-g",
+        help="Named graph URI to load data into",
+        type=str
+    )
+    sparql_load_parser.add_argument(
+        "--endpoint", "-e",
+        help="SPARQL endpoint URL (overrides config)",
+        type=str
+    )
+    sparql_load_parser.add_argument(
+        "--rdf-format",
+        help="RDF format of the input file",
+        choices=["turtle", "n3", "nt", "xml", "json-ld"],
+        default="turtle"
+    )
+    
     return parser.parse_args(args)
+
+
+def sparql_command_router(args: argparse.Namespace, config_obj, logger) -> int:
+    """Route SPARQL commands to their respective handlers.
+    
+    Args:
+        args: Parsed command-line arguments
+        config_obj: Configuration object
+        logger: Logger instance
+        
+    Returns:
+        Exit code
+    """
+    if args.sparql_command == "query":
+        return execute_sparql_query_cli_command(args, config_obj, logger)
+    elif args.sparql_command == "load-file":
+        return execute_sparql_load_file_cli_command(args, config_obj, logger)
+    else:
+        logger.error(f"Unknown SPARQL command: {args.sparql_command}")
+        return 1
+
+
+def execute_sparql_query_cli_command(args: argparse.Namespace, config_obj, logger) -> int:
+    """Execute a SPARQL query command.
+    
+    Args:
+        args: Parsed command-line arguments
+        config_obj: Configuration object
+        logger: Logger instance
+        
+    Returns:
+        Exit code
+    """
+    # Determine the SPARQL query endpoint
+    sparql_query_endpoint = args.endpoint if args.endpoint else config_obj.sparql_endpoint
+    
+    if not sparql_query_endpoint:
+        logger.error("SPARQL query endpoint not specified via --endpoint or configuration.")
+        return 1
+    
+    # Instantiate SPARQL interface
+    sparql_interface = SparqlQueryInterface(endpoint_url=sparql_query_endpoint)
+    
+    sparql_query_string = args.sparql_query
+    timeout = args.timeout
+    
+    try:
+        # Determine query type and execute accordingly
+        query_upper = sparql_query_string.upper().strip()
+        
+        if query_upper.startswith("SELECT") and "UPDATE" not in query_upper:
+            # SELECT query
+            results = sparql_interface.select(sparql_query_string, timeout=timeout)
+            
+            if args.format == "json":
+                print(json.dumps(results, indent=2))
+            elif args.format == "table":
+                if results:
+                    # Print headers
+                    headers = list(results[0].keys())
+                    print(" | ".join(headers))
+                    print("-" * (len(" | ".join(headers))))
+                    
+                    # Print rows
+                    for row in results:
+                        values = [str(row.get(header, "")) for header in headers]
+                        print(" | ".join(values))
+                else:
+                    print("No results found.")
+            elif args.format == "turtle":
+                logger.info("Turtle format is not applicable for SELECT queries.")
+                
+        elif query_upper.startswith("ASK"):
+            # ASK query
+            result = sparql_interface.ask(sparql_query_string, timeout=timeout)
+            
+            if args.format == "json":
+                print(json.dumps({"boolean": result}, indent=2))
+            else:  # table or turtle
+                print(result)
+                
+        elif query_upper.startswith("CONSTRUCT"):
+            # CONSTRUCT query
+            graph_result = sparql_interface.construct(sparql_query_string, timeout=timeout)
+            
+            if args.format == "turtle":
+                print(graph_result.serialize(format="turtle"))
+            elif args.format == "json":
+                logger.info("Direct JSON output for CONSTRUCT queries is not standard. Showing Turtle format.")
+                print(graph_result.serialize(format="turtle"))
+            elif args.format == "table":
+                logger.info("Table format is not directly applicable for CONSTRUCT queries. Showing Turtle format.")
+                print(graph_result.serialize(format="turtle"))
+                
+        elif query_upper.startswith("DESCRIBE"):
+            # DESCRIBE query
+            graph_result = sparql_interface.describe(sparql_query_string, timeout=timeout)
+            
+            if args.format == "turtle":
+                print(graph_result.serialize(format="turtle"))
+            elif args.format == "json":
+                logger.info("Direct JSON output for DESCRIBE queries is not standard. Showing Turtle format.")
+                print(graph_result.serialize(format="turtle"))
+            elif args.format == "table":
+                logger.info("Table format is not directly applicable for DESCRIBE queries. Showing Turtle format.")
+                print(graph_result.serialize(format="turtle"))
+                
+        elif any(keyword in query_upper for keyword in ["INSERT", "DELETE", "LOAD", "CLEAR", "CREATE", "DROP"]):
+            # UPDATE query
+            sparql_interface.update(sparql_query_string, timeout=timeout)
+            print("Update query executed successfully.")
+            
+        else:
+            logger.error(f"Could not determine query type or query type not supported: {sparql_query_string[:50]}...")
+            return 1
+            
+        return 0
+        
+    except SPARQLWrapperException as e:
+        logger.error(f"SPARQL query failed: {e}")
+        return 1
+    except Exception as e:
+        logger.error(f"Unexpected error during SPARQL query execution: {e}")
+        return 1
+
+
+def execute_sparql_load_file_cli_command(args: argparse.Namespace, config_obj, logger) -> int:
+    """Execute a SPARQL load-file command.
+    
+    Args:
+        args: Parsed command-line arguments
+        config_obj: Configuration object
+        logger: Logger instance
+        
+    Returns:
+        Exit code
+    """
+    # Determine SPARQL endpoints
+    sparql_query_endpoint = args.endpoint if args.endpoint else config_obj.sparql_endpoint
+    sparql_update_endpoint_url = config_obj.sparql_update_endpoint
+    
+    if not sparql_query_endpoint:
+        logger.error("SPARQL query endpoint not specified via --endpoint or configuration.")
+        return 1
+    
+    # Instantiate SPARQL interface
+    sparql_interface = SparqlQueryInterface(
+        endpoint_url=sparql_query_endpoint,
+        update_endpoint_url=sparql_update_endpoint_url
+    )
+    
+    file_path = args.file_path
+    graph_uri = args.graph
+    rdf_format = args.rdf_format
+    
+    try:
+        sparql_interface.load_file(file_path=file_path, graph_uri=graph_uri, format=rdf_format)
+        logger.info(f"Successfully loaded RDF file '{file_path}' into graph '{graph_uri}'.")
+        return 0
+        
+    except (SPARQLWrapperException, FileNotFoundError, Exception) as e:
+        logger.error(f"Failed to load RDF file '{file_path}': {e}")
+        return 1
 
 
 def main(args: Optional[List[str]] = None) -> int:
@@ -204,9 +421,10 @@ def main(args: Optional[List[str]] = None) -> int:
         return process_command(parsed_args, config, kb_processor)
     elif parsed_args.command == "query":
         return query_command(parsed_args, config, kb_processor)
+    elif parsed_args.command == "sparql":
+        return sparql_command_router(parsed_args, config, logger_cli)
     else:
-        logger_cli.error("No command specified or unknown command. Use 'process' or 'query'.")
-        # parser.print_help() # Already handled by argparse if command is required
+        logger_cli.error("No command specified or unknown command. Use 'process', 'query', or 'sparql'.")
         return 1
 
 

@@ -30,6 +30,11 @@ class Config(BaseModel):
     max_file_size: int = Field(default=10 * 1024 * 1024, description="Maximum file size to process in bytes")
     cache_enabled: bool = Field(default=True, description="Enable caching")
     log_level: str = Field(default="INFO", description="Logging level")
+    
+    # SPARQL options
+    sparql_endpoint: Optional[str] = Field(default=None, description="SPARQL query endpoint URL")
+    sparql_update_endpoint: Optional[str] = Field(default=None, description="SPARQL update endpoint URL")
+    sparql_default_graph: Optional[str] = Field(default=None, description="Default graph URI for SPARQL operations")
 
 
 def load_config(config_path: Optional[str] = None) -> Config:
@@ -62,7 +67,10 @@ def load_config(config_path: Optional[str] = None) -> Config:
         "enrich_relationships": True,
         "max_file_size": 10 * 1024 * 1024,
         "cache_enabled": True,
-        "log_level": "INFO"
+        "log_level": "INFO",
+        "sparql_endpoint": None,
+        "sparql_update_endpoint": None,
+        "sparql_default_graph": None
     }
     
     # If a config path is provided, use it
