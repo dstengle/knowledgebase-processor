@@ -15,6 +15,13 @@ tomli = "^2.2.1"
 spacy = "^3.7.0"
 rdflib = "^7.0.0"
 
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+docker = "^6.1.0"
+requests = "^2.31.0"
+SPARQLWrapper = "^2.0.0"
+
 [tool.poetry.scripts]
 kbp = "knowledgebase_processor.cli:main"
 test = "scripts.run_tests:main"
