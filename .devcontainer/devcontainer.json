@@ -46,7 +46,11 @@
 
 	"remoteEnv": {
 		"GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GITHUB_PERSONAL_ACCESS_TOKEN}",
-	}
+	},
+
+	"runArgs" : [
+		"--network=host"
+	]
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
