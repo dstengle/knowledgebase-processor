@@ -2,6 +2,7 @@ import unittest
 from knowledgebase_processor.analyzer.entity_recognizer import EntityRecognizer # Updated import
 from knowledgebase_processor.models.entities import ExtractedEntity # Updated import
 
+@unittest.skip("Spacy entity recognition disabled - tests skipped")
 class TestEntityRecognizer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

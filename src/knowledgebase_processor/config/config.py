@@ -23,7 +23,7 @@ class Config(BaseModel):
     extract_frontmatter: bool = Field(default=True, description="Extract frontmatter metadata")
     extract_tags: bool = Field(default=True, description="Extract tags")
     analyze_topics: bool = Field(default=True, description="Analyze topics")
-    analyze_entities: bool = Field(default=True, description="Analyze entities")
+    analyze_entities: bool = Field(default=False, description="Analyze entities using spaCy (disabled by default)")
     enrich_relationships: bool = Field(default=True, description="Enrich with relationship information")
     
     # Advanced options
@@ -63,7 +63,7 @@ def load_config(config_path: Optional[str] = None) -> Config:
         "extract_frontmatter": True,
         "extract_tags": True,
         "analyze_topics": True,
-        "analyze_entities": True,
+        "analyze_entities": False,
         "enrich_relationships": True,
         "max_file_size": 10 * 1024 * 1024,
         "cache_enabled": True,

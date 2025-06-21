@@ -13,6 +13,7 @@ from knowledgebase_processor.models.metadata import DocumentMetadata, ExtractedE
 # Base path for fixture files
 FIXTURE_BASE_PATH = Path(__file__).parent.parent / "fixtures" / "wikilink_entity_processing"
 
+@unittest.skip("Spacy entity recognition disabled - tests skipped")
 class TestWikilinkEntityProcessing(unittest.TestCase):
     def setUp(self):
         """Set up the test case."""

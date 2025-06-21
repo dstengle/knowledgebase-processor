@@ -35,19 +35,22 @@ class KnowledgeBaseProcessor:
     and provides a simple interface for using them.
     """
     
-    def __init__(self, knowledge_base_dir: str, metadata_store_path: str, metadata_store_backend: str = "sqlite"):
+    def __init__(self, knowledge_base_dir: str, metadata_store_path: str, metadata_store_backend: str = "sqlite", config=None):
         """Initialize the Knowledge Base Processor.
         
         Args:
             knowledge_base_dir: Path to the knowledge base directory.
             metadata_store_path: Full path to the metadata SQLite database file (e.g., /path/to/knowledgebase.db).
                                  The MetadataStore will use this path directly.
+            metadata_store_backend: Backend to use for metadata storage.
+            config: Configuration object to control processor behavior.
         """
         self.base_path = Path(knowledge_base_dir)
+        self.config = config
         
         # Initialize components
         self.reader = Reader(knowledge_base_dir)
-        self.processor = Processor()
+        self.processor = Processor(config=config)
         # MetadataStore now receives the full, resolved path to the DB file.
         self.metadata_store = get_metadata_store(backend=metadata_store_backend, db_path=metadata_store_path)
         self.query_interface = QueryInterface(self.metadata_store)
@@ -65,7 +68,7 @@ class KnowledgeBaseProcessor:
         
         # Register analyzers
         self.processor.register_analyzer(TopicAnalyzer())
-        self.processor.register_analyzer(EntityRecognizer())
+        # EntityRecognizer is now conditionally registered based on config in Processor
         
         # Register enrichers
         self.processor.register_enricher(RelationshipEnricher())

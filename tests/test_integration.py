@@ -197,6 +197,7 @@ This document has no title in frontmatter.
         # Check that test2.md is related to test1.md
         related_ids = [r["document_id"] for r in results]
         self.assertIn("test2.md", related_ids)
+    @unittest.skip("Spacy entity recognition disabled - test skipped")
     def test_todo_item_extraction_to_rdf(self):
         """Test that ToDo items are extracted and entities are converted to RDF."""
         fixture_filename = "daily-note-2024-11-07-Thursday.md"

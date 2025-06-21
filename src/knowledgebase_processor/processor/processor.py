@@ -30,13 +30,27 @@ class Processor:
     of content from the knowledge base documents.
     """
     
-    def __init__(self):
-        """Initialize the Processor."""
+    def __init__(self, config=None):
+        """Initialize the Processor.
+        
+        Args:
+            config: Configuration object to control processor behavior.
+        """
+        self.config = config
         self.extractors = []
         self.analyzers = []
-        self.analyzers.append(EntityRecognizer()) # Default EntityRecognizer for general analysis
         self.enrichers = []
-        self.entity_recognizer = EntityRecognizer() # Dedicated instance for wikilink entity extraction
+        
+        # Conditionally initialize entity recognizers based on config
+        analyze_entities = False  # Default value - spacy is disabled by default
+        if config and hasattr(config, 'analyze_entities'):
+            analyze_entities = config.analyze_entities
+            
+        if analyze_entities:
+            self.analyzers.append(EntityRecognizer(enabled=True)) # Default EntityRecognizer for general analysis
+            self.entity_recognizer = EntityRecognizer(enabled=True) # Dedicated instance for wikilink entity extraction
+        else:
+            self.entity_recognizer = EntityRecognizer(enabled=False) # Disabled instance for wikilink entity extraction
     
     def register_extractor(self, extractor):
         """Register an extractor component.

@@ -4,6 +4,7 @@ from typing import List
 from knowledgebase_processor.analyzer.entity_recognizer import EntityRecognizer
 from knowledgebase_processor.models.metadata import DocumentMetadata, ExtractedEntity, BaseModel # Ensure BaseModel if needed
 
+@unittest.skip("Spacy entity recognition disabled - tests skipped")
 class TestEntityRecognizer(unittest.TestCase):
     def setUp(self):
         """

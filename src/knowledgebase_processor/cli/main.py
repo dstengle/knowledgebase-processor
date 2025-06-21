@@ -414,7 +414,8 @@ def main(args: Optional[List[str]] = None) -> int:
 
     kb_processor = KnowledgeBaseProcessor(
         knowledge_base_dir=config.knowledge_base_path,
-        metadata_store_path=str(db_file_path)
+        metadata_store_path=str(db_file_path),
+        config=config
     )
     
     if parsed_args.command == "process":
