@@ -323,18 +323,39 @@ class Processor:
 
             if rdf_converter and rdf_output_path and processed_documents:
                 logger_proc_rdf.info(f"Starting RDF generation for {count} documents...")
+                
+                # Initialize statistics tracking
+                rdf_stats = {
+                    'files_processed': 0,
+                    'files_with_entities': 0,
+                    'total_entities': 0,
+                    'total_todos': 0,
+                    'files_generated': 0,
+                    'errors': 0
+                }
+                
                 for doc_idx, doc in enumerate(processed_documents):
+                    rdf_stats['files_processed'] += 1
+                    
                     if not doc.path: # doc.path should be relative string path from Document model
                         logger_proc_rdf.warning(f"Document at index {doc_idx} missing source_path, skipping RDF generation.")
+                        rdf_stats['errors'] += 1
                         continue
 
                     # Log debug information about entities found
                     entity_count = len(doc.metadata.entities) if doc.metadata and doc.metadata.entities else 0
                     logger_proc_rdf.debug(f"Document {doc.path} has {entity_count} entities")
+                    
+                    # Count TODO items
+                    todo_count = sum(1 for element in doc.elements if element.element_type == "todo_item")
+                    rdf_stats['total_todos'] += todo_count
 
                     if not doc.metadata or not doc.metadata.entities:
                         logger_proc_rdf.debug(f"No entities to convert for document: {doc.path}")
                         continue
+                    
+                    rdf_stats['files_with_entities'] += 1
+                    rdf_stats['total_entities'] += entity_count
 
                     doc_graph = Graph()
                     doc_graph.bind("kb", KB)
@@ -400,10 +421,22 @@ class Processor:
                         try:
                             doc_graph.serialize(destination=str(output_file_path), format="turtle")
                             logger_proc_rdf.info(f"Saved RDF for {Path(doc.path).name} to {output_file_path.absolute()}")
+                            rdf_stats['files_generated'] += 1
                         except Exception as e_ser:
                             logger_proc_rdf.error(f"Error serializing RDF for {Path(doc.path).name} to {output_file_path}: {e_ser}", exc_info=True)
+                            rdf_stats['errors'] += 1
                     else:
                         logger_proc_rdf.info(f"No RDF triples generated for document: {doc.path}")
+                
+                # Report RDF generation summary
+                logger_proc_rdf.info(
+                    f"RDF Generation Summary: "
+                    f"Processed {rdf_stats['files_processed']} files, "
+                    f"{rdf_stats['files_with_entities']} had entities, "
+                    f"found {rdf_stats['total_entities']} entities and {rdf_stats['total_todos']} TODOs, "
+                    f"generated {rdf_stats['files_generated']} RDF files"
+                    + (f", {rdf_stats['errors']} errors" if rdf_stats['errors'] > 0 else "")
+                )
             return 0
         except Exception as e:
             logger_proc_rdf.error(f"An error occurred during processing or RDF generation: {e}", exc_info=True)
