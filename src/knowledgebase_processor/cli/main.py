@@ -438,6 +438,17 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
     logger_proc.info(f"Processing files matching pattern: {pattern} in knowledge base: {config.knowledge_base_path}")
     if rdf_output_dir_str:
         logger_proc.info(f"RDF output directory specified: {rdf_output_dir_str}")
+        
+        # Auto-enable entity analysis when RDF output is requested but analysis is disabled
+        if not config.analyze_entities:
+            logger_proc.warning(
+                "Entity analysis is disabled but RDF output was requested. "
+                "Automatically enabling entity analysis for this run to generate meaningful RDF output."
+            )
+            config.analyze_entities = True
+            # Reinitialize the processor with updated config
+            from knowledgebase_processor.processor.processor import Processor
+            kb_processor.processor = Processor(config=config)
 
     # The kb_processor instance contains the reader, metadata_store, and the processor (which has the new method)
     # config.knowledge_base_path is a string, convert to Path for the method
