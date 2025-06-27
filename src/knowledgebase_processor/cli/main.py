@@ -193,6 +193,16 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         type=str
     )
     sparql_load_parser.add_argument(
+        "--user", "-u",
+        help="Username for SPARQL endpoint authentication",
+        type=str
+    )
+    sparql_load_parser.add_argument(
+        "--password", "-P",
+        help="Password for SPARQL endpoint authentication",
+        type=str
+    )
+    sparql_load_parser.add_argument(
         "--rdf-format",
         help="RDF format of the input file",
         choices=["turtle", "n3", "nt", "xml", "json-ld"],
@@ -338,17 +348,22 @@ def execute_sparql_load_file_cli_command(args: argparse.Namespace, config_obj, l
         Exit code
     """
     # Determine SPARQL endpoints
-    sparql_query_endpoint = args.endpoint if args.endpoint else config_obj.sparql_endpoint
-    sparql_update_endpoint_url = config_obj.sparql_update_endpoint
-    
-    if not sparql_query_endpoint:
-        logger.error("SPARQL query endpoint not specified via --endpoint or configuration.")
+    sparql_update_endpoint_url = args.endpoint if args.endpoint else config_obj.sparql_update_endpoint
+    sparql_query_endpoint = config_obj.sparql_endpoint
+
+    if not sparql_update_endpoint_url:
+        logger.error("SPARQL update endpoint not specified via --endpoint or configuration.")
         return 1
-    
+
+    if not sparql_query_endpoint:
+        sparql_query_endpoint = sparql_update_endpoint_url.replace('/update', '/query')
+
     # Instantiate SPARQL interface
     sparql_interface = SparqlQueryInterface(
         endpoint_url=sparql_query_endpoint,
-        update_endpoint_url=sparql_update_endpoint_url
+        update_endpoint_url=sparql_update_endpoint_url,
+        username=args.user,
+        password=args.password
     )
     
     file_path = args.file_path
@@ -384,49 +399,53 @@ def main(args: Optional[List[str]] = None) -> int:
     # Load configuration
     config = load_config(parsed_args.config)
     
-    # Override config with command-line arguments
-    if parsed_args.knowledge_base:
-        config.knowledge_base_path = parsed_args.knowledge_base
-    elif not hasattr(config, 'knowledge_base_path') or not config.knowledge_base_path:
-        config.knowledge_base_path = str(Path.cwd())
-        logger_cli.info(f"Knowledge base path not specified, defaulting to current directory: {config.knowledge_base_path}")
+    if parsed_args.command == "process" or parsed_args.command == "query":
+        # Override config with command-line arguments
+        if parsed_args.knowledge_base:
+            config.knowledge_base_path = parsed_args.knowledge_base
+        elif not hasattr(config, 'knowledge_base_path') or not config.knowledge_base_path:
+            config.knowledge_base_path = str(Path.cwd())
+            logger_cli.info(f"Knowledge base path not specified, defaulting to current directory: {config.knowledge_base_path}")
 
-    db_directory_path_str: str
-    if parsed_args.metadata_store:
-        db_directory_path_str = parsed_args.metadata_store
-        logger_cli.info(f"Using metadata store directory from command line: {db_directory_path_str}")
-    elif hasattr(config, 'metadata_store_path') and config.metadata_store_path:
-        db_directory_path_str = config.metadata_store_path
-        logger_cli.info(f"Using metadata store directory from config: {db_directory_path_str}")
-    else:
-        default_dir = Path.home() / ".kbp" / "metadata"
-        db_directory_path_str = str(default_dir)
-        logger_cli.warning(
-            f"Metadata store directory not specified via CLI or config, "
-            f"or config value is empty. Defaulting to: {db_directory_path_str}"
+        db_directory_path_str: str
+        if parsed_args.metadata_store:
+            db_directory_path_str = parsed_args.metadata_store
+            logger_cli.info(f"Using metadata store directory from command line: {db_directory_path_str}")
+        elif hasattr(config, 'metadata_store_path') and config.metadata_store_path:
+            db_directory_path_str = config.metadata_store_path
+            logger_cli.info(f"Using metadata store directory from config: {db_directory_path_str}")
+        else:
+            default_dir = Path.home() / ".kbp" / "metadata"
+            db_directory_path_str = str(default_dir)
+            logger_cli.warning(
+                f"Metadata store directory not specified via CLI or config, "
+                f"or config value is empty. Defaulting to: {db_directory_path_str}"
+            )
+
+        db_directory_path = Path(db_directory_path_str)
+        db_filename = "knowledgebase.db"
+        db_file_path = db_directory_path / db_filename
+        
+        logger_cli.info(f"Final database file path: {db_file_path}")
+
+        kb_processor = KnowledgeBaseProcessor(
+            knowledge_base_dir=config.knowledge_base_path,
+            metadata_store_path=str(db_file_path),
+            config=config
         )
+        
+        if parsed_args.command == "process":
+            return process_command(parsed_args, config, kb_processor)
+        elif parsed_args.command == "query":
+            return query_command(parsed_args, config, kb_processor)
 
-    db_directory_path = Path(db_directory_path_str)
-    db_filename = "knowledgebase.db"
-    db_file_path = db_directory_path / db_filename
-    
-    logger_cli.info(f"Final database file path: {db_file_path}")
-
-    kb_processor = KnowledgeBaseProcessor(
-        knowledge_base_dir=config.knowledge_base_path,
-        metadata_store_path=str(db_file_path),
-        config=config
-    )
-    
-    if parsed_args.command == "process":
-        return process_command(parsed_args, config, kb_processor)
-    elif parsed_args.command == "query":
-        return query_command(parsed_args, config, kb_processor)
     elif parsed_args.command == "sparql":
         return sparql_command_router(parsed_args, config, logger_cli)
     else:
         logger_cli.error("No command specified or unknown command. Use 'process', 'query', or 'sparql'.")
         return 1
+    
+    return 0
 
 
 def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBaseProcessor) -> int:
