@@ -20,12 +20,14 @@ class SparqlQueryInterface:
     different result formats.
     """
     
-    def __init__(self, endpoint_url: str, update_endpoint_url: Optional[str] = None):
+    def __init__(self, endpoint_url: str, update_endpoint_url: Optional[str] = None, username: Optional[str] = None, password: Optional[str] = None):
         """Initialize the SPARQL Query Interface.
         
         Args:
             endpoint_url: The SPARQL query endpoint URL
             update_endpoint_url: The SPARQL update endpoint URL (optional, defaults to endpoint_url + '/update')
+            username: The username for authentication
+            password: The password for authentication
         """
         self.endpoint_url = endpoint_url
         self.update_endpoint_url = update_endpoint_url or urljoin(endpoint_url.rstrip('/') + '/', 'update')
@@ -34,6 +36,10 @@ class SparqlQueryInterface:
         self._query_wrapper = SPARQLWrapper(self.endpoint_url)
         self._update_wrapper = SPARQLWrapper(self.update_endpoint_url)
         
+        if username and password:
+            self._query_wrapper.setCredentials(username, password)
+            self._update_wrapper.setCredentials(username, password)
+
         logger.info(f"Initialized SPARQL interface with query endpoint: {self.endpoint_url}")
         logger.info(f"Update endpoint: {self.update_endpoint_url}")
     
@@ -184,6 +190,7 @@ class SparqlQueryInterface:
         logger.debug(f"Executing UPDATE query: {query}")
         
         self._update_wrapper.setQuery(query)
+        self._update_wrapper.setMethod("POST")
         self._update_wrapper.setTimeout(timeout)
         
         try:
@@ -206,22 +213,29 @@ class SparqlQueryInterface:
         """
         logger.info(f"Loading {len(graph)} triples into SPARQL store")
         
-        # Serialize the graph to turtle format
-        turtle_data = graph.serialize(format='turtle')
-        
+        # Serialize the graph to n-triples format, which is just triples without prefixes.
+        nt_data = graph.serialize(format='nt')
+
+        # Build the prologue with PREFIX declarations
+        prologue = ""
+        for prefix, namespace in graph.namespace_manager.namespaces():
+            prologue += f"PREFIX {prefix}: <{namespace}>\n"
+
         # Build INSERT DATA query
         if graph_uri:
             query = f"""
+            {prologue}
             INSERT DATA {{
                 GRAPH <{graph_uri}> {{
-                    {turtle_data}
+                    {nt_data}
                 }}
             }}
             """
         else:
             query = f"""
+            {prologue}
             INSERT DATA {{
-                {turtle_data}
+                {nt_data}
             }}
             """
         
