@@ -448,7 +448,36 @@ def process_command(args: argparse.Namespace, config, kb_processor: KnowledgeBas
             config.analyze_entities = True
             # Reinitialize the processor with updated config
             from knowledgebase_processor.processor.processor import Processor
+            from knowledgebase_processor.extractor.markdown import MarkdownExtractor
+            from knowledgebase_processor.extractor.frontmatter import FrontmatterExtractor
+            from knowledgebase_processor.extractor.heading_section import HeadingSectionExtractor
+            from knowledgebase_processor.extractor.link_reference import LinkReferenceExtractor
+            from knowledgebase_processor.extractor.code_quote import CodeQuoteExtractor
+            from knowledgebase_processor.extractor.todo_item import TodoItemExtractor
+            from knowledgebase_processor.extractor.tags import TagExtractor
+            from knowledgebase_processor.extractor.list_table import ListTableExtractor
+            from knowledgebase_processor.extractor.wikilink_extractor import WikiLinkExtractor
+            from knowledgebase_processor.analyzer.topics import TopicAnalyzer
+            from knowledgebase_processor.enricher.relationships import RelationshipEnricher
+            
             kb_processor.processor = Processor(config=config)
+            
+            # Re-register all extractors
+            kb_processor.processor.register_extractor(MarkdownExtractor())
+            kb_processor.processor.register_extractor(FrontmatterExtractor())
+            kb_processor.processor.register_extractor(HeadingSectionExtractor())
+            kb_processor.processor.register_extractor(LinkReferenceExtractor())
+            kb_processor.processor.register_extractor(CodeQuoteExtractor())
+            kb_processor.processor.register_extractor(TodoItemExtractor())
+            kb_processor.processor.register_extractor(TagExtractor())
+            kb_processor.processor.register_extractor(ListTableExtractor())
+            kb_processor.processor.register_extractor(WikiLinkExtractor())
+            
+            # Re-register analyzers
+            kb_processor.processor.register_analyzer(TopicAnalyzer())
+            
+            # Re-register enrichers
+            kb_processor.processor.register_enricher(RelationshipEnricher())
 
     # The kb_processor instance contains the reader, metadata_store, and the processor (which has the new method)
     # config.knowledge_base_path is a string, convert to Path for the method

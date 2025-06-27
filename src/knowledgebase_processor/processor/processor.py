@@ -350,8 +350,12 @@ class Processor:
                     todo_count = sum(1 for element in doc.elements if element.element_type == "todo_item")
                     rdf_stats['total_todos'] += todo_count
 
-                    if not doc.metadata or not doc.metadata.entities:
-                        logger_proc_rdf.debug(f"No entities to convert for document: {doc.path}")
+                    # Check if there are entities OR todo items to convert
+                    has_entities = doc.metadata and doc.metadata.entities
+                    has_todos = any(element.element_type == "todo_item" for element in doc.elements)
+                    
+                    if not has_entities and not has_todos:
+                        logger_proc_rdf.debug(f"No entities or todos to convert for document: {doc.path}")
                         continue
                     
                     rdf_stats['files_with_entities'] += 1
@@ -365,19 +369,20 @@ class Processor:
 
                     logger_proc_rdf.debug(f"Generating RDF for document: {doc.path}")
                     entities_converted_count = 0
-                    # Convert extracted entities (PERSON, ORG, etc.)
-                    for extracted_entity in doc.metadata.entities:
-                        # doc.path is already the relative path string
-                        kb_entity = self._extracted_entity_to_kb_entity(extracted_entity, str(doc.path))
-                        if kb_entity:
-                            try:
-                                entity_graph = rdf_converter.kb_entity_to_graph(kb_entity, base_uri_str=str(KB))
-                                for triple in entity_graph:
-                                    doc_graph.add(triple)
-                                entities_converted_count += 1
-                                logger_proc_rdf.debug(f"Converted entity '{kb_entity.label}' ({kb_entity.kb_id}) to RDF.")
-                            except Exception as e_conv:
-                                logger_proc_rdf.error(f"Error converting entity '{kb_entity.label}' to RDF: {e_conv}", exc_info=True)
+                    # Convert extracted entities (PERSON, ORG, etc.) if they exist
+                    if has_entities:
+                        for extracted_entity in doc.metadata.entities:
+                            # doc.path is already the relative path string
+                            kb_entity = self._extracted_entity_to_kb_entity(extracted_entity, str(doc.path))
+                            if kb_entity:
+                                try:
+                                    entity_graph = rdf_converter.kb_entity_to_graph(kb_entity, base_uri_str=str(KB))
+                                    for triple in entity_graph:
+                                        doc_graph.add(triple)
+                                    entities_converted_count += 1
+                                    logger_proc_rdf.debug(f"Converted entity '{kb_entity.label}' ({kb_entity.kb_id}) to RDF.")
+                                except Exception as e_conv:
+                                    logger_proc_rdf.error(f"Error converting entity '{kb_entity.label}' to RDF: {e_conv}", exc_info=True)
                     
                     # Convert TodoItems from document elements
                     for element in doc.elements:

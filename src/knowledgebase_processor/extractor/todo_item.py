@@ -20,8 +20,8 @@ class TodoItemExtractor(BaseExtractor):
     
     def __init__(self):
         """Initialize the TodoItemExtractor."""
-        # Regex pattern for todo items
-        self.todo_pattern = re.compile(r'^-\s+\[([ xX])\]\s+(.+)$', re.MULTILINE)
+        # Regex pattern for todo items - allows optional leading whitespace
+        self.todo_pattern = re.compile(r'^\s*-\s+\[([ xX])\]\s+(.+)$', re.MULTILINE)
     
     def extract(self, document: Document) -> List[ContentElement]:
         """Extract todo items from a document.

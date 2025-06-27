@@ -136,6 +136,43 @@ This is a test document with no todo items.
         self.assertEqual(elements[0].parent_id, section_id)
         self.assertEqual(elements[1].parent_id, section_id)
     
+    def test_extract_todos_with_leading_whitespace(self):
+        """Test extracting todo items with leading whitespace."""
+        content = """# Test Document
+        
+ - [ ] Single space indent
+  - [x] Two space indent
+    - [ ] Four space indent
+	- [x] Tab indent
+- [ ] No indent
+"""
+        document = Document(path="test.md", content=content, title="Test")
+        elements = self.extractor.extract(document)
+        
+        # We should have 5 todo items
+        self.assertEqual(len(elements), 5)
+        
+        # Check all are TodoItem instances
+        for element in elements:
+            self.assertIsInstance(element, TodoItem)
+            self.assertEqual(element.element_type, "todo_item")
+        
+        # Check specific items
+        self.assertEqual(elements[0].text, "Single space indent")
+        self.assertFalse(elements[0].is_checked)
+        
+        self.assertEqual(elements[1].text, "Two space indent")
+        self.assertTrue(elements[1].is_checked)
+        
+        self.assertEqual(elements[2].text, "Four space indent")
+        self.assertFalse(elements[2].is_checked)
+        
+        self.assertEqual(elements[3].text, "Tab indent")
+        self.assertTrue(elements[3].is_checked)
+        
+        self.assertEqual(elements[4].text, "No indent")
+        self.assertFalse(elements[4].is_checked)
+    
     def test_integration_with_processor(self):
         """Test integration with the processor."""
         from knowledgebase_processor.processor.processor import Processor
