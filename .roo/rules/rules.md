@@ -2,6 +2,8 @@
 - Whenever issues, PR, PRs or pull requests are mentioned, use github.
 - Python commands and dependencies: This python project is managed by poetry and all commands should use poetry run
 - Before a task can be declared complete, unit tests must pass
+- Any planning documents should be created in docs/planning
+- During implementation, docs/planning should be checked for a relevant plan for the current issue
 - Unit tests
     - The unit tests use the unittest framework and the tests are in the tests/ directory.
     - Prior to running any unit tests, run the poetry install command
