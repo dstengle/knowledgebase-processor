@@ -103,6 +103,9 @@ class ProcessingService:
 
 ##### 2.1 Extend KnowledgeBaseProcessor API (`src/knowledgebase_processor/api.py`)
 ```python
+from pathlib import Path
+from typing import Optional
+
 class KnowledgeBaseAPI:
     """Unified API for all knowledge base operations."""
     
@@ -112,16 +115,16 @@ class KnowledgeBaseAPI:
         self.sparql_service = SparqlService(config)
         self.processing_service = ProcessingService(self.processor)
     
-    def process(self, pattern: str, **kwargs) -> ProcessingResult:
+    def process(self, pattern: str, rdf_output_dir: Optional[Path] = None) -> ProcessingResult:
         """Process documents with given pattern."""
         
     def query(self, query: str, query_type: str = "text") -> QueryResult:
         """Execute a query against the knowledge base."""
         
-    def sparql_query(self, query: str, **kwargs) -> SparqlResult:
+    def sparql_query(self, query: str, format: str = "json") -> SparqlResult:
         """Execute a SPARQL query."""
         
-    def sparql_load(self, file_path: Path, **kwargs) -> None:
+    def sparql_load(self, file_path: Path, graph_uri: Optional[str] = None) -> None:
         """Load RDF file into SPARQL store."""
 ```
 
