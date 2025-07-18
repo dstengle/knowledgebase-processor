@@ -3,7 +3,9 @@ services:
   fuseki:
     image: stain/jena-fuseki:latest
     ports:
-      - "3030:3030"
+      - "13030:3030"
+    networks:
+      - knowledgebase-processor
     environment:
       - ADMIN_PASSWORD=admin
       - JVM_ARGS=-Xmx2g
@@ -20,3 +22,9 @@ services:
 
 volumes:
   fuseki-data:
+
+
+networks:
+  knowledgebase-processor:
+    external: true
+
