@@ -20,7 +20,7 @@ class SparqlQueryInterface:
     different result formats.
     """
     
-    def __init__(self, endpoint_url: str, update_endpoint_url: Optional[str] = None, username: Optional[str] = None, password: Optional[str] = None):
+    def __init__(self, endpoint_url: Optional[str] = None, update_endpoint_url: Optional[str] = None, username: Optional[str] = None, password: Optional[str] = None):
         """Initialize the SPARQL Query Interface.
         
         Args:
@@ -30,18 +30,30 @@ class SparqlQueryInterface:
             password: The password for authentication
         """
         self.endpoint_url = endpoint_url
-        self.update_endpoint_url = update_endpoint_url or urljoin(endpoint_url.rstrip('/') + '/', 'update')
+        self.update_endpoint_url = update_endpoint_url
         
+        if endpoint_url and not update_endpoint_url:
+            self.update_endpoint_url = urljoin(endpoint_url.rstrip('/') + '/', 'update')
+
         # Initialize SPARQLWrapper instances
-        self._query_wrapper = SPARQLWrapper(self.endpoint_url)
-        self._update_wrapper = SPARQLWrapper(self.update_endpoint_url)
+        self._query_wrapper = None
+        if self.endpoint_url:
+            self._query_wrapper = SPARQLWrapper(self.endpoint_url)
+        
+        self._update_wrapper = None
+        if self.update_endpoint_url:
+            self._update_wrapper = SPARQLWrapper(self.update_endpoint_url)
         
         if username and password:
-            self._query_wrapper.setCredentials(username, password)
-            self._update_wrapper.setCredentials(username, password)
+            if self._query_wrapper:
+                self._query_wrapper.setCredentials(username, password)
+            if self._update_wrapper:
+                self._update_wrapper.setCredentials(username, password)
 
-        logger.info(f"Initialized SPARQL interface with query endpoint: {self.endpoint_url}")
-        logger.info(f"Update endpoint: {self.update_endpoint_url}")
+        if self.endpoint_url:
+            logger.info(f"Initialized SPARQL interface with query endpoint: {self.endpoint_url}")
+        if self.update_endpoint_url:
+            logger.info(f"Update endpoint: {self.update_endpoint_url}")
     
     def select(self, query: str, timeout: int = 30) -> List[Dict[str, Any]]:
         """Execute a SPARQL SELECT query.
@@ -56,6 +68,8 @@ class SparqlQueryInterface:
         Raises:
             SPARQLWrapperException: If the query fails
         """
+        if not self._query_wrapper:
+            raise ValueError("SPARQL query endpoint not configured.")
         logger.debug(f"Executing SELECT query: {query}")
         
         self._query_wrapper.setQuery(query)
@@ -94,6 +108,8 @@ class SparqlQueryInterface:
         Raises:
             SPARQLWrapperException: If the query fails
         """
+        if not self._query_wrapper:
+            raise ValueError("SPARQL query endpoint not configured.")
         logger.debug(f"Executing ASK query: {query}")
         
         self._query_wrapper.setQuery(query)
@@ -124,6 +140,8 @@ class SparqlQueryInterface:
         Raises:
             SPARQLWrapperException: If the query fails
         """
+        if not self._query_wrapper:
+            raise ValueError("SPARQL query endpoint not configured.")
         logger.debug(f"Executing CONSTRUCT query: {query}")
         
         self._query_wrapper.setQuery(query)
@@ -157,6 +175,8 @@ class SparqlQueryInterface:
         Raises:
             SPARQLWrapperException: If the query fails
         """
+        if not self._query_wrapper:
+            raise ValueError("SPARQL query endpoint not configured.")
         logger.debug(f"Executing DESCRIBE query: {query}")
         
         self._query_wrapper.setQuery(query)
@@ -187,6 +207,8 @@ class SparqlQueryInterface:
         Raises:
             SPARQLWrapperException: If the update fails
         """
+        if not self._update_wrapper:
+            raise ValueError("SPARQL update endpoint not configured.")
         logger.debug(f"Executing UPDATE query: {query}")
         
         self._update_wrapper.setQuery(query)
@@ -216,15 +238,9 @@ class SparqlQueryInterface:
         # Serialize the graph to n-triples format, which is just triples without prefixes.
         nt_data = graph.serialize(format='nt')
 
-        # Build the prologue with PREFIX declarations
-        prologue = ""
-        for prefix, namespace in graph.namespace_manager.namespaces():
-            prologue += f"PREFIX {prefix}: <{namespace}>\n"
-
         # Build INSERT DATA query
         if graph_uri:
             query = f"""
-            {prologue}
             INSERT DATA {{
                 GRAPH <{graph_uri}> {{
                     {nt_data}
@@ -233,7 +249,6 @@ class SparqlQueryInterface:
             """
         else:
             query = f"""
-            {prologue}
             INSERT DATA {{
                 {nt_data}
             }}

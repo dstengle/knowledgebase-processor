@@ -5,6 +5,9 @@ from pathlib import Path
 from typing import List, Optional, Iterator
 
 from ..models.content import Document
+from ..utils.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class Reader:
@@ -35,6 +38,9 @@ class Reader:
         Returns:
             List of Path objects for matching files
         """
+        if not pattern:
+            logger.warning("Empty pattern provided to list_files, defaulting to '**/*.md'")
+            pattern = "**/*.md"
         return list(self.base_path.glob(pattern))
     
     def read_file(self, path: Path) -> Document:
@@ -73,5 +79,8 @@ class Reader:
         Yields:
             Document objects for each matching file
         """
+        if not pattern:
+            logger.warning("Empty pattern provided to read_all, defaulting to '**/*.md'")
+            pattern = "**/*.md"
         for path in self.list_files(pattern):
             yield self.read_file(path)

@@ -22,6 +22,17 @@ class SparqlService:
         """
         self.config = config
         self.logger = get_logger("knowledgebase_processor.services.sparql")
+        
+        endpoint_url = getattr(config, 'sparql_endpoint_url', None)
+        update_endpoint_url = getattr(config, 'sparql_update_endpoint_url', None)
+
+        if not endpoint_url and update_endpoint_url and '/update' in update_endpoint_url:
+            endpoint_url = update_endpoint_url.replace('/update', '/query')
+
+        self.sparql_interface = SparqlQueryInterface(
+            endpoint_url=endpoint_url,
+            update_endpoint_url=update_endpoint_url
+        )
     
     def execute_query(self, query: str, endpoint_url: Optional[str] = None, 
                      timeout: int = 30, format: str = "json") -> Any:
@@ -41,15 +52,15 @@ class SparqlService:
             Exception: For other unexpected errors
         """
         # Determine the SPARQL query endpoint
-        sparql_query_endpoint = endpoint_url if endpoint_url else (
-            self.config.sparql_endpoint if self.config else None
-        )
+        sparql_query_endpoint = endpoint_url if endpoint_url else self.sparql_interface.endpoint_url
         
         if not sparql_query_endpoint:
             raise ValueError("SPARQL query endpoint not specified via parameter or configuration.")
         
-        # Instantiate SPARQL interface
-        sparql_interface = SparqlQueryInterface(endpoint_url=sparql_query_endpoint)
+        # Instantiate SPARQL interface if endpoint is different from config
+        sparql_interface = self.sparql_interface
+        if endpoint_url and endpoint_url != self.sparql_interface.endpoint_url:
+            sparql_interface = SparqlQueryInterface(endpoint_url=endpoint_url, update_endpoint_url=self.sparql_interface.update_endpoint_url)
         
         try:
             # Determine query type and execute accordingly
@@ -150,26 +161,23 @@ class SparqlService:
             Exception: For other unexpected errors
         """
         # Determine SPARQL endpoints
-        sparql_update_endpoint_url = update_endpoint_url if update_endpoint_url else (
-            self.config.sparql_update_endpoint if self.config else None
-        )
-        sparql_query_endpoint = endpoint_url if endpoint_url else (
-            self.config.sparql_endpoint if self.config else None
-        )
+        sparql_update_endpoint_url = update_endpoint_url if update_endpoint_url else self.sparql_interface.update_endpoint_url
+        sparql_query_endpoint = endpoint_url if endpoint_url else self.sparql_interface.endpoint_url
 
         if not sparql_update_endpoint_url:
             raise ValueError("SPARQL update endpoint not specified via parameter or configuration.")
 
-        if not sparql_query_endpoint:
-            sparql_query_endpoint = sparql_update_endpoint_url.replace('/update', '/query')
-
         # Instantiate SPARQL interface
-        sparql_interface = SparqlQueryInterface(
-            endpoint_url=sparql_query_endpoint,
-            update_endpoint_url=sparql_update_endpoint_url,
-            username=username,
-            password=password
-        )
+        sparql_interface = self.sparql_interface
+        if (endpoint_url and endpoint_url != self.sparql_interface.endpoint_url) or \
+           (update_endpoint_url and update_endpoint_url != self.sparql_interface.update_endpoint_url) or \
+           (username and password):
+            sparql_interface = SparqlQueryInterface(
+                endpoint_url=sparql_query_endpoint,
+                update_endpoint_url=sparql_update_endpoint_url,
+                username=username,
+                password=password
+            )
         
         try:
             sparql_interface.load_file(file_path=str(file_path), graph_uri=graph_uri, format=rdf_format)
@@ -178,3 +186,63 @@ class SparqlService:
         except (SPARQLWrapperException, FileNotFoundError, Exception) as e:
             self.logger.error(f"Failed to load RDF file '{file_path}': {e}")
             raise
+    def load_rdf_files_batch(
+        self,
+        file_paths: list[Path],
+        graph_uri: Optional[str] = None,
+        endpoint_url: Optional[str] = None,
+        update_endpoint_url: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        rdf_format: str = "turtle",
+        batch_size: int = 10,
+    ) -> None:
+        """
+        Efficiently load a large number of RDF files into the SPARQL store in batches.
+
+        Args:
+            file_paths: List of RDF file paths to load
+            graph_uri: Named graph URI to load data into
+            endpoint_url: SPARQL endpoint URL (overrides config if provided)
+            update_endpoint_url: SPARQL update endpoint URL (overrides config if provided)
+            username: Username for authentication
+            password: Password for authentication
+            rdf_format: Format of the RDF files
+            batch_size: Number of files to load per batch
+
+        Raises:
+            Exception: If any batch fails to load
+        """
+        from time import time
+
+        total_files = len(file_paths)
+        errors = []
+        for i in range(0, total_files, batch_size):
+            batch = file_paths[i : i + batch_size]
+            self.logger.info(
+                f"Loading RDF batch {i // batch_size + 1} ({len(batch)} files: {i + 1}-{min(i + batch_size, total_files)})"
+            )
+            start_time = time()
+            for file_path in batch:
+                try:
+                    self.load_rdf_file(
+                        file_path=file_path,
+                        graph_uri=graph_uri,
+                        endpoint_url=endpoint_url,
+                        update_endpoint_url=update_endpoint_url,
+                        username=username,
+                        password=password,
+                        rdf_format=rdf_format,
+                    )
+                except Exception as e:
+                    errors.append((str(file_path), str(e)))
+            elapsed = time() - start_time
+            self.logger.info(
+                f"Batch {i // batch_size + 1} loaded in {elapsed:.2f}s"
+            )
+        if errors:
+            self.logger.error(
+                f"Batch loading completed with {len(errors)} errors. See log for details."
+            )
+            for file_path, err in errors:
+                self.logger.error(f"File: {file_path} | Error: {err}")

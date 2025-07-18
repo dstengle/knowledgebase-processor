@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 import json
+from urllib.parse import urlparse
 
 from ..config import load_config
 from ..api import KnowledgeBaseAPI
@@ -13,6 +14,17 @@ from SPARQLWrapper.SPARQLExceptions import SPARQLWrapperException
 
 
 logger = get_logger("knowledgebase_processor.cli")
+
+
+def is_valid_url(url: str) -> bool:
+    """Check if a string is a valid URL."""
+    if not url:
+        return False
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
 
 
 def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
@@ -61,6 +73,13 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         type=str
     )
     
+    parser.add_argument(
+        "--log-format",
+        help="Logging format",
+        choices=["text", "json"],
+        default="text"
+    )
+    
     subparsers = parser.add_subparsers(dest="command", help="Command to execute", required=True)
     
     # Process command
@@ -77,6 +96,57 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         default=None
     )
     
+    # Process-and-load command
+    process_and_load_parser = subparsers.add_parser("process-and-load", help="Process and load RDF into SPARQL endpoint")
+    process_and_load_parser.add_argument(
+        "knowledge_base_path",
+        help="Path to the knowledge base directory. If omitted, the value from the global "
+             "--knowledge-base argument, the config file, or the current directory is used.",
+        type=str,
+        nargs="?",
+        default=None,
+    )
+    process_and_load_parser.add_argument(
+        "--pattern", "-p",
+        help="File pattern to process (default: **/*.md)",
+        default="**/*.md"
+    )
+    process_and_load_parser.add_argument(
+        "--graph", "-g",
+        help="Named graph URI to load data into",
+        type=str,
+        default=None
+    )
+    process_and_load_parser.add_argument(
+        "--endpoint-url", "-e",
+        help="SPARQL endpoint URL (overrides config)",
+        type=str,
+        default=None
+    )
+    
+    process_and_load_parser.add_argument(
+        "--cleanup",
+        help="Remove temporary RDF files after loading",
+        action="store_true"
+    )
+    process_and_load_parser.add_argument(
+        "--rdf-output-dir",
+        help="Directory to save temporary RDF output files",
+        type=str,
+        default=None
+    )
+    process_and_load_parser.add_argument(
+        "--user", "-u",
+        help="Username for SPARQL endpoint authentication",
+        type=str
+    )
+    process_and_load_parser.add_argument(
+        "--password", "-P",
+        help="Password for SPARQL endpoint authentication",
+        type=str
+    )
+
+
     # Query command
     query_parser = subparsers.add_parser("query", help="Query the knowledge base")
     query_parser.add_argument(
@@ -101,7 +171,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         help="SPARQL query string"
     )
     sparql_query_parser.add_argument(
-        "--endpoint", "-e",
+        "--endpoint-url", "-e",
         help="SPARQL endpoint URL (overrides config)",
         type=str
     )
@@ -117,6 +187,16 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         choices=["json", "table", "turtle"],
         default="table"
     )
+    sparql_query_parser.add_argument(
+        "--user", "-u",
+        help="Username for SPARQL endpoint authentication",
+        type=str
+    )
+    sparql_query_parser.add_argument(
+        "--password", "-P",
+        help="Password for SPARQL endpoint authentication",
+        type=str
+    )
     
     # SPARQL load-file command
     sparql_load_parser = sparql_subparsers.add_parser("load-file", help="Load an RDF file into the SPARQL store")
@@ -130,7 +210,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         type=str
     )
     sparql_load_parser.add_argument(
-        "--endpoint", "-e",
+        "--endpoint-url", "-e",
         help="SPARQL endpoint URL (overrides config)",
         type=str
     )
@@ -167,7 +247,7 @@ def handle_sparql_query(api: KnowledgeBaseAPI, args: argparse.Namespace) -> int:
     try:
         result = api.sparql_query(
             query=args.sparql_query,
-            endpoint_url=args.endpoint,
+            endpoint_url=args.endpoint_url,
             timeout=args.timeout,
             format=args.format
         )
@@ -216,7 +296,7 @@ def handle_sparql_load(api: KnowledgeBaseAPI, args: argparse.Namespace) -> int:
         api.sparql_load(
             file_path=Path(args.file_path),
             graph_uri=args.graph,
-            endpoint_url=args.endpoint,
+            endpoint_url=args.endpoint_url,
             username=args.user,
             password=args.password,
             rdf_format=args.rdf_format
@@ -261,7 +341,7 @@ def main(args: Optional[List[str]] = None) -> int:
     parsed_args = parse_args(args)
     
     # Set up logging
-    setup_logging(parsed_args.log_level, parsed_args.log_file)
+    setup_logging(parsed_args.log_level, parsed_args.log_file, parsed_args.log_format)
     
     # Load configuration
     config = load_config(parsed_args.config)
@@ -305,6 +385,7 @@ def main(args: Optional[List[str]] = None) -> int:
     # Route to appropriate handler
     handlers = {
         'process': handle_process,
+        'process-and-load': handle_process_and_load,
         'query': handle_query,
         'sparql': handle_sparql
     }
@@ -314,6 +395,74 @@ def main(args: Optional[List[str]] = None) -> int:
         return handler(api, parsed_args)
     else:
         logger.error("No command specified or unknown command. Use 'process', 'query', or 'sparql'.")
+        return 1
+
+def handle_process_and_load(api: KnowledgeBaseAPI, args: argparse.Namespace) -> int:
+    """Handle process-and-load command via API.
+
+    Args:
+        api: KnowledgeBaseAPI instance
+        args: Parsed command-line arguments
+
+    Returns:
+        Exit code
+    """
+    logger.info("Starting process-and-load operation")
+    from ..services.processing_service import ProcessingService
+
+    # --- Validation ---
+    kb_path = args.knowledge_base_path if args.knowledge_base_path is not None else api.config.knowledge_base_path
+    knowledge_base_path = Path(kb_path)
+    if not knowledge_base_path.is_dir():
+        logger.error(f"Invalid knowledge base path: '{knowledge_base_path}' is not a directory.")
+        return 1
+
+    endpoint_url = args.endpoint_url or api.config.sparql_endpoint_url
+    if not endpoint_url:
+        logger.error("SPARQL endpoint URL is required. Provide it via --endpoint-url or in the config file.")
+        return 1
+
+    if not is_valid_url(endpoint_url):
+        logger.error(f"Invalid SPARQL endpoint URL: {endpoint_url}")
+        return 1
+
+    rdf_output_dir = Path(args.rdf_output_dir) if args.rdf_output_dir else None
+    if rdf_output_dir:
+        try:
+            rdf_output_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            logger.error(f"Could not create RDF output directory '{rdf_output_dir}': {e}")
+            return 1
+
+    # --- Execution ---
+    try:
+        processing_service = ProcessingService(api.kb_processor)
+        result = processing_service.process_and_load(
+            pattern=args.pattern,
+            knowledge_base_path=knowledge_base_path,
+            rdf_output_dir=rdf_output_dir,
+            graph_uri=args.graph,
+            endpoint_url=endpoint_url,
+            
+            cleanup=args.cleanup,
+            username=args.user,
+            password=args.password,
+            config=api.config
+        )
+        if result == 0:
+            logger.info("Processing and loading completed successfully.")
+        else:
+            logger.error(f"Processing and loading failed with exit code {result}.")
+        return result
+    except SPARQLWrapperException as e:
+        logger.error(f"A SPARQL error occurred: {e}", exc_info=True)
+        logger.error(f"Please check if the SPARQL endpoint at '{endpoint_url}' is running and accessible.")
+        return 1
+    except FileNotFoundError as e:
+        logger.error(f"File not found during processing: {e}", exc_info=True)
+        return 1
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during process-and-load: {e}", exc_info=True)
         return 1
 
 
