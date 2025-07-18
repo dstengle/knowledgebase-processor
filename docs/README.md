@@ -39,14 +39,12 @@ poetry run python scripts/run_tests.py
 
 ### Running the Processor
 
-To process your knowledge base, use:
+Currently working, if jank way to run processor:
 ```bash
-poetry run python scripts/run_processor.py
+poetry run kbp --knowledge-base sample_data/ process-and-loa
+d  --endpoint-url http://fuseki:3030/test   --rdf-output-dir rdf-tmp/ --user $FUSEKI_USER --password $FUSEKI_PASSWORD 
 ```
-For available options and arguments, run:
-```bash
-poetry run python scripts/run_processor.py --help
-```
+
 
 And the processor also handles wikilinks [[A wikilink]]
 
