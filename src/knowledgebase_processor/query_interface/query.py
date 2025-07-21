@@ -15,15 +15,15 @@ class QueryInterface:
     based on various criteria.
     """
     
-    def __init__(self, metadata_store: MetadataStoreInterface, sparql_endpoint: Optional[str] = None):
+    def __init__(self, metadata_store: MetadataStoreInterface, sparql_endpoint_url: Optional[str] = None):
         """Initialize the QueryInterface.
         
         Args:
             metadata_store: The metadata store to query
-            sparql_endpoint: Optional SPARQL endpoint URL for advanced queries
+            sparql_endpoint_url: Optional SPARQL endpoint URL for advanced queries
         """
         self.metadata_store = metadata_store
-        self.sparql_interface = SparqlQueryInterface(sparql_endpoint) if sparql_endpoint else None
+        self.sparql_interface = SparqlQueryInterface(sparql_endpoint_url) if sparql_endpoint_url else None
     
     def find_by_tag(self, tag: str) -> List[str]:
         """Find documents with a specific tag.
@@ -135,7 +135,7 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         return self.sparql_interface.select(query, timeout)
     
@@ -153,7 +153,7 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         return self.sparql_interface.ask(query, timeout)
     
@@ -171,7 +171,7 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         return self.sparql_interface.construct(query, timeout)
     
@@ -189,7 +189,7 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         return self.sparql_interface.describe(query, timeout)
     
@@ -204,7 +204,7 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         self.sparql_interface.update(query, timeout)
     
@@ -219,7 +219,7 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         self.sparql_interface.load_data(graph, graph_uri)
     
@@ -235,6 +235,6 @@ class QueryInterface:
             ValueError: If SPARQL interface is not configured
         """
         if not self.sparql_interface:
-            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint in constructor.")
+            raise ValueError("SPARQL endpoint not configured. Please provide sparql_endpoint_url in constructor.")
         
         self.sparql_interface.load_file(file_path, graph_uri, format)

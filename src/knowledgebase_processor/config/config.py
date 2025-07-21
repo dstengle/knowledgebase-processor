@@ -32,8 +32,8 @@ class Config(BaseModel):
     log_level: str = Field(default="INFO", description="Logging level")
     
     # SPARQL options
-    sparql_endpoint: Optional[str] = Field(default=None, description="SPARQL query endpoint URL")
-    sparql_update_endpoint: Optional[str] = Field(default=None, description="SPARQL update endpoint URL")
+    sparql_endpoint_url: Optional[str] = Field(default=None, description="SPARQL query endpoint URL")
+    sparql_update_endpoint_url: Optional[str] = Field(default=None, description="SPARQL update endpoint URL")
     sparql_default_graph: Optional[str] = Field(default=None, description="Default graph URI for SPARQL operations")
 
 
@@ -68,8 +68,8 @@ def load_config(config_path: Optional[str] = None) -> Config:
         "max_file_size": 10 * 1024 * 1024,
         "cache_enabled": True,
         "log_level": "INFO",
-        "sparql_endpoint": None,
-        "sparql_update_endpoint": None,
+        "sparql_endpoint_url": None,
+        "sparql_update_endpoint_url": None,
         "sparql_default_graph": None
     }
     

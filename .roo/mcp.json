@@ -20,7 +20,8 @@
         "get_pull_request",
         "get_pull_request_files",
         "get_pull_request_comments",
-        "list_pull_requests"
+        "list_pull_requests",
+        "create_branch"
       ],
       "disabled": false
     },
