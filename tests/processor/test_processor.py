@@ -5,6 +5,8 @@ from unittest.mock import MagicMock, patch
 
 from knowledgebase_processor.processor.processor import Processor
 from knowledgebase_processor.models.content import Document, ContentElement
+from knowledgebase_processor.utils.document_registry import DocumentRegistry
+from knowledgebase_processor.utils.id_generator import EntityIdGenerator
 
 
 class TestProcessor(unittest.TestCase):
@@ -12,7 +14,15 @@ class TestProcessor(unittest.TestCase):
     
     def setUp(self):
         """Set up the test environment."""
-        self.processor = Processor()
+        # Create required dependencies
+        document_registry = DocumentRegistry()
+        id_generator = EntityIdGenerator(base_url="http://example.org/kb/")
+        
+        # Create processor with required parameters
+        self.processor = Processor(
+            document_registry=document_registry,
+            id_generator=id_generator
+        )
         
         # Create a mock extractor with parse_frontmatter method
         self.mock_extractor = MagicMock()

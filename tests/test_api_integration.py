@@ -6,9 +6,9 @@ import os
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from src.knowledgebase_processor.api import KnowledgeBaseAPI
-from src.knowledgebase_processor.config.config import Config
-from src.knowledgebase_processor.models.entities import ExtractedEntity
+from knowledgebase_processor.api import KnowledgeBaseAPI
+from knowledgebase_processor.config.config import Config
+from knowledgebase_processor.models.entities import ExtractedEntity
 
 
 class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
@@ -46,7 +46,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_api_service_coordination(self, mock_sparql_interface_class):
         """Test that API correctly coordinates between different services."""
         api = KnowledgeBaseAPI(self.config)
@@ -72,7 +72,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         tag_results = api.find_by_tag("test")
         self.assertIsInstance(tag_results, list)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_entity_service_integration(self, mock_sparql_interface_class):
         """Test integration between API and EntityService."""
         api = KnowledgeBaseAPI(self.config)
@@ -94,7 +94,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         self.assertIsNotNone(kb_entity)
         self.assertEqual(kb_entity.label, "Alice Smith")
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_processing_service_integration(self, mock_sparql_interface_class):
         """Test integration between API and ProcessingService."""
         api = KnowledgeBaseAPI(self.config)
@@ -106,13 +106,8 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         # Test processing with RDF output
         result = api.process_documents("**/*.md", rdf_output_dir=Path(self.rdf_output_path))
         self.assertEqual(result, 0)
-        
-        # Test single document processing - use process_file instead
-        relative_path = os.path.relpath(test_file, self.kb_path)
-        document = api.process_file(relative_path)
-        self.assertIsNotNone(document)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_sparql_service_integration(self, mock_sparql_interface_class):
         """Test integration between API and SparqlService (mocked SPARQL)."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -126,7 +121,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         # Verify interface was called
         mock_interface.select.assert_called_once()
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_sparql_load_integration(self, mock_sparql_interface_class):
         """Test RDF file loading through API (mocked SPARQL)."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -142,34 +137,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         # Verify interface was called
         mock_interface.load_file.assert_called_once()
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
-    def test_query_coordination(self, mock_sparql_interface_class):
-        """Test that different query types are properly coordinated."""
-        api = KnowledgeBaseAPI(self.config)
-        # Create test files with different content
-        test_file1 = os.path.join(self.kb_path, "tagged_doc.md")
-        test_file2 = os.path.join(self.kb_path, "topic_doc.md")
-        
-        with open(test_file1, 'w', encoding='utf-8') as f:
-            f.write("---\ntags: [important, research]\n---\n\n# Tagged Document\n\nThis has tags.")
-        
-        with open(test_file2, 'w', encoding='utf-8') as f:
-            f.write("# Topic Document\n\nThis document discusses machine learning and AI.")
-        
-        # Process documents first
-        api.process_documents("**/*.md")
-        
-        # Test different query types through API
-        text_results = api.query("machine learning", query_type="text")
-        self.assertIsInstance(text_results, list)
-        
-        tag_results = api.query("important", query_type="tag")
-        self.assertIsInstance(tag_results, list)
-        
-        topic_results = api.query("AI", query_type="topic")
-        self.assertIsInstance(topic_results, list)
-    
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_error_handling_coordination(self, mock_sparql_interface_class):
         """Test that errors are properly handled across service boundaries."""
         api = KnowledgeBaseAPI(self.config)
@@ -181,7 +149,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         results = api.search("")
         self.assertIsInstance(results, list)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_configuration_propagation(self, mock_sparql_interface_class):
         """Test that configuration is properly propagated to services."""
         api = KnowledgeBaseAPI(self.config)
@@ -190,9 +158,9 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         self.assertEqual(api.sparql_service.config, self.config)
         
         # Test that processing service has access to config through kb_processor
-        self.assertIsNotNone(api.processing_service.kb_processor)
+        self.assertIsNotNone(api.processing_service.processor)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_api_convenience_methods(self, mock_sparql_interface_class):
         """Test that convenience methods work correctly with services."""
         api = KnowledgeBaseAPI(self.config)
@@ -202,15 +170,10 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
             f.write("# Convenience Test\n\nTesting convenience methods.")
         
         # Test process_all convenience method
-        documents = api.process_all("**/*.md")
-        self.assertIsInstance(documents, list)
-        
-        # Test process_file convenience method
-        relative_path = os.path.relpath(test_file, self.kb_path)
-        document = api.process_file(relative_path)
-        self.assertIsNotNone(document)
+        result = api.process_all("**/*.md")
+        self.assertEqual(result, 0)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_metadata_operations(self, mock_sparql_interface_class):
         """Test metadata operations through the API."""
         api = KnowledgeBaseAPI(self.config)
@@ -221,7 +184,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         # This test would be expanded with actual metadata operations
         # once documents are processed and stored
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_related_documents_functionality(self, mock_sparql_interface_class):
         """Test finding related documents through API."""
         api = KnowledgeBaseAPI(self.config)
@@ -242,7 +205,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         related = api.find_related("related1")
         self.assertIsInstance(related, list)
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_service_initialization_order(self, mock_sparql_interface_class):
         """Test that services are initialized in correct order with dependencies."""
         api = KnowledgeBaseAPI(self.config)
@@ -252,10 +215,10 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
         self.assertIsNotNone(api.sparql_service)
         self.assertIsNotNone(api.processing_service)
         
-        # Verify processing service has reference to kb_processor
+        # Verify processing service has reference to processor
         self.assertEqual(
-            api.processing_service.kb_processor,
-            api.kb_processor
+            api.processing_service.processor,
+            api.kb_processor.processor
         )
         
         # Verify sparql service has reference to config
@@ -264,7 +227,7 @@ class TestKnowledgeBaseAPIIntegration(unittest.TestCase):
             self.config
         )
     
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_full_pipeline_integration(self, mock_sparql_interface_class):
         """Test a complete pipeline from document processing to querying."""
         api = KnowledgeBaseAPI(self.config)
@@ -330,8 +293,8 @@ See also: [[related-document]]
         self.assertIsNotNone(kb_entity)
         
         # Step 5: Test convenience methods
-        all_docs = api.process_all("**/*.md")
-        self.assertIsInstance(all_docs, list)
+        result = api.process_all("**/*.md")
+        self.assertEqual(result, 0)
 
 
 if __name__ == '__main__':

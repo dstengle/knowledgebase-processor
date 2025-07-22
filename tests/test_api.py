@@ -5,11 +5,11 @@ import tempfile
 import os
 from pathlib import Path
 
-from src.knowledgebase_processor.api import KnowledgeBaseAPI
-from src.knowledgebase_processor.config.config import Config
-from src.knowledgebase_processor.services.entity_service import EntityService
-from src.knowledgebase_processor.services.sparql_service import SparqlService
-from src.knowledgebase_processor.services.processing_service import ProcessingService
+from knowledgebase_processor.api import KnowledgeBaseAPI
+from knowledgebase_processor.config.config import Config
+from knowledgebase_processor.services.entity_service import EntityService
+from knowledgebase_processor.services.sparql_service import SparqlService
+from knowledgebase_processor.services.processing_service import ProcessingService
 
 
 class TestKnowledgeBaseAPI(unittest.TestCase):
@@ -102,8 +102,8 @@ class TestKnowledgeBaseAPI(unittest.TestCase):
             f.write("# Test Document\n\nThis is a test document.")
         
         # Test process_all
-        documents = self.api.process_all("**/*.md")
-        self.assertIsInstance(documents, list)
+        result = self.api.process_all("**/*.md")
+        self.assertEqual(result, 0)
         
         # Test get_metadata (should return None for non-existent document)
         metadata = self.api.get_metadata("non_existent_doc")

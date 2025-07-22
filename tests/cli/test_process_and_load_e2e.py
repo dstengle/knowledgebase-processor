@@ -34,7 +34,7 @@ class TestProcessAndLoadE2E(unittest.TestCase):
         full_command = base_command + args
         return run(full_command, stdout=PIPE, stderr=PIPE, text=True, cwd=PROJECT_ROOT, **kwargs)
 
-    @patch("src.knowledgebase_processor.services.processing_service.ProcessingService.process_and_load")
+    @patch("knowledgebase_processor.services.processing_service.ProcessingService.process_and_load")
     def test_successful_run_mocked(self, mock_process_and_load):
         mock_process_and_load.return_value = 0
         
@@ -49,7 +49,7 @@ class TestProcessAndLoadE2E(unittest.TestCase):
         self.assertIn("Processing and loading completed successfully", result.stderr)
         mock_process_and_load.assert_called_once()
 
-    @patch("src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface")
+    @patch("knowledgebase_processor.services.sparql_service.SparqlQueryInterface")
     def test_process_and_load_with_credentials(self, mock_sparql_interface):
         """Test that user and password are passed to the SPARQL interface."""
         mock_instance = mock_sparql_interface.return_value
@@ -111,7 +111,7 @@ class TestProcessAndLoadE2E(unittest.TestCase):
     def test_batch_processing_and_cleanup(self):
         rdf_output_dir = os.path.join(self.temp_dir, "rdf_output")
         
-        with patch("src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface.update") as mock_update:
+        with patch("knowledgebase_processor.services.sparql_service.SparqlQueryInterface.update") as mock_update:
             mock_update.return_value = True
             
             args = [
@@ -138,7 +138,7 @@ class TestProcessAndLoadE2E(unittest.TestCase):
     def test_rdf_output_validation(self):
         rdf_output_dir = os.path.join(self.temp_dir, "rdf_output_no_cleanup")
         
-        with patch("src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface.update"):
+        with patch("knowledgebase_processor.services.sparql_service.SparqlQueryInterface.update"):
             args = [
                 "process-and-load", self.kb_dir,
                 "--endpoint-url", "http://example.com/sparql",

@@ -9,7 +9,7 @@ import tempfile
 from rdflib import Graph
 from SPARQLWrapper.SPARQLExceptions import SPARQLWrapperException
 
-from src.knowledgebase_processor.services.sparql_service import SparqlService
+from knowledgebase_processor.services.sparql_service import SparqlService
 
 
 class TestSparqlService(unittest.TestCase):
@@ -21,10 +21,10 @@ class TestSparqlService(unittest.TestCase):
         self.mock_config.sparql_endpoint_url = "http://localhost:3030/test/query"
         self.mock_config.sparql_update_endpoint_url = "http://localhost:3030/test/update"
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_initialization_with_config(self, mock_sparql_interface_class):
         """Test SparqlService initialization with config."""
-        service = SparqlService(self.mock_config)
+        service = SparqlService(config=self.mock_config)
         self.assertEqual(service.config, self.mock_config)
         self.assertIsNotNone(service.logger)
         mock_sparql_interface_class.assert_called_with(
@@ -32,7 +32,7 @@ class TestSparqlService(unittest.TestCase):
             update_endpoint_url=self.mock_config.sparql_update_endpoint_url
         )
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_initialization_without_config(self, mock_sparql_interface_class):
         """Test SparqlService initialization without config."""
         service = SparqlService()
@@ -43,7 +43,7 @@ class TestSparqlService(unittest.TestCase):
             update_endpoint_url=None
         )
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_select_json_format(self, mock_sparql_interface_class):
         """Test executing a SELECT query with JSON format."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -63,7 +63,7 @@ class TestSparqlService(unittest.TestCase):
         parsed_result = json.loads(result)
         self.assertEqual(parsed_result, mock_results)
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_select_table_format(self, mock_sparql_interface_class):
         """Test executing a SELECT query with table format."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -83,7 +83,7 @@ class TestSparqlService(unittest.TestCase):
         self.assertIn("John | 30", result)
         self.assertIn("Jane | 25", result)
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_select_empty_results(self, mock_sparql_interface_class):
         """Test executing a SELECT query with empty results."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -96,7 +96,7 @@ class TestSparqlService(unittest.TestCase):
         
         self.assertEqual(result, "No results found.")
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_ask(self, mock_sparql_interface_class):
         """Test executing an ASK query."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -111,7 +111,7 @@ class TestSparqlService(unittest.TestCase):
         parsed_result = json.loads(result)
         self.assertEqual(parsed_result, {"boolean": True})
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_construct(self, mock_sparql_interface_class):
         """Test executing a CONSTRUCT query."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -127,7 +127,7 @@ class TestSparqlService(unittest.TestCase):
         mock_interface.construct.assert_called_once_with(query, timeout=30)
         self.assertIn("John", result)
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_describe(self, mock_sparql_interface_class):
         """Test executing a DESCRIBE query."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -143,7 +143,7 @@ class TestSparqlService(unittest.TestCase):
         mock_interface.describe.assert_called_once_with(query, timeout=30)
         self.assertIn("John", result)
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_update(self, mock_sparql_interface_class):
         """Test executing an UPDATE query."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -155,10 +155,9 @@ class TestSparqlService(unittest.TestCase):
         mock_interface.update.assert_called_once_with(query, timeout=30)
         self.assertEqual(result, "Update query executed successfully.")
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_no_endpoint_configured(self, mock_sparql_interface_class):
         """Test executing query without configured endpoint raises error."""
-        mock_sparql_interface_class.return_value.endpoint_url = None
         service = SparqlService()
         
         with self.assertRaises(ValueError) as context:
@@ -166,23 +165,20 @@ class TestSparqlService(unittest.TestCase):
         
         self.assertIn("SPARQL query endpoint not specified", str(context.exception))
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_with_endpoint_override(self, mock_sparql_interface_class):
         """Test executing query with endpoint URL override."""
-        mock_sparql_interface_class.return_value.endpoint_url = None
-        mock_sparql_interface_class.return_value.update_endpoint_url = None
         service = SparqlService()
         custom_endpoint = "http://custom:3030/test/query"
         
-        with patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface') as mock_sparql_interface_class_override:
-            mock_override_interface = mock_sparql_interface_class_override.return_value
-            mock_override_interface.select.return_value = []
-            
-            service.execute_query("SELECT * WHERE { ?s ?p ?o }", endpoint_url=custom_endpoint)
-            
-            mock_sparql_interface_class_override.assert_called_with(endpoint_url=custom_endpoint, update_endpoint_url=None)
+        mock_interface = mock_sparql_interface_class.return_value
+        mock_interface.select.return_value = []
+        
+        service.execute_query("SELECT * WHERE { ?s ?p ?o }", endpoint_url=custom_endpoint)
+        
+        mock_sparql_interface_class.assert_called_with(endpoint_url=custom_endpoint, update_endpoint_url=None)
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_unsupported_query_type(self, mock_sparql_interface_class):
         """Test executing unsupported query type raises error."""
         sparql_service = SparqlService(self.mock_config)
@@ -191,7 +187,7 @@ class TestSparqlService(unittest.TestCase):
         
         self.assertIn("Could not determine query type", str(context.exception))
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_sparql_wrapper_exception(self, mock_sparql_interface_class):
         """Test handling of SPARQLWrapper exceptions."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -201,7 +197,7 @@ class TestSparqlService(unittest.TestCase):
         with self.assertRaises(SPARQLWrapperException):
             sparql_service.execute_query("SELECT * WHERE { ?s ?p ?o }")
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_unexpected_exception(self, mock_sparql_interface_class):
         """Test handling of unexpected exceptions."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -211,7 +207,7 @@ class TestSparqlService(unittest.TestCase):
         with self.assertRaises(Exception):
             sparql_service.execute_query("SELECT * WHERE { ?s ?p ?o }")
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_load_rdf_file_success(self, mock_sparql_interface_class):
         """Test successful RDF file loading."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -234,10 +230,9 @@ class TestSparqlService(unittest.TestCase):
         finally:
             tmp_file_path.unlink()
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_load_rdf_file_no_update_endpoint(self, mock_sparql_interface_class):
         """Test RDF file loading without update endpoint raises error."""
-        mock_sparql_interface_class.return_value.update_endpoint_url = None
         config = Mock()
         config.sparql_endpoint_url = "http://localhost:3030/test/query"
         config.sparql_update_endpoint_url = None
@@ -248,7 +243,7 @@ class TestSparqlService(unittest.TestCase):
         
         self.assertIn("SPARQL update endpoint not specified", str(context.exception))
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_load_rdf_file_with_auth(self, mock_sparql_interface_class):
         """Test RDF file loading with authentication."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -273,7 +268,7 @@ class TestSparqlService(unittest.TestCase):
         finally:
             tmp_file_path.unlink()
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_load_rdf_file_inferred_query_endpoint(self, mock_sparql_interface_class):
         """Test RDF file loading with inferred query endpoint."""
         config = Mock()
@@ -287,7 +282,7 @@ class TestSparqlService(unittest.TestCase):
             update_endpoint_url="http://localhost:3030/test/update"
         )
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_load_rdf_file_sparql_exception(self, mock_sparql_interface_class):
         """Test handling of SPARQL exceptions during file loading."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -304,7 +299,7 @@ class TestSparqlService(unittest.TestCase):
         finally:
             tmp_file_path.unlink()
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_load_rdf_file_nonexistent_file(self, mock_sparql_interface_class):
         """Test loading non-existent RDF file raises FileNotFoundError."""
         mock_interface = mock_sparql_interface_class.return_value
@@ -316,7 +311,7 @@ class TestSparqlService(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             sparql_service.load_rdf_file(file_path=nonexistent_path)
 
-    @patch('src.knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
+    @patch('knowledgebase_processor.services.sparql_service.SparqlQueryInterface')
     def test_execute_query_custom_timeout(self, mock_sparql_interface_class):
         """Test executing query with custom timeout."""
         mock_interface = mock_sparql_interface_class.return_value

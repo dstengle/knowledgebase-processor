@@ -6,7 +6,7 @@ from typing import Set
 import tempfile
 import os
 
-from knowledgebase_processor.metadata_store.store import MetadataStore
+from knowledgebase_processor.metadata_store.store import SQLiteMetadataStore as MetadataStore
 from knowledgebase_processor.models.metadata import DocumentMetadata, Frontmatter
 from knowledgebase_processor.models.entities import ExtractedEntity
 from knowledgebase_processor.models.links import Link, WikiLink

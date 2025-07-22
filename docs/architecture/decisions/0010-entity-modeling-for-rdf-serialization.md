@@ -2,7 +2,7 @@
 
 **Date:** 2025-05-20
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0012](0012-entity-modeling-with-wiki-based-architecture.md)
 
 ## Context
 
@@ -109,6 +109,17 @@ Future ADRs or design documents will be needed for:
 *   Specific schemas for initial KB Entity Pydantic models.
 *   The initial custom RDF ontology/vocabulary.
 *   Detailed design of the "Semantic Constructor" logic.
+
+## Supersession Note
+
+**This ADR has been superseded by [ADR-0012: Entity Modeling with Wiki-Based Architecture](0012-entity-modeling-with-wiki-based-architecture.md).**
+
+The superseding ADR incorporates the core concepts from this decision while adding:
+- Deterministic entity ID generation
+- Wiki-style linking support
+- Document entities as first-class entities
+- Property vs entity classification
+- Entity deduplication across documents
 
 ## Notes
 

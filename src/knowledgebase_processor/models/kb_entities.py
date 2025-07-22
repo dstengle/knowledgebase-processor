@@ -253,3 +253,76 @@ class KbDateEntity(KbBaseEntity):
             "rdf_types": [KB.DateEntity, SCHEMA.Date], # SCHEMA.Date might be too specific if date_value is just a string
             "rdfs_label_fallback_fields": ["date_value", "label"]
         }
+
+
+class KbDocument(KbBaseEntity):
+    """
+    Pydantic model for document entities.
+    """
+    original_path: str = Field(
+        ...,
+        description="The original, unmodified file path of the document.",
+        json_schema_extra={
+            "rdf_property": KB.originalPath,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    path_without_extension: str = Field(
+        ...,
+        description="The file path without its extension, used for linking.",
+        json_schema_extra={
+            "rdf_property": KB.pathWithoutExtension,
+            "rdf_datatype": XSD.string,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Document, SCHEMA.CreativeWork],
+            "rdfs_label_fallback_fields": ["label", "original_path"],
+        }
+
+
+class KbWikiLink(KbBaseEntity):
+    """
+    Pydantic model for representing preserved WikiLinks.
+    """
+    original_text: str = Field(
+        ...,
+        description="The original, unmodified text of the wikilink (e.g., '[[Link Text|Alias]]').",
+        json_schema_extra={
+            "rdf_property": KB.originalText,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    target_path: str = Field(
+        ...,
+        description="The target path extracted from the wikilink.",
+        json_schema_extra={
+            "rdf_property": KB.targetPath,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    alias: Optional[str] = Field(
+        None,
+        description="The alias text from the wikilink, if present.",
+        json_schema_extra={
+            "rdf_property": KB.alias,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    resolved_document_uri: Optional[str] = Field(
+        None,
+        description="The URI of the resolved KbDocument entity.",
+        json_schema_extra={
+            "rdf_property": KB.resolvedDocument,
+            "is_object_property": True,
+            "rdf_datatype": XSD.anyURI,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.WikiLink],
+            "rdfs_label_fallback_fields": ["alias", "target_path"],
+        }

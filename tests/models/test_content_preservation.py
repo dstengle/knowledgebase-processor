@@ -7,11 +7,11 @@ from pathlib import Path
 # Add the src directory to the Python path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.knowledgebase_processor.models.content import Document, ContentElement
-from src.knowledgebase_processor.models.preservation import ContentPosition, PreservedContent
-from src.knowledgebase_processor.models.markdown import Heading, Section
-from src.knowledgebase_processor.extractor.base import BaseExtractor
-from src.knowledgebase_processor.extractor.heading_section import HeadingSectionExtractor
+from knowledgebase_processor.models.content import Document, ContentElement
+from knowledgebase_processor.models.preservation import ContentPosition, PreservedContent
+from knowledgebase_processor.models.markdown import Heading, Section
+from knowledgebase_processor.extractor.base import BaseExtractor
+from knowledgebase_processor.extractor.heading_section import HeadingSectionExtractor
 
 
 class TestContentPreservation(unittest.TestCase):

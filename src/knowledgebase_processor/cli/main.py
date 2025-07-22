@@ -379,7 +379,7 @@ def main(args: Optional[List[str]] = None) -> int:
     try:
         api = KnowledgeBaseAPI(config)
     except Exception as e:
-        logger.error(f"Failed to initialize KnowledgeBaseAPI: {e}")
+        logger.error(f"Failed to initialize KnowledgeBaseAPI: {e}", exc_info=True)
         return 1
     
     # Route to appropriate handler
@@ -408,7 +408,6 @@ def handle_process_and_load(api: KnowledgeBaseAPI, args: argparse.Namespace) -> 
         Exit code
     """
     logger.info("Starting process-and-load operation")
-    from ..services.processing_service import ProcessingService
 
     # --- Validation ---
     kb_path = args.knowledge_base_path if args.knowledge_base_path is not None else api.config.knowledge_base_path
@@ -436,18 +435,15 @@ def handle_process_and_load(api: KnowledgeBaseAPI, args: argparse.Namespace) -> 
 
     # --- Execution ---
     try:
-        processing_service = ProcessingService(api.kb_processor)
-        result = processing_service.process_and_load(
+        result = api.processing_service.process_and_load(
             pattern=args.pattern,
             knowledge_base_path=knowledge_base_path,
             rdf_output_dir=rdf_output_dir,
             graph_uri=args.graph,
             endpoint_url=endpoint_url,
-            
             cleanup=args.cleanup,
             username=args.user,
             password=args.password,
-            config=api.config
         )
         if result == 0:
             logger.info("Processing and loading completed successfully.")
@@ -512,26 +508,13 @@ def handle_query(api: KnowledgeBaseAPI, args: argparse.Namespace) -> int:
         Exit code
     """
     try:
-        query_string = args.query_string
-        query_type = args.type
-        
-        logger.info(f"Querying with {query_type} query: {query_string}")
-        
-        results = api.query(query_string=query_string, query_type=query_type)
-        
+        results = api.query(args.query_string, args.type)
         if results:
-            print(f"Found {len(results)} results:")
-            for item in results: 
-                print(f"- {item}")
+            for result in results:
+                print(result)
         else:
-            print("No results found")
-        
+            print("No results found.")
         return 0
-        
     except Exception as e:
-        logger.error(f"An error occurred during query execution: {e}")
+        logger.error(f"Error during query: {e}")
         return 1
-
-
-if __name__ == "__main__":
-    sys.exit(main())
