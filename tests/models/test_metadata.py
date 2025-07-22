@@ -1,6 +1,6 @@
 import unittest
-from src.knowledgebase_processor.models.metadata import DocumentMetadata
-from src.knowledgebase_processor.models.links import WikiLink # Added import
+from knowledgebase_processor.models.metadata import DocumentMetadata
+from knowledgebase_processor.models.links import WikiLink # Added import
 
 class TestDocumentMetadata(unittest.TestCase): # Renamed class for clarity
     def test_title_and_path(self):

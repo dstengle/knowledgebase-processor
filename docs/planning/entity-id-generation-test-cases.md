@@ -1,5 +1,14 @@
 # Entity ID Generation Test Cases
 
+**CRITICAL UPDATE (2025-07-21):** This document has been updated to align with ADR-0013 (Wiki-Based Entity ID Generation and Link Preservation). Key changes:
+
+1. **Document ID tests now show dual-path model**: Tests return `(normalized_id, original_path, path_without_extension)` tuples
+2. **Wiki link tests preserve original text**: No normalization of wiki link text during resolution
+3. **Document registry-based resolution**: Wiki links resolve through path matching, not text normalization
+
+These fixes are essential - the previous tests incorrectly showed document paths being normalized, which would break wiki link functionality per ADR-0013.</search>
+</search_and_replace>
+
 ## Test Categories
 
 ### 1. Text Normalization Tests
@@ -44,28 +53,41 @@ edge_cases = [
 
 ### 2. Document ID Generation Tests
 
-#### Standard Paths
+#### Standard Paths (Dual-Path Model per ADR-0013)
 ```python
 document_tests = [
-    # File Path, Expected ID
-    ("daily-notes/2024-11-07.md", "/Document/daily-notes/2024-11-07"),
-    ("Daily Notes/2024-11-07.md", "/Document/daily-notes/2024-11-07"),
-    ("projects/KB Processor.md", "/Document/projects/kb-processor"),
-    ("Meeting Notes/Q4 Planning.md", "/Document/meeting-notes/q4-planning"),
-    ("README.md", "/Document/readme"),
-    ("docs/architecture/ADR-001.md", "/Document/docs/architecture/adr-001"),
+    # File Path, (Expected Normalized ID, Original Path, Path Without Extension)
+    ("daily-notes/2024-11-07.md", 
+     ("/Document/daily-notes/2024-11-07", "daily-notes/2024-11-07.md", "daily-notes/2024-11-07")),
+    ("Daily Notes/2024-11-07.md", 
+     ("/Document/daily-notes/2024-11-07", "Daily Notes/2024-11-07.md", "Daily Notes/2024-11-07")),
+    ("projects/KB Processor.md", 
+     ("/Document/projects/kb-processor", "projects/KB Processor.md", "projects/KB Processor")),
+    ("Meeting Notes/Q4 Planning.md", 
+     ("/Document/meeting-notes/q4-planning", "Meeting Notes/Q4 Planning.md", "Meeting Notes/Q4 Planning")),
+    ("README.md", 
+     ("/Document/readme", "README.md", "README")),
+    ("docs/architecture/ADR-001.md", 
+     ("/Document/docs/architecture/adr-001", "docs/architecture/ADR-001.md", "docs/architecture/ADR-001")),
 ]
 ```
 
-#### Path Edge Cases
+#### Path Edge Cases (Dual-Path Model)
 ```python
 path_edge_cases = [
-    ("file.md.md", "/Document/file.md"),  # Multiple extensions
-    ("file.MD", "/Document/file"),  # Case insensitive extension
-    ("path/to/file.markdown", "/Document/path/to/file"),
-    ("path//to///file.md", "/Document/path/to/file"),  # Multiple slashes
-    ("./path/to/file.md", "/Document/path/to/file"),  # Relative path
-    ("~/Documents/notes.md", "/Document/~/documents/notes"),  # Home directory
+    # File Path, (Expected Normalized ID, Original Path, Path Without Extension)
+    ("file.md.md", 
+     ("/Document/file-md", "file.md.md", "file.md")),  # Multiple extensions
+    ("file.MD", 
+     ("/Document/file", "file.MD", "file")),  # Case insensitive extension
+    ("path/to/file.markdown", 
+     ("/Document/path/to/file", "path/to/file.markdown", "path/to/file")),
+    ("path//to///file.md", 
+     ("/Document/path/to/file", "path//to///file.md", "path//to///file")),  # Multiple slashes preserved in original
+    ("./path/to/file.md", 
+     ("/Document/path/to/file", "./path/to/file.md", "./path/to/file")),  # Relative path preserved
+    ("~/Documents/notes.md", 
+     ("/Document/~/documents/notes", "~/Documents/notes.md", "~/Documents/notes")),  # Home directory preserved
 ]
 ```
 
@@ -148,18 +170,23 @@ section_tests = [
 
 ### 7. Wiki Link Resolution Tests
 
-#### Link Patterns
+#### Link Patterns (Per ADR-0013: Wiki Link Text Preservation)
 ```python
 wiki_link_tests = [
-    # Link Text, Context, Expected Resolution
-    ("[[Alex Cipher]]", {"in_attendees": True}, "/Person/alex-cipher"),
-    ("[[Alex Cipher]]", {}, "/Document/alex-cipher"),  # No context
-    ("[[person:Alex Cipher]]", {}, "/Person/alex-cipher"),
-    ("[[org:Galaxy Dynamics]]", {}, "/Organization/galaxy-dynamics"),
-    ("[[project:KB Processor]]", {}, "/Project/kb-processor"),
-    ("[[Daily Note 2024-11-07]]", {}, "/Document/daily-note-2024-11-07"),
+    # Link Text, Context, Expected Resolution (via Document Registry lookup, NOT normalization)
+    ("[[Alex Cipher]]", {"in_attendees": True}, "/Person/alex-cipher"),  # Context-based entity resolution
+    ("[[person:Alex Cipher]]", {}, "/Person/alex-cipher"),  # Typed entity link
+    ("[[org:Galaxy Dynamics]]", {}, "/Organization/galaxy-dynamics"),  # Typed entity link  
+    ("[[project:KB Processor]]", {}, "/Project/kb-processor"),  # Typed entity link
+    
+    # CRITICAL: Document links preserve original text for path matching
+    ("[[Daily Note 2024-11-07 Thursday]]", {}, "/Document/daily-notes/2024-11-07-thursday"),  # Matches original file "Daily Note 2024-11-07 Thursday.md"
+    ("[[README]]", {}, "/Document/readme"),  # Matches original file "README.md"
+    ("[[Meeting Notes/Q4 Planning]]", {}, "/Document/meeting-notes/q4-planning"),  # Matches "Meeting Notes/Q4 Planning.md"
+    
+    # Placeholder for non-existent documents
     ("[[Non-Existent Page]]", {}, "/PlaceholderDocument/non-existent-page"),
-]
+]</search>
 ```
 
 ### 8. Deduplication Tests
@@ -249,6 +276,7 @@ performance_requirements = {
 integration_scenarios = [
     {
         "name": "Document with multiple same entities",
+        "file_path": "Meeting Notes/Daily Standup 2024-11-07.md",  # Original file path
         "input": """
         ---
         author: Alex Cipher
@@ -264,11 +292,24 @@ integration_scenarios = [
         - [ ] Jane Smith to update docs
         """,
         "expected_entities": [
-            "/Document/test-doc",
-            "/Person/alex-cipher",  # Only one instance
-            "/Person/jane-smith",   # Only one instance
-            "/Document/test-doc/TodoItem/11-hash1",
-            "/Document/test-doc/TodoItem/12-hash2",
+            # Document entity with dual-path model
+            {
+                "type": "Document",
+                "kb_id": "/Document/meeting-notes/daily-standup-2024-11-07",
+                "original_path": "Meeting Notes/Daily Standup 2024-11-07.md",
+                "path_without_extension": "Meeting Notes/Daily Standup 2024-11-07"
+            },
+            # Deduplicated person entities
+            "/Person/alex-cipher",  # Only one instance despite 3 mentions
+            "/Person/jane-smith",   # Only one instance despite 2 mentions
+            # Document-scoped entities
+            "/Document/meeting-notes/daily-standup-2024-11-07/TodoItem/11-hash1",
+            "/Document/meeting-notes/daily-standup-2024-11-07/TodoItem/12-hash2",
+        ],
+        "wiki_link_resolution": [
+            # These wiki links should resolve via document registry, not normalization
+            ("[[Alex Cipher]]", "context-based-person-resolution"),
+            ("[[Jane Smith]]", "context-based-person-resolution")
         ]
     }
 ]

@@ -3,7 +3,7 @@ from datetime import datetime, timezone, date, timedelta # Added timedelta
 
 from pydantic import ValidationError
 
-from src.knowledgebase_processor.models.kb_entities import KbBaseEntity, KbPerson, KbTodoItem
+from knowledgebase_processor.models.kb_entities import KbBaseEntity, KbPerson, KbTodoItem
 
 class TestKbEntities(unittest.TestCase):
     def test_kb_base_entity_all_fields(self):

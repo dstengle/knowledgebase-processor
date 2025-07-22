@@ -16,6 +16,8 @@ from knowledgebase_processor.models.links import WikiLink
 from knowledgebase_processor.models.metadata import ExtractedEntity as ModelExtractedEntity
 from knowledgebase_processor.processor.processor import Processor
 from knowledgebase_processor.config.config import Config
+from knowledgebase_processor.utils.document_registry import DocumentRegistry
+from knowledgebase_processor.utils.id_generator import EntityIdGenerator
 
 
 class TestWikiLinkRDFGeneration(unittest.TestCase):
@@ -33,8 +35,16 @@ class TestWikiLinkRDFGeneration(unittest.TestCase):
             analyze_entities=False  # Test with entity analysis disabled
         )
         
-        # Create processor instance
-        self.processor = Processor(config=self.config)
+        # Create required dependencies
+        self.document_registry = DocumentRegistry()
+        self.id_generator = EntityIdGenerator(base_url="http://example.org/kb/")
+        
+        # Create processor instance with required parameters
+        self.processor = Processor(
+            document_registry=self.document_registry,
+            id_generator=self.id_generator,
+            config=self.config
+        )
 
     def test_wikilink_entities_added_to_document_metadata(self):
         """Test that WikiLink entities are added to document metadata."""

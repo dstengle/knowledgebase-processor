@@ -3,9 +3,9 @@
 import unittest
 from unittest.mock import Mock, patch
 
-from src.knowledgebase_processor.services.entity_service import EntityService
-from src.knowledgebase_processor.models.entities import ExtractedEntity
-from src.knowledgebase_processor.models.kb_entities import (
+from knowledgebase_processor.services.entity_service import EntityService
+from knowledgebase_processor.models.entities import ExtractedEntity
+from knowledgebase_processor.models.kb_entities import (
     KbPerson, KbOrganization, KbLocation, KbDateEntity
 )
 
@@ -229,7 +229,7 @@ class TestEntityService(unittest.TestCase):
         self.assertIn("folder/subfolder/file.md", kb_entity.source_document_uri)
         self.assertNotIn("\\", kb_entity.source_document_uri)
 
-    @patch('src.knowledgebase_processor.services.entity_service.get_logger')
+    @patch('knowledgebase_processor.services.entity_service.get_logger')
     def test_logging_for_supported_entity(self, mock_get_logger):
         """Test that processing supported entities generates appropriate log messages."""
         mock_logger = Mock()
@@ -246,11 +246,11 @@ class TestEntityService(unittest.TestCase):
         entity_service.transform_to_kb_entity(extracted_entity, "test.md")
         
         # Should log info about processing the entity
-        mock_logger.info.assert_called_with(
+        mock_logger.info.assert_called_once_with(
             "Processing entity: Test Person of type PERSON"
         )
 
-    @patch('src.knowledgebase_processor.services.entity_service.get_logger')
+    @patch('knowledgebase_processor.services.entity_service.get_logger')
     def test_logging_for_unsupported_entity(self, mock_get_logger):
         """Test that processing unsupported entities generates debug log messages."""
         mock_logger = Mock()
@@ -268,7 +268,7 @@ class TestEntityService(unittest.TestCase):
         
         self.assertIsNone(result)
         # Should log debug about unhandled entity type
-        mock_logger.debug.assert_called_with(
+        mock_logger.debug.assert_called_once_with(
             "Unhandled entity type: MONEY for text: '123.45'"
         )
 
