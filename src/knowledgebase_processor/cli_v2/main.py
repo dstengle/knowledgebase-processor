@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Optional
 import sys
 
-from .commands import init, scan, search, sync, status, config
+from .commands import init, scan, search, sync, publish, status, config
 from .utils import console, setup_error_handling
 from .interactive import InteractiveMode
 
@@ -48,13 +48,14 @@ def cli(ctx, version, config, verbose, quiet, no_color, yes):
     Quick Start:
       kb init          Configure processor for your documents
       kb scan          Process documents in current directory  
+      kb publish       Process + sync to SPARQL in one command
       kb search "todo" Search for content
       kb status        Show processing statistics
     
     \b
     Examples:
-      kb scan --watch  Continuously monitor for changes
-      kb sync fuseki   Sync to a SPARQL endpoint
+      kb publish --watch                   Continuous publishing mode
+      kb scan --sync --endpoint <url>      Process + sync to endpoint
       kb search --type todo "project tasks"
     """
     # Create context
@@ -99,6 +100,7 @@ cli.add_command(init.init_cmd)
 cli.add_command(scan.scan_cmd)
 cli.add_command(search.search_cmd)
 cli.add_command(sync.sync_cmd)
+cli.add_command(publish.publish_cmd)
 cli.add_command(status.status_cmd)
 cli.add_command(config.config_cmd)
 
