@@ -142,7 +142,7 @@ class SparqlService:
     def load_rdf_file(self, file_path: Path, graph_uri: Optional[str] = None,
                      endpoint_url: Optional[str] = None, update_endpoint_url: Optional[str] = None,
                      username: Optional[str] = None, password: Optional[str] = None,
-                     rdf_format: str = "turtle") -> None:
+                     rdf_format: str = "turtle", upsert: bool = False) -> None:
         """Load an RDF file into the SPARQL store.
         
         Args:
@@ -153,6 +153,7 @@ class SparqlService:
             username: Username for authentication
             password: Password for authentication
             rdf_format: Format of the RDF file
+            upsert: If True, performs upsert to avoid duplicates (default: False)
             
         Raises:
             ValueError: If required endpoints are not configured
@@ -180,11 +181,13 @@ class SparqlService:
             )
         
         try:
-            sparql_interface.load_file(file_path=str(file_path), graph_uri=graph_uri, format=rdf_format)
-            self.logger.info(f"Successfully loaded RDF file '{file_path}' into graph '{graph_uri}'.")
+            sparql_interface.load_file(file_path=str(file_path), graph_uri=graph_uri, format=rdf_format, upsert=upsert)
+            operation = "upserted" if upsert else "loaded"
+            self.logger.info(f"Successfully {operation} RDF file '{file_path}' into graph '{graph_uri}'.")
             
         except (SPARQLWrapperException, FileNotFoundError, Exception) as e:
-            self.logger.error(f"Failed to load RDF file '{file_path}': {e}")
+            operation = "upsert" if upsert else "load"
+            self.logger.error(f"Failed to {operation} RDF file '{file_path}': {e}")
             raise
     def load_rdf_files_batch(
         self,
@@ -196,6 +199,7 @@ class SparqlService:
         password: Optional[str] = None,
         rdf_format: str = "turtle",
         batch_size: int = 10,
+        upsert: bool = False,
     ) -> None:
         """
         Efficiently load a large number of RDF files into the SPARQL store in batches.
@@ -209,6 +213,7 @@ class SparqlService:
             password: Password for authentication
             rdf_format: Format of the RDF files
             batch_size: Number of files to load per batch
+            upsert: If True, performs upsert to avoid duplicates (default: False)
 
         Raises:
             Exception: If any batch fails to load
@@ -217,10 +222,12 @@ class SparqlService:
 
         total_files = len(file_paths)
         errors = []
+        operation = "Upserting" if upsert else "Loading"
+        
         for i in range(0, total_files, batch_size):
             batch = file_paths[i : i + batch_size]
             self.logger.info(
-                f"Loading RDF batch {i // batch_size + 1} ({len(batch)} files: {i + 1}-{min(i + batch_size, total_files)})"
+                f"{operation} RDF batch {i // batch_size + 1} ({len(batch)} files: {i + 1}-{min(i + batch_size, total_files)})"
             )
             start_time = time()
             for file_path in batch:
@@ -233,16 +240,19 @@ class SparqlService:
                         username=username,
                         password=password,
                         rdf_format=rdf_format,
+                        upsert=upsert,
                     )
                 except Exception as e:
                     errors.append((str(file_path), str(e)))
             elapsed = time() - start_time
+            operation_past = "upserted" if upsert else "loaded"
             self.logger.info(
-                f"Batch {i // batch_size + 1} loaded in {elapsed:.2f}s"
+                f"Batch {i // batch_size + 1} {operation_past} in {elapsed:.2f}s"
             )
         if errors:
+            operation_lower = "upserting" if upsert else "loading"
             self.logger.error(
-                f"Batch loading completed with {len(errors)} errors. See log for details."
+                f"Batch {operation_lower} completed with {len(errors)} errors. See log for details."
             )
             for file_path, err in errors:
                 self.logger.error(f"File: {file_path} | Error: {err}")

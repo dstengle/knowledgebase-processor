@@ -19,21 +19,24 @@ from ...services.orchestrator import OrchestratorService
 @click.option('--dry-run', is_flag=True, help='Preview sync without uploading')
 @click.option('--force', '-f', is_flag=True, help='Force upload even if data exists')
 @click.option('--clear-first', is_flag=True, help='Clear existing data before upload')
+@click.option('--upsert/--no-upsert', default=True, help='Use upsert to avoid duplicates (default: enabled)')
 @click.option('--batch-size', type=int, default=1000, help='Number of triples per batch')
 @click.pass_obj
-def sync_cmd(ctx, endpoint, graph, username, password, dataset, dry_run, force, clear_first, batch_size):
+def sync_cmd(ctx, endpoint, graph, username, password, dataset, dry_run, force, clear_first, upsert, batch_size):
     """🔄 Sync knowledge base to SPARQL endpoint.
     
     Uploads your processed knowledge base to a SPARQL endpoint like Fuseki.
-    Supports authentication and various sync strategies.
+    Supports authentication and various sync strategies. By default, uses upsert
+    to avoid creating duplicate triples.
     
     \b
     Examples:
-      kb sync                                    Use configured endpoint
+      kb sync                                    Use configured endpoint with upsert
       kb sync http://localhost:3030/kb           Specify endpoint
       kb sync fuseki --dataset kb-test           Use preset with dataset
       kb sync --dry-run                          Preview what would be synced
       kb sync --clear-first                      Replace existing data
+      kb sync --no-upsert                        Disable upsert (may create duplicates)
     """
     start_time = time.time()
     
@@ -75,12 +78,16 @@ def sync_cmd(ctx, endpoint, graph, username, password, dataset, dry_run, force, 
     console.print(f"  📊 Graph: [cyan]{graph}[/cyan]")
     console.print(f"  👤 Authentication: {'Yes' if username else 'No'}")
     console.print(f"  📦 Batch size: {batch_size:,} triples")
+    console.print(f"  🔄 Upsert mode: {'Enabled' if upsert else 'Disabled'}")
     
     if dry_run:
         console.print("  🔍 [yellow]Dry run mode - no data will be uploaded[/yellow]")
     
     if clear_first:
         print_warning("⚠️  Clear-first mode - existing data will be removed!")
+    
+    if not upsert:
+        print_warning("⚠️  Upsert disabled - may create duplicate triples!")
     
     console.print()
     
@@ -129,6 +136,7 @@ def sync_cmd(ctx, endpoint, graph, username, password, dataset, dry_run, force, 
                 username=username,
                 password=password,
                 clear_first=clear_first,
+                upsert=upsert,
                 callback=progress_callback
             )
             

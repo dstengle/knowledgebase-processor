@@ -431,6 +431,7 @@ class OrchestratorService:
         username: Optional[str] = None,
         password: Optional[str] = None,
         clear_first: bool = False,
+        upsert: bool = True,
         callback: Optional[callable] = None
     ) -> Dict[str, Any]:
         """Sync knowledge base to SPARQL endpoint.
@@ -441,6 +442,7 @@ class OrchestratorService:
             username: Username for authentication
             password: Password for authentication
             clear_first: Clear existing data first
+            upsert: Use upsert to avoid duplicates (default: True)
             callback: Progress callback
             
         Returns:
@@ -472,7 +474,8 @@ class OrchestratorService:
                 endpoint_url=endpoint_url,
                 cleanup=True,
                 username=username,
-                password=password
+                password=password,
+                upsert=upsert
             )
             
             sync_time = time.time() - start_time
