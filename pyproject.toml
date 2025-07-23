@@ -14,6 +14,8 @@ pyyaml = "^6.0.2"
 tomli = "^2.2.1"
 spacy = "^3.7.0"
 rdflib = "^7.0.0"
+click = "^8.1.0"
+rich = "^13.7.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.0"
@@ -26,6 +28,7 @@ SPARQLWrapper = "^2.0.0"
 
 [tool.poetry.scripts]
 kbp = "knowledgebase_processor.cli:main"
+kb = "knowledgebase_processor.cli_v2.main:main"
 test = "scripts.run_tests:main"
 
 [build-system]
