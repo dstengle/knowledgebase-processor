@@ -6,6 +6,7 @@ from typing import Optional
 import yaml
 
 from ..utils import console, print_success, print_error, print_info, show_panel, create_table, format_path
+from ...services.orchestrator import OrchestratorService
 
 
 @click.command('config')
@@ -33,80 +34,117 @@ def config_cmd(ctx, key, value, list, edit, reset, is_global, path):
     """
     console.print(f"\n⚙️ [heading]Configuration Management[/heading]\n")
     
-    # Determine config path
-    if is_global:
-        config_path = Path.home() / ".kbp" / "global-config.yaml"
-        scope_name = "Global"
-    else:
-        # Find local knowledge base
-        kb_path = Path(path).resolve() if path else Path.cwd()
-        kbp_dir = kb_path / ".kbp"
-        
-        if not kbp_dir.exists():
-            # Look in parent directories
-            current = kb_path
-            while current != current.parent:
-                if (current / ".kbp").exists():
-                    kbp_dir = current / ".kbp"
-                    kb_path = current
-                    break
-                current = current.parent
-            else:
-                print_error("No knowledge base found. Run 'kb init' first.")
-                return
-        
-        config_path = kbp_dir / "config.yaml"
-        scope_name = kb_path.name
+    # Initialize orchestrator service
+    orchestrator = OrchestratorService(Path(path) if path else None)
+    
+    # Check if knowledge base is initialized for local config
+    if not is_global and not orchestrator.is_initialized():
+        print_error("No knowledge base found. Run 'kb init' first.")
+        return
+    
+    # Determine scope
+    scope_name = "Global" if is_global else "Project"
     
     print_info(f"Configuration scope: [cyan]{scope_name}[/cyan]")
-    console.print(f"📁 Config file: {format_path(config_path)}")
+    if not is_global:
+        config = orchestrator.get_project_config()
+        if config:
+            console.print(f"📁 Project: {format_path(config.configured_path)}")
     console.print()
-    
-    # Load existing configuration
-    config = {}
-    if config_path.exists():
-        try:
-            with open(config_path, 'r') as f:
-                config = yaml.safe_load(f) or {}
-        except Exception as e:
-            print_error(f"Error loading config: {e}")
-            return
-    else:
-        if not is_global:
-            print_error("Configuration file not found. Run 'kb init' first.")
-            return
     
     # Handle different operations
     if reset:
-        if click.confirm(f"Reset {scope_name.lower()} configuration to defaults?"):
-            default_config = _get_default_config(is_global)
-            _save_config(config_path, default_config)
-            print_success("Configuration reset to defaults")
+        if is_global:
+            print_error("Global configuration reset not implemented")
+            return
+        else:
+            if click.confirm(f"Reset {scope_name.lower()} configuration to defaults?"):
+                # Re-initialize with same project name
+                config = orchestrator.get_project_config()
+                if config:
+                    orchestrator.initialize_project(
+                        path=config.configured_path,
+                        project_name=config.project_name,
+                        force=True
+                    )
+                    print_success("Configuration reset to defaults")
         return
     
     elif edit:
-        # Open in editor
-        editor = click.get_app_dir('kb') or 'nano'  # fallback
-        try:
-            click.edit(filename=str(config_path))
-            print_success("Configuration file updated")
-        except Exception as e:
-            print_error(f"Error opening editor: {e}")
+        # Open config file in editor
+        if is_global:
+            print_error("Global configuration editing not implemented")
+        else:
+            kbp_dir = orchestrator._find_kbp_directory()
+            if kbp_dir:
+                config_path = kbp_dir / "config.yaml"
+                try:
+                    click.edit(filename=str(config_path))
+                    print_success("Configuration file updated")
+                except Exception as e:
+                    print_error(f"Error opening editor: {e}")
         return
     
     elif list or (not key and not value):
-        # List all configuration
-        _display_config(config, scope_name)
+        # List all configuration using orchestrator
+        if is_global:
+            print_error("Global configuration not implemented")
+        else:
+            kbp_dir = orchestrator._find_kbp_directory()
+            if kbp_dir:
+                config_path = kbp_dir / "config.yaml"
+                if config_path.exists():
+                    with open(config_path, 'r') as f:
+                        config_data = yaml.safe_load(f) or {}
+                    _display_config(config_data, scope_name)
         return
     
     elif key and not value:
-        # Show specific key
-        _display_config_key(config, key)
+        # Show specific key using orchestrator
+        if is_global:
+            print_error("Global configuration not implemented")
+        else:
+            value = orchestrator.get_config_value(key)
+            if value is None:
+                print_error(f"Configuration key '{key}' not found")
+                
+                # Suggest similar keys
+                kbp_dir = orchestrator._find_kbp_directory()
+                if kbp_dir:
+                    config_path = kbp_dir / "config.yaml"
+                    if config_path.exists():
+                        with open(config_path, 'r') as f:
+                            config_data = yaml.safe_load(f) or {}
+                        all_keys = _get_all_keys(config_data)
+                        similar = [k for k in all_keys if key.lower() in k.lower() or k.lower() in key.lower()]
+                        
+                        if similar:
+                            console.print("\n[muted]Similar keys found:[/muted]")
+                            for sim_key in similar[:5]:
+                                console.print(f"  • {sim_key}")
+            else:
+                _display_value(key, value)
         return
     
     elif key and value:
-        # Set configuration value
-        _set_config_value(config, config_path, key, value)
+        # Set configuration value using orchestrator
+        if is_global:
+            print_error("Global configuration not implemented")
+        else:
+            old_value = orchestrator.get_config_value(key)
+            success = orchestrator.set_config_value(key, value)
+            
+            if success:
+                print_success(f"Configuration updated: {key} = {value}")
+                if old_value is not None:
+                    console.print(f"  Previous value: [dim]{old_value}[/dim]")
+                    
+                # Special handling for SPARQL endpoint configuration
+                if key == "sparql.endpoint" or key == "sparql.graph":
+                    console.print("\n💡 [subheading]Next steps:[/subheading]")
+                    console.print("  • Run [cyan]kb sync[/cyan] to upload to the configured endpoint")
+            else:
+                print_error(f"Failed to set configuration value")
         return
     
     else:
@@ -216,6 +254,11 @@ def _display_config_key(config: dict, key: str):
         
         return
     
+    _display_value(key, value)
+
+
+def _display_value(key: str, value):
+    """Display a configuration value."""
     # Display the value
     console.print(f"🔧 [subheading]Configuration Value:[/subheading]\n")
     console.print(f"  Key: [cyan]{key}[/cyan]")
