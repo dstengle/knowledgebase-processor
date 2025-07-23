@@ -72,6 +72,7 @@ class ProcessingService:
         cleanup: bool = False,
         username: Optional[str] = None,
         password: Optional[str] = None,
+        upsert: bool = False,
     ) -> int:
         """
         Orchestrate processing and loading: process documents to RDF, load into SPARQL endpoint, and optionally clean up.
@@ -127,11 +128,14 @@ class ProcessingService:
                         update_endpoint_url=endpoint_url,
                         username=username,
                         password=password,
+                        upsert=upsert,
                     )
-                    logger.info(f"Loaded RDF file: {rdf_file}")
+                    operation = "Upserted" if upsert else "Loaded"
+                    logger.info(f"{operation} RDF file: {rdf_file}")
                     successes += 1
                 except Exception as e:
-                    logger.error(f"Failed to load {rdf_file}: {e}")
+                    operation = "upsert" if upsert else "load"
+                    logger.error(f"Failed to {operation} {rdf_file}: {e}")
                     errors.append((str(rdf_file), str(e)))
 
             logger.info(

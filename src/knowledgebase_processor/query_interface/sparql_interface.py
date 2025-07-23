@@ -256,31 +256,161 @@ class SparqlQueryInterface:
         
         self.update(query)
         logger.info("Data loaded successfully")
+
+    def upsert_data(self, graph: Graph, graph_uri: Optional[str] = None, document_uris: Optional[List[str]] = None) -> None:
+        """Upsert RDF data into the SPARQL store, avoiding duplicates.
+        
+        This method performs document-level upserts by first deleting all triples
+        associated with the specified documents, then inserting the new data.
+        
+        Args:
+            graph: RDFLib Graph containing the data to upsert
+            graph_uri: Optional named graph URI to upsert data into
+            document_uris: List of document URIs to replace. If None, extracts from graph.
+            
+        Raises:
+            SPARQLWrapperException: If the upsert operation fails
+        """
+        logger.info(f"Upserting {len(graph)} triples into SPARQL store")
+        
+        # Extract document URIs from the graph if not provided
+        if document_uris is None:
+            document_uris = self._extract_document_uris(graph)
+        
+        if document_uris:
+            logger.info(f"Found {len(document_uris)} documents to upsert: {document_uris}")
+            
+            # Step 1: Delete existing data for these documents
+            self._delete_document_data(document_uris, graph_uri)
+        
+        # Step 2: Insert new data
+        self.load_data(graph, graph_uri)
+        logger.info("Data upserted successfully")
+
+    def _extract_document_uris(self, graph: Graph) -> List[str]:
+        """Extract document URIs from an RDF graph.
+        
+        Args:
+            graph: RDFLib Graph to analyze
+            
+        Returns:
+            List of document URIs found in the graph
+        """
+        from rdflib import URIRef
+        
+        document_uris = set()
+        
+        # Look for kb:Document entities
+        kb_document = URIRef("http://example.org/kb/Document")
+        for subject, predicate, obj in graph:
+            if predicate == URIRef("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") and obj == kb_document:
+                document_uris.add(str(subject))
+        
+        # Also look for entities that reference documents via kb:sourceDocument
+        kb_source_document = URIRef("http://example.org/kb/sourceDocument")
+        for subject, predicate, obj in graph:
+            if predicate == kb_source_document:
+                document_uris.add(str(obj))
+        
+        return list(document_uris)
+
+    def _delete_document_data(self, document_uris: List[str], graph_uri: Optional[str] = None) -> None:
+        """Delete all RDF data associated with specific documents.
+        
+        Args:
+            document_uris: List of document URIs to delete data for
+            graph_uri: Optional named graph URI to delete from
+            
+        Raises:
+            SPARQLWrapperException: If the delete operation fails
+        """
+        if not document_uris:
+            return
+        
+        logger.info(f"Deleting existing data for {len(document_uris)} documents")
+        
+        # Delete each document individually to avoid VALUES clause issues
+        for document_uri in document_uris:
+            if graph_uri:
+                query = f"""
+                PREFIX kb: <http://example.org/kb/>
+                
+                DELETE {{
+                    GRAPH <{graph_uri}> {{
+                        ?entity ?predicate ?object .
+                        <{document_uri}> ?docPredicate ?docObject .
+                    }}
+                }}
+                WHERE {{
+                    GRAPH <{graph_uri}> {{
+                        {{
+                            # Delete all entities that reference this document as source
+                            ?entity kb:sourceDocument <{document_uri}> .
+                            ?entity ?predicate ?object .
+                        }}
+                        UNION
+                        {{
+                            # Delete the document entity itself
+                            <{document_uri}> ?docPredicate ?docObject .
+                        }}
+                    }}
+                }}
+                """
+            else:
+                query = f"""
+                PREFIX kb: <http://example.org/kb/>
+                
+                DELETE {{
+                    ?entity ?predicate ?object .
+                    <{document_uri}> ?docPredicate ?docObject .
+                }}
+                WHERE {{
+                    {{
+                        # Delete all entities that reference this document as source
+                        ?entity kb:sourceDocument <{document_uri}> .
+                        ?entity ?predicate ?object .
+                    }}
+                    UNION
+                    {{
+                        # Delete the document entity itself
+                        <{document_uri}> ?docPredicate ?docObject .
+                    }}
+                }}
+                """
+            
+            self.update(query)
+            logger.debug(f"Deleted existing data for document: {document_uri}")
+        
+        logger.info(f"Deleted existing data for all {len(document_uris)} documents")
     
-    def load_file(self, file_path: str, graph_uri: Optional[str] = None, format: str = 'turtle') -> None:
+    def load_file(self, file_path: str, graph_uri: Optional[str] = None, format: str = 'turtle', upsert: bool = False) -> None:
         """Load RDF data from a file into the SPARQL store.
         
         Args:
             file_path: Path to the RDF file
             graph_uri: Optional named graph URI to load data into
             format: RDF format of the file (default: turtle)
+            upsert: If True, performs upsert to avoid duplicates (default: False)
             
         Raises:
             SPARQLWrapperException: If the file loading fails
         """
-        logger.info(f"Loading RDF file: {file_path}")
+        logger.info(f"{'Upserting' if upsert else 'Loading'} RDF file: {file_path}")
         
         try:
             # Parse the file into a graph
             graph = Graph()
             graph.parse(file_path, format=format)
             
-            # Load the graph data
-            self.load_data(graph, graph_uri)
+            # Load or upsert the graph data
+            if upsert:
+                self.upsert_data(graph, graph_uri)
+            else:
+                self.load_data(graph, graph_uri)
             
         except Exception as e:
-            logger.error(f"Failed to load file {file_path}: {e}")
-            raise SPARQLWrapperException(f"File loading failed: {e}") from e
+            logger.error(f"Failed to {'upsert' if upsert else 'load'} file {file_path}: {e}")
+            raise SPARQLWrapperException(f"File {'upserting' if upsert else 'loading'} failed: {e}") from e
     
     def clear_graph(self, graph_uri: Optional[str] = None) -> None:
         """Clear all data from a graph.
