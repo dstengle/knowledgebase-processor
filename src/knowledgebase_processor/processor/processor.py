@@ -160,6 +160,26 @@ class Processor:
                 wikilinks = wikilink_extractor.extract(document, kb_document.kb_id)
                 all_entities.extend(wikilinks)
 
+                # Extract and convert todo items to KB entities
+                for element in document.elements:
+                    if isinstance(element, TodoItem):
+                        # Generate a stable, human-readable IRI for the todo
+                        todo_id = self.id_generator.generate_todo_id(kb_document.kb_id, element.text)
+                        
+                        # Create KbTodoItem entity
+                        kb_todo = KbTodoItem(
+                            kb_id=todo_id,
+                            label=element.text,
+                            description=element.text,
+                            is_completed=element.is_checked,
+                            source_document_uri=kb_document.kb_id,
+                            extracted_from_text_span=(
+                                element.position.get("start", 0),
+                                element.position.get("end", 0)
+                            ) if element.position else None
+                        )
+                        all_entities.append(kb_todo)
+
                 # Run analyzers for NER
                 if self.analyzers:
                     for analyzer in self.analyzers:
