@@ -50,37 +50,37 @@ jobs:
         name: python-wheel
         path: dist/
 
-  build-executable:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+  # build-executable:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, windows-latest, macos-latest]
     
-    steps:
-    - uses: actions/checkout@v4
+  #   steps:
+  #   - uses: actions/checkout@v4
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: '3.12'
     
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
+  #   - name: Install Poetry
+  #     uses: snok/install-poetry@v1
     
-    - name: Install dependencies
-      run: |
-        poetry install --only=main
+  #   - name: Install dependencies
+  #     run: |
+  #       poetry install --only=main
     
-    - name: Install PyInstaller
-      run: |
-        poetry add --group dev pyinstaller
+  #   - name: Install PyInstaller
+  #     run: |
+  #       poetry add --group dev pyinstaller
     
-    - name: Build executable
-      run: |
-        poetry run pyinstaller --onefile --name kb src/knowledgebase_processor/cli_v2/main.py
+  #   - name: Build executable
+  #     run: |
+  #       poetry run pyinstaller --onefile --name kb src/knowledgebase_processor/cli_v2/main.py
     
-    - name: Upload executable
-      uses: actions/upload-artifact@v4
-      with:
-        name: executable-${{ matrix.os }}
-        path: dist/kb*
+  #   - name: Upload executable
+  #     uses: actions/upload-artifact@v4
+  #     with:
+  #       name: executable-${{ matrix.os }}
+  #       path: dist/kb*
