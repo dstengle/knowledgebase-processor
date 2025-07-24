@@ -1,0 +1,68 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+tests/
+docs/
+examples/
+scripts/
+*.md
+!README.md
+pytest.ini
+.github/
+.gitlab-ci.yml
+coordination/
+memory/
+output/
+rdf_output/
+metadata-tmp/
+rdf-tmp/
+tmp/
+tmp-sample-data/
+sample_data/
+test-cli/
+task_log.jsonl
+task_queue.jsonl
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+!Dockerfile
+.dockerignore
+
+# Buildpack
+project.toml
+pack.toml
+
+# Keep only essential files for runtime

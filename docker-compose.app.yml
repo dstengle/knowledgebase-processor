@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  kbp:
+    build: .
+    image: knowledgebase-processor:latest
+    container_name: kbp-app
+    volumes:
+      # Mount your documents directory
+      - ./:/workspace
+      # Persist configuration and metadata
+      - kbp-data:/workspace/.kbp
+    environment:
+      # Configure paths for Docker environment
+      - KBP_WORK_DIR=/workspace
+      - KBP_HOME=/workspace/.kbp
+      - KBP_KNOWLEDGE_BASE_PATH=/workspace
+      - KBP_METADATA_STORE_PATH=/workspace/.kbp/metadata
+      # Optional: Set config file path
+      # - KBP_CONFIG_PATH=/workspace/kbp_config.json
+    working_dir: /workspace
+    # Run in interactive mode by default
+    stdin_open: true
+    tty: true
+    command: kb --help
+
+  # Watch mode service for continuous processing
+  kbp-watch:
+    build: .
+    image: knowledgebase-processor:latest
+    container_name: kbp-watch
+    volumes:
+      - ./:/workspace
+      - kbp-data:/workspace/.kbp
+    environment:
+      - KBP_WORK_DIR=/workspace
+      - KBP_HOME=/workspace/.kbp
+      - KBP_KNOWLEDGE_BASE_PATH=/workspace
+      - KBP_METADATA_STORE_PATH=/workspace/.kbp/metadata
+    working_dir: /workspace
+    command: kb publish --watch
+    profiles:
+      - watch
+
+  # Fuseki SPARQL server (from existing compose file)
+  fuseki:
+    image: stain/jena-fuseki:latest
+    container_name: fuseki-server
+    ports:
+      - "3030:3030"
+    environment:
+      ADMIN_PASSWORD: admin
+      JVM_ARGS: -Xmx2g
+    volumes:
+      - fuseki-data:/fuseki
+    command: --update --mem /ds
+
+volumes:
+  kbp-data:
+    driver: local
+  fuseki-data:
+    driver: local
+
+networks:
+  default:
+    name: kbp-network

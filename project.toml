@@ -1,0 +1,87 @@
+# Cloud Native Buildpack configuration for knowledgebase-processor
+# Addresses srsly compilation requirements
+
+# Specify the builder - use full builder for C compilation support
+# The 'full' builder includes build-essential and other compilation tools
+[_]
+schema-version = "0.2"
+
+# Build configuration
+[[build.env]]
+name = "BP_CPYTHON_VERSION"
+value = "3.12.*"
+
+[[build.env]]
+name = "BP_POETRY_VERSION"
+value = "1.8.*"
+
+# Enable pip install for better C extension handling
+[[build.env]]
+name = "BP_PIP_INSTALL_FLAGS"
+value = "--no-binary :all:"
+
+# Ensure we have compilation tools available
+[[build.env]]
+name = "BP_INCLUDE_FILES"
+value = "pyproject.toml poetry.lock src/ README.md"
+
+# Buildpacks to use
+[[build.buildpacks]]
+uri = "gcr.io/paketo-buildpacks/python"
+
+# Or use specific buildpack versions
+# [[build.buildpacks]]
+# uri = "gcr.io/paketo-buildpacks/cpython"
+# version = "latest"
+# 
+# [[build.buildpacks]]
+# uri = "gcr.io/paketo-buildpacks/poetry"
+# version = "latest"
+# 
+# [[build.buildpacks]]
+# uri = "gcr.io/paketo-buildpacks/poetry-install"
+# version = "latest"
+# 
+# [[build.buildpacks]]
+# uri = "gcr.io/paketo-buildpacks/python-start"
+# version = "latest"
+
+# Process type
+[[processes]]
+type = "cli"
+command = "kb"
+default = true
+
+[[processes]]
+type = "worker"
+command = "kb publish --watch /workspace"
+
+# Slices for layer reuse
+[slices]
+paths = ["src/knowledgebase_processor"]
+
+# Metadata
+[metadata]
+include_files = ["README.md", "LICENSE"]
+
+# Build exclusions
+[build]
+exclude = [
+  ".git",
+  ".github",
+  "tests",
+  "docs",
+  "examples",
+  "scripts",
+  "*.pyc",
+  "__pycache__",
+  ".pytest_cache",
+  "coordination",
+  "memory",
+  "output",
+  "sample_data",
+  "tmp*",
+  "*.log",
+  "*.db",
+  "*.ttl"
+]
