@@ -1,0 +1,75 @@
+# Alpine-based Dockerfile for knowledgebase-processor
+# Smaller image size but requires more careful dependency management
+
+# Build stage
+FROM python:3.12-alpine as builder
+
+# Install build dependencies for Alpine
+# Note: Alpine uses musl libc which can cause compatibility issues
+RUN apk add --no-cache \
+    gcc \
+    g++ \
+    musl-dev \
+    linux-headers \
+    python3-dev \
+    openblas-dev \
+    gfortran \
+    build-base \
+    cmake \
+    # Required for some Python packages
+    libffi-dev \
+    openssl-dev
+
+# Install poetry
+RUN pip install --no-cache-dir poetry==1.8.2
+
+WORKDIR /app
+
+# Copy dependency files
+COPY pyproject.toml poetry.lock ./
+
+# Configure poetry
+RUN poetry config virtualenvs.create false
+
+# Install dependencies - longer build time due to compilation
+RUN poetry install --no-interaction --no-ansi --no-root --only main
+
+# Copy and install application
+COPY src/ ./src/
+COPY README.md ./
+RUN poetry install --no-interaction --no-ansi --only-root
+
+# Runtime stage
+FROM python:3.12-alpine
+
+# Install runtime dependencies only
+RUN apk add --no-cache \
+    openblas \
+    libgfortran \
+    libstdc++ \
+    # For health checks
+    curl
+
+# Create non-root user
+RUN adduser -D -u 1000 kbuser
+
+# Copy from builder
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+WORKDIR /app
+COPY --from=builder /app/src ./src
+COPY pyproject.toml README.md ./
+
+# Create data directories
+RUN mkdir -p /app/data /app/output /app/metadata && \
+    chown -R kbuser:kbuser /app
+
+USER kbuser
+
+ENV PYTHONUNBUFFERED=1
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD kb --version || exit 1
+
+CMD ["kb", "--help"]

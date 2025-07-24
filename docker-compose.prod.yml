@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # Knowledge Base Processor Application
+  kb-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: knowledgebase-processor:latest
+    container_name: kb-processor
+    networks:
+      - knowledgebase-processor
+    volumes:
+      # Mount data directory for input files
+      - ./data:/app/data:ro
+      # Mount output directory for results
+      - ./output:/app/output
+      # Mount metadata store
+      - ./metadata:/app/metadata
+    environment:
+      - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      fuseki:
+        condition: service_healthy
+    command: ["kb", "publish", "/app/data", "--watch"]
+
+  # Knowledge Base API Service
+  kb-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: knowledgebase-processor:latest
+    container_name: kb-api
+    networks:
+      - knowledgebase-processor
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./metadata:/app/metadata:ro
+    environment:
+      - LOG_LEVEL=INFO
+      - PYTHONUNBUFFERED=1
+      - FUSEKI_URL=http://fuseki:3030
+    depends_on:
+      fuseki:
+        condition: service_healthy
+    command: ["kb", "serve", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Fuseki Triple Store (existing service)
+  fuseki:
+    image: stain/jena-fuseki:latest
+    container_name: kb-fuseki
+    ports:
+      - "13030:3030"
+    networks:
+      - knowledgebase-processor
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx2g
+    volumes:
+      - fuseki-data:/fuseki
+      - ./data:/staging
+    command: ["/jena-fuseki/fuseki-server", "--update", "--mem", "/kb"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  fuseki-data:
+
+networks:
+  knowledgebase-processor:
+    external: true

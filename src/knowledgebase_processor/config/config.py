@@ -46,18 +46,29 @@ def load_config(config_path: Optional[str] = None) -> Config:
     Returns:
         Config object
         
+    Environment variables can override defaults:
+    - KBP_CONFIG_PATH: Path to config file
+    - KBP_KNOWLEDGE_BASE_PATH: Path to knowledge base directory
+    - KBP_METADATA_STORE_PATH: Path to metadata store directory
+    - KBP_HOME: Base directory for KBP files (defaults to ~/.kbp)
+    
     If config_path is not provided, the function will look for a config file
     in the following locations:
-    1. ./kbp_config.json
-    2. ~/.kbp_config.json
-    3. /etc/kbp_config.json
+    1. $KBP_CONFIG_PATH (if set)
+    2. ./kbp_config.json
+    3. $KBP_HOME/config.json or ~/.kbp/config.json
+    4. ~/.kbp_config.json
+    5. /etc/kbp_config.json
     
     If no config file is found, default values will be used.
     """
-    # Default configuration
+    # Get environment variables
+    kbp_home = os.getenv("KBP_HOME", os.path.expanduser("~/.kbp"))
+    
+    # Default configuration with environment variable support
     default_config = {
-        "knowledge_base_path": os.path.expanduser("~/knowledge_base"),
-        "metadata_store_path": os.path.expanduser("~/.kbp/metadata"),
+        "knowledge_base_path": os.getenv("KBP_KNOWLEDGE_BASE_PATH", os.getenv("KBP_WORK_DIR", os.getcwd())),
+        "metadata_store_path": os.getenv("KBP_METADATA_STORE_PATH", os.path.join(kbp_home, "metadata")),
         "file_patterns": ["**/*.md"],
         "exclude_patterns": [],
         "extract_frontmatter": True,
@@ -81,9 +92,19 @@ def load_config(config_path: Optional[str] = None) -> Config:
                 config_data = json.load(f)
                 return Config(**{**default_config, **config_data})
     
+    # Check for environment variable config path first
+    env_config_path = os.getenv("KBP_CONFIG_PATH")
+    if env_config_path:
+        env_config_file = Path(env_config_path)
+        if env_config_file.exists():
+            with open(env_config_file, 'r', encoding='utf-8') as f:
+                config_data = json.load(f)
+                return Config(**{**default_config, **config_data})
+    
     # Otherwise, look for config files in standard locations
     config_paths = [
         Path("./kbp_config.json"),
+        Path(kbp_home) / "config.json",
         Path(os.path.expanduser("~/.kbp_config.json")),
         Path("/etc/kbp_config.json")
     ]
