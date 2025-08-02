@@ -1,36 +1,48 @@
 """Entity service for handling entity transformation and KB ID generation."""
 
-import uuid
 from typing import Optional
 from urllib.parse import quote
 
 from ..models.entities import ExtractedEntity
 from ..models.kb_entities import KbBaseEntity, KbPerson, KbOrganization, KbLocation, KbDateEntity, KB
+from ..utils.id_generator import EntityIdGenerator
 from ..utils.logging import get_logger
 
 
 class EntityService:
     """Handles entity transformation and KB ID generation."""
     
-    def __init__(self):
+    def __init__(self, base_uri: str = "http://example.org/kb/"):
         """Initialize the EntityService."""
         self.logger = get_logger("knowledgebase_processor.services.entity")
+        self.id_generator = EntityIdGenerator(base_uri)
     
     def generate_kb_id(self, entity_type_str: str, text: str) -> str:
-        """Generates a unique knowledge base ID (URI) for an entity.
+        """Generates a deterministic knowledge base ID (URI) for an entity.
+        
+        Uses the new deterministic ID generation from ADR-0013.
         
         Args:
             entity_type_str: The type of entity (e.g., "Person", "Organization")
             text: The text content of the entity
             
         Returns:
-            A unique URI for the entity
+            A deterministic URI for the entity
         """
-        # Simple slugification: replace non-alphanumeric with underscore
-        slug = "".join(c if c.isalnum() else "_" for c in text.lower())
-        # Trim slug to avoid overly long URIs, e.g., first 50 chars
-        slug = slug[:50].strip('_')
-        return str(KB[f"{entity_type_str}/{slug}_{uuid.uuid4().hex[:8]}"])
+        if entity_type_str.lower() == "person":
+            return self.id_generator.generate_person_id(text)
+        elif entity_type_str.lower() == "organization":
+            return self.id_generator.generate_organization_id(text)
+        elif entity_type_str.lower() == "location":
+            return self.id_generator.generate_location_id(text)
+        elif entity_type_str.lower() == "project":
+            return self.id_generator.generate_project_id(text)
+        elif entity_type_str.lower() == "tag":
+            return self.id_generator.generate_tag_id(text)
+        else:
+            # Fallback for unknown entity types - use generic approach
+            normalized_name = self.id_generator._normalize_text_for_id(text)
+            return str(KB[f"{entity_type_str}/{normalized_name}"])
     
     def transform_to_kb_entity(self, 
                              extracted_entity: ExtractedEntity,
@@ -48,12 +60,8 @@ class EntityService:
         entity_label_upper = extracted_entity.label.upper()
         self.logger.info(f"Processing entity: {kb_id_text} of type {entity_label_upper}")
 
-        # Create a full URI for the source document
-        # Replace spaces with underscores and quote for URI safety.
-        # Ensure consistent path separators (/) before quoting.
-        normalized_path = source_doc_relative_path.replace("\\", "/")
-        safe_path_segment = quote(normalized_path.replace(" ", "_"))
-        full_document_uri = str(KB[f"Document/{safe_path_segment}"])
+        # Create a full URI for the source document using deterministic ID generation
+        full_document_uri = self.id_generator.generate_document_id(source_doc_relative_path)
 
         common_args = {
             "label": extracted_entity.text,
