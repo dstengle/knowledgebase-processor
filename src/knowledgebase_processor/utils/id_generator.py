@@ -1,11 +1,19 @@
 import hashlib
 import base64
 import re
+import unicodedata
 from urllib.parse import urljoin, quote
 
 class EntityIdGenerator:
     """
     Generates deterministic, unique identifiers for knowledge base entities.
+    
+    Implements the normalization rules from ADR-0013:
+    1. Unicode NFKD normalization
+    2. Convert to lowercase  
+    3. Replace non-alphanumeric with hyphens
+    4. Remove consecutive hyphens
+    5. Trim hyphens from start/end
     """
 
     def __init__(self, base_url: str):
@@ -19,6 +27,36 @@ class EntityIdGenerator:
             base_url += '/'
         self.base_url = base_url
 
+    def _normalize_text_for_id(self, text: str) -> str:
+        """
+        Normalizes text for use in deterministic IDs according to ADR-0013 rules.
+        
+        Args:
+            text: The text to normalize
+            
+        Returns:
+            Normalized text suitable for use in IDs
+        """
+        if not text:
+            return ""
+            
+        # 1. Unicode NFKD normalization
+        normalized = unicodedata.normalize('NFKD', text)
+        
+        # 2. Convert to lowercase
+        normalized = normalized.lower()
+        
+        # 3. Replace non-alphanumeric with hyphens
+        normalized = re.sub(r'[^a-z0-9]', '-', normalized)
+        
+        # 4. Remove consecutive hyphens
+        normalized = re.sub(r'-+', '-', normalized)
+        
+        # 5. Trim hyphens from start/end
+        normalized = normalized.strip('-')
+        
+        return normalized
+
     def _generate_deterministic_hash(self, *parts: str) -> str:
         """
         Creates a short, URL-safe hash from a set of input strings.
@@ -29,19 +67,116 @@ class EntityIdGenerator:
         # Use URL-safe base64 encoding and take the first 16 characters for a reasonable length
         return base64.urlsafe_b64encode(sha256_hash).decode('utf-8').rstrip('=')[:16]
 
-    def generate_document_id(self, normalized_path: str) -> str:
+    def generate_document_id(self, file_path: str) -> str:
         """
         Generates a unique, deterministic URI for a document entity.
+        
+        Uses the ADR-0013 pattern: /Document/{normalized-file-path}
 
         Args:
-            normalized_path: The normalized, unique path of the document.
+            file_path: The original file path of the document.
 
         Returns:
             A full URI for the document entity.
         """
-        # Sanitize the path for use in a URI
-        safe_path = quote(normalized_path)
-        return urljoin(self.base_url, f"documents/{safe_path}")
+        # Normalize the file path using ADR-0013 rules
+        normalized_path = self._normalize_text_for_id(file_path)
+        
+        # Remove file extension for the ID
+        if '.' in normalized_path:
+            normalized_path = normalized_path.rsplit('.', 1)[0]
+        
+        return urljoin(self.base_url, f"Document/{normalized_path}")
+
+    def generate_placeholder_document_id(self, title: str) -> str:
+        """
+        Generates a unique, deterministic URI for a placeholder document entity.
+        
+        Uses the ADR-0013 pattern: /PlaceholderDocument/{normalized-name}
+
+        Args:
+            title: The title or name of the placeholder document.
+
+        Returns:
+            A full URI for the placeholder document entity.
+        """
+        normalized_name = self._normalize_text_for_id(title)
+        return urljoin(self.base_url, f"PlaceholderDocument/{normalized_name}")
+
+    def generate_person_id(self, name: str) -> str:
+        """
+        Generates a unique, deterministic URI for a person entity.
+        
+        Uses the ADR-0013 pattern: /Person/{normalized-name}
+
+        Args:
+            name: The person's name.
+
+        Returns:
+            A full URI for the person entity.
+        """
+        normalized_name = self._normalize_text_for_id(name)
+        return urljoin(self.base_url, f"Person/{normalized_name}")
+
+    def generate_organization_id(self, name: str) -> str:
+        """
+        Generates a unique, deterministic URI for an organization entity.
+        
+        Uses the ADR-0013 pattern: /Organization/{normalized-name}
+
+        Args:
+            name: The organization's name.
+
+        Returns:
+            A full URI for the organization entity.
+        """
+        normalized_name = self._normalize_text_for_id(name)
+        return urljoin(self.base_url, f"Organization/{normalized_name}")
+
+    def generate_location_id(self, name: str) -> str:
+        """
+        Generates a unique, deterministic URI for a location entity.
+        
+        Uses the ADR-0013 pattern: /Location/{normalized-name}
+
+        Args:
+            name: The location's name.
+
+        Returns:
+            A full URI for the location entity.
+        """
+        normalized_name = self._normalize_text_for_id(name)
+        return urljoin(self.base_url, f"Location/{normalized_name}")
+
+    def generate_project_id(self, name: str) -> str:
+        """
+        Generates a unique, deterministic URI for a project entity.
+        
+        Uses the ADR-0013 pattern: /Project/{normalized-name}
+
+        Args:
+            name: The project's name.
+
+        Returns:
+            A full URI for the project entity.
+        """
+        normalized_name = self._normalize_text_for_id(name)
+        return urljoin(self.base_url, f"Project/{normalized_name}")
+
+    def generate_tag_id(self, name: str) -> str:
+        """
+        Generates a unique, deterministic URI for a tag entity.
+        
+        Uses the ADR-0013 pattern: /Tag/{normalized-name}
+
+        Args:
+            name: The tag's name.
+
+        Returns:
+            A full URI for the tag entity.
+        """
+        normalized_name = self._normalize_text_for_id(name)
+        return urljoin(self.base_url, f"Tag/{normalized_name}")
 
     def generate_wikilink_id(self, source_document_id: str, original_text: str) -> str:
         """

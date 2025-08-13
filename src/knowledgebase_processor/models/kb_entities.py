@@ -2,11 +2,10 @@ from datetime import datetime, timezone
 from typing import Optional, Tuple, List
 
 from pydantic import BaseModel, Field
-from rdflib.namespace import SDO as SCHEMA, RDFS, XSD, Namespace # Changed SCHEMA to SDO as SCHEMA
-from rdflib import URIRef
+from rdflib.namespace import SDO as SCHEMA, RDFS, XSD
 
-# Define custom namespace
-KB = Namespace("http://example.org/kb/")
+# Import KB namespace from centralized configuration
+from knowledgebase_processor.config.vocabulary import KB
 
 
 class KbBaseEntity(BaseModel):
@@ -325,4 +324,53 @@ class KbWikiLink(KbBaseEntity):
         json_schema_extra = {
             "rdf_types": [KB.WikiLink],
             "rdfs_label_fallback_fields": ["alias", "target_path"],
+        }
+
+
+class KbPlaceholderDocument(KbBaseEntity):
+    """
+    Pydantic model for placeholder document entities.
+    
+    PlaceholderDocuments represent wiki links that reference non-existent documents.
+    They serve as forward references and can be promoted to actual KbDocument entities
+    when the referenced documents are created.
+    """
+    title: str = Field(
+        ...,
+        description="The title extracted from the wiki link that references this placeholder.",
+        json_schema_extra={
+            "rdf_property": SCHEMA.name,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    normalized_name: str = Field(
+        ...,
+        description="The normalized name used to generate the deterministic ID.",
+        json_schema_extra={
+            "rdf_property": KB.normalizedName,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    referenced_by: Optional[List[str]] = Field(
+        default_factory=list,
+        description="List of document URIs that reference this placeholder.",
+        json_schema_extra={
+            "rdf_property": KB.referencedBy,
+            "is_object_property": True,
+            "rdf_datatype": XSD.anyURI,
+        },
+    )
+    expected_path: Optional[str] = Field(
+        None,
+        description="The expected file path where this document should be created.",
+        json_schema_extra={
+            "rdf_property": KB.expectedPath,
+            "rdf_datatype": XSD.string,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.PlaceholderDocument, SCHEMA.CreativeWork],
+            "rdfs_label_fallback_fields": ["title", "normalized_name"],
         }

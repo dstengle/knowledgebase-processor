@@ -1,0 +1,8 @@
+{
+  "source_repository": "https://github.com/dstengle/knowledgebase-vocabulary",
+  "source_commit": "main",
+  "sync_date": "2025-08-13T14:00:00Z",
+  "namespace": "http://example.org/kb/vocab#",
+  "version": "0.1.0-dev",
+  "notes": "Initial vocabulary sync from tmp-vocab/kb.ttl"
+}

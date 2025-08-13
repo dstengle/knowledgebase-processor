@@ -6,9 +6,7 @@ from rdflib import Graph, Literal, Namespace, URIRef
 from rdflib.namespace import RDF, RDFS, XSD, SDO as SCHEMA
 
 from knowledgebase_processor.models.kb_entities import KbBaseEntity
-
-# Define Namespaces
-KB = Namespace("http://example.org/kb/") # Ensure this matches kb_entities.py
+from knowledgebase_processor.config.vocabulary import KB
 
 
 class RdfConverter:
