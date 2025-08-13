@@ -2,10 +2,10 @@ from datetime import datetime, timezone
 from typing import Optional, Tuple, List
 
 from pydantic import BaseModel, Field
-from rdflib.namespace import SDO as SCHEMA, RDFS, XSD, Namespace # Changed SCHEMA to SDO as SCHEMA
+from rdflib.namespace import SDO as SCHEMA, RDFS, XSD
 
-# Define custom namespace
-KB = Namespace("http://example.org/kb/")
+# Import KB namespace from centralized configuration
+from knowledgebase_processor.config.vocabulary import KB
 
 
 class KbBaseEntity(BaseModel):

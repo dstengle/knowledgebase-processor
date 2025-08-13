@@ -1,5 +1,30 @@
 # Claude Code Configuration for Claude Flow
 
+## Vocabulary Reference
+
+The project uses an RDF vocabulary from https://github.com/dstengle/knowledgebase-vocabulary/
+
+### Key Information for LLM Agents:
+
+1. **Always import the vocabulary namespace from the centralized configuration:**
+   ```python
+   from knowledgebase_processor.config.vocabulary import KB
+   ```
+
+2. **Never hardcode the namespace URI.** The namespace is managed centrally in `/vocabulary/VERSION.json`
+
+3. **The vocabulary is stored locally at `/vocabulary/kb.ttl` for deterministic builds**
+
+4. **Documentation is available at:**
+   - `/vocabulary/README.md` - Vocabulary usage and update instructions
+   - `/docs/development/vocabulary-usage-guide.md` - Developer guide for LLM agents
+   - `/docs/architecture/decisions/0014-vocabulary-reference-strategy.md` - Architecture decision
+
+5. **To update the vocabulary from the source repository:**
+   ```bash
+   ./scripts/sync-vocabulary.sh sync
+   ```
+
 ## 🚨 CRITICAL: PARALLEL EXECUTION AFTER SWARM INIT
 
 **MANDATORY RULE**: Once swarm is initialized with memory, ALL subsequent operations MUST be parallel:
@@ -904,3 +929,9 @@ Claude Flow extends the base coordination with:
 ---
 
 Remember: **Claude Flow coordinates, Claude Code creates!** Start with `mcp__claude-flow__swarm_init` to enhance your development workflow.
+
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.

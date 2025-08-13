@@ -1,0 +1,439 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix doco: <http://purl.org/spar/doco/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema: <http://schema.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rel: <http://purl.org/vocab/relationship/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# ============================================
+# KB VOCABULARY DEFINITION
+# ============================================
+
+kb: a owl:Ontology ;
+    dcterms:title "Personal Knowledge Base Vocabulary" ;
+    dcterms:description "Vocabulary for markdown-based knowledge management" ;
+    dcterms:created "2024-11-15"^^xsd:date ;
+    owl:imports <http://xmlns.com/foaf/0.1/> ,
+                <http://purl.org/spar/doco> ,
+                <http://purl.org/vocab/relationship/> .
+
+# ============================================
+# DOCUMENT CLASSES
+# ============================================
+
+# Base document class
+kb:Document a owl:Class ;
+    rdfs:subClassOf schema:Article ;
+    rdfs:comment "A markdown document in the knowledge base" .
+
+# Document type hierarchy
+kb:DailyNote a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Daily notes document (type: daily-note)" .
+
+kb:Meeting a owl:Class ;
+    rdfs:subClassOf kb:Document, schema:Event ;
+    rdfs:comment "Meeting notes document" .
+
+kb:GroupMeeting a owl:Class ;
+    rdfs:subClassOf kb:Meeting ;
+    rdfs:comment "Group meeting notes (type: group-meeting)" .
+
+kb:OneOnOneMeeting a owl:Class ;
+    rdfs:subClassOf kb:Meeting ;
+    rdfs:comment "1-on-1 meeting notes (type: 1on1-meeting)" .
+
+kb:PersonProfile a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Person profile document (type: person)" .
+
+kb:BookNote a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Book notes document (type: book)" .
+
+kb:PlaceNote a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Place/location notes (type: place)" .
+
+kb:ProjectDocument a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Project-related document" .
+
+kb:ResearchNote a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Research documents" .
+
+kb:ReadingList a owl:Class ;
+    rdfs:subClassOf kb:Document ;
+    rdfs:comment "Reading list or book collection" .
+
+# ============================================
+# DOCUMENT STRUCTURE CLASSES
+# ============================================
+
+kb:Section a owl:Class ;
+    rdfs:subClassOf doco:Section ;
+    rdfs:comment "A section in a markdown document, marked by ## headers" .
+
+kb:WikiLink a owl:Class ;
+    rdfs:comment "A [[wiki-style]] link within a document" .
+
+kb:TodoItem a owl:Class ;
+    rdfs:subClassOf doco:ListItem ;
+    rdfs:comment "A checkbox todo item: - [ ] or - [x]" .
+
+kb:Property a owl:Class ;
+    rdfs:comment "A key-value property from front matter or inline" .
+
+# ============================================
+# ENTITY CLASSES
+# ============================================
+
+kb:Person a owl:Class ;
+    owl:equivalentClass foaf:Person ;
+    rdfs:comment "A person mentioned in the KB" .
+
+kb:Company a owl:Class ;
+    rdfs:subClassOf foaf:Organization ;
+    rdfs:comment "A company/organization mentioned in the KB" .
+
+kb:Place a owl:Class ;
+    rdfs:subClassOf schema:Place ;
+    rdfs:comment "A location mentioned in the KB" .
+
+kb:Book a owl:Class ;
+    rdfs:subClassOf schema:Book ;
+    rdfs:comment "A book referenced in the KB" .
+
+kb:ResearchPaper a owl:Class ;
+    rdfs:subClassOf schema:ScholarlyArticle ;
+    rdfs:comment "Academic paper or publication" .
+
+kb:Todo a owl:Class ;
+    rdfs:subClassOf schema:Action ;
+    rdfs:comment "An inferred todo/action item" .
+
+kb:Relationship a owl:Class ;
+    rdfs:comment "An inferred relationship between people" .
+
+kb:ProfessionalRelationship a owl:Class ;
+    rdfs:subClassOf kb:Relationship ;
+    rdfs:comment "Work-related relationship" .
+
+# ============================================
+# TAG TAXONOMY (using SKOS)
+# ============================================
+
+kb:Tag a owl:Class ;
+    rdfs:subClassOf skos:Concept ;
+    rdfs:comment "A tag or category in the knowledge base" .
+
+kb:TagScheme a owl:Class ;
+    rdfs:subClassOf skos:ConceptScheme ;
+    rdfs:comment "A hierarchical tag taxonomy" .
+
+# Tag hierarchy uses SKOS properties
+kb:hasParentTag rdfs:subPropertyOf skos:broader ;
+    rdfs:domain kb:Tag ;
+    rdfs:range kb:Tag ;
+    rdfs:comment "Parent tag in hierarchy (e.g., bydate/2024 → bydate)" .
+
+kb:hasChildTag rdfs:subPropertyOf skos:narrower ;
+    rdfs:domain kb:Tag ;
+    rdfs:range kb:Tag ;
+    rdfs:comment "Child tag in hierarchy" .
+
+kb:relatedTag rdfs:subPropertyOf skos:related ;
+    rdfs:domain kb:Tag ;
+    rdfs:range kb:Tag ;
+    rdfs:comment "Related but not hierarchical" .
+
+# Tag properties
+kb:tagName rdfs:subPropertyOf skos:prefLabel ;
+    rdfs:domain kb:Tag ;
+    rdfs:comment "Display name of the tag" .
+
+kb:autoGenerated a owl:DatatypeProperty ;
+    rdfs:domain kb:Tag ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "True for system-generated tags like bydate/" .
+
+# ============================================
+# DOCUMENT PROPERTIES
+# ============================================
+
+# Reuse standard properties where applicable
+kb:title rdfs:subPropertyOf dcterms:title ;
+    rdfs:domain kb:Document ;
+    rdfs:comment "Document title from front matter" .
+
+kb:created rdfs:subPropertyOf dcterms:created ;
+    rdfs:domain kb:Document ;
+    rdfs:range xsd:dateTime ;
+    rdfs:comment "Creation timestamp" .
+
+kb:filePath a owl:DatatypeProperty ;
+    rdfs:subPropertyOf dcterms:identifier ;
+    rdfs:domain kb:Document ;
+    rdfs:comment "Relative file path in the knowledge base" .
+
+kb:documentType a owl:DatatypeProperty ;
+    rdfs:domain kb:Document ;
+    rdfs:comment "The 'type' field from front matter" .
+
+kb:hasSection rdfs:subPropertyOf dcterms:hasPart ;
+    rdfs:domain kb:Document ;
+    rdfs:range kb:Section ;
+    rdfs:comment "Links document to its sections" .
+
+kb:hasTag a owl:ObjectProperty ;
+    rdfs:subPropertyOf dcterms:subject ;
+    rdfs:domain kb:Document ;
+    rdfs:range kb:Tag ;
+    rdfs:comment "Tags from front matter or inline" .
+
+# ============================================
+# SECTION PROPERTIES
+# ============================================
+
+kb:heading a owl:DatatypeProperty ;
+    rdfs:subPropertyOf dcterms:title ;
+    rdfs:domain kb:Section ;
+    rdfs:comment "Section heading text" .
+
+kb:headingLevel a owl:DatatypeProperty ;
+    rdfs:domain kb:Section ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Markdown heading level (1-6)" .
+
+kb:contains a owl:ObjectProperty ;
+    rdfs:subPropertyOf dcterms:hasPart ;
+    rdfs:domain kb:Section ;
+    rdfs:comment "Links, todos, and other content in section" .
+
+# ============================================
+# LINK PROPERTIES
+# ============================================
+
+kb:target a owl:ObjectProperty ;
+    rdfs:domain kb:WikiLink ;
+    rdfs:comment "Entity the link points to" .
+
+kb:linkText a owl:DatatypeProperty ;
+    rdfs:domain kb:WikiLink ;
+    rdfs:comment "The literal [[link text]]" .
+
+kb:inSection a owl:ObjectProperty ;
+    rdfs:domain kb:WikiLink ;
+    rdfs:range kb:Section ;
+    rdfs:comment "Section containing this link" .
+
+kb:surroundingText a owl:DatatypeProperty ;
+    rdfs:domain kb:WikiLink ;
+    rdfs:comment "Text context around the link" .
+
+# ============================================
+# TODO PROPERTIES
+# ============================================
+
+kb:isCompleted a owl:DatatypeProperty ;
+    rdfs:domain kb:TodoItem ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Whether checkbox is checked" .
+
+kb:rawText a owl:DatatypeProperty ;
+    rdfs:domain kb:TodoItem ;
+    rdfs:comment "Original markdown text of todo" .
+
+kb:due a owl:DatatypeProperty ;
+    rdfs:subPropertyOf dcterms:date ;
+    rdfs:domain kb:Todo ;
+    rdfs:range xsd:date ;
+    rdfs:comment "Due date from [[due:: date]]" .
+
+kb:assignedTo a owl:ObjectProperty ;
+    rdfs:domain kb:Todo ;
+    rdfs:range kb:Person ;
+    rdfs:comment "Person responsible for todo" .
+
+kb:description a owl:DatatypeProperty ;
+    rdfs:domain kb:Todo ;
+    rdfs:comment "Todo description text" .
+
+# ============================================
+# ENTITY PROPERTIES
+# ============================================
+
+kb:isPlaceholder a owl:DatatypeProperty ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "True if entity has no dedicated document" .
+
+kb:describedBy a owl:ObjectProperty ;
+    owl:inverseOf kb:describes ;
+    rdfs:comment "Document that describes this entity" .
+
+kb:describes a owl:ObjectProperty ;
+    rdfs:domain kb:Document ;
+    rdfs:comment "Entity described by this document" .
+
+kb:mentionedIn a owl:ObjectProperty ;
+    rdfs:comment "Documents where entity is mentioned" .
+
+kb:mentionCount a owl:DatatypeProperty ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Number of times entity is mentioned" .
+
+# ============================================
+# MEETING PROPERTIES
+# ============================================
+
+kb:hasAttendee a owl:ObjectProperty ;
+    rdfs:subPropertyOf schema:attendee ;
+    rdfs:domain kb:Meeting ;
+    rdfs:range kb:Person ;
+    rdfs:comment "Person who attended the meeting" .
+
+kb:hasSpeaker a owl:ObjectProperty ;
+    rdfs:domain kb:Meeting ;
+    rdfs:range kb:Person ;
+    rdfs:comment "Person who spoke/presented" .
+
+kb:relatedToCompany a owl:ObjectProperty ;
+    rdfs:domain kb:Meeting ;
+    rdfs:range kb:Company ;
+    rdfs:comment "Company discussed or involved" .
+
+kb:meetingLocation a owl:ObjectProperty ;
+    rdfs:subPropertyOf schema:location ;
+    rdfs:domain kb:Meeting ;
+    rdfs:range kb:Place ;
+    rdfs:comment "Where the meeting took place" .
+
+# ============================================
+# RELATIONSHIP PROPERTIES
+# ============================================
+
+kb:hasRelationship a owl:ObjectProperty ;
+    rdfs:domain kb:Person ;
+    rdfs:range kb:Relationship .
+
+kb:withPerson a owl:ObjectProperty ;
+    rdfs:domain kb:Relationship ;
+    rdfs:range kb:Person .
+
+kb:relationshipStrength a owl:DatatypeProperty ;
+    rdfs:domain kb:Relationship ;
+    rdfs:range xsd:float ;
+    rdfs:comment "0.0 to 1.0 based on frequency/recency" .
+
+kb:lastInteraction a owl:DatatypeProperty ;
+    rdfs:domain kb:Relationship ;
+    rdfs:range xsd:date .
+
+kb:isStale a owl:DatatypeProperty ;
+    rdfs:domain kb:Relationship ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "True if no recent interaction" .
+
+kb:meetingCount a owl:DatatypeProperty ;
+    rdfs:domain kb:Relationship ;
+    rdfs:range xsd:integer .
+
+# Simple relationship properties (derived)
+kb:frequentlyMeetsWith rdfs:subPropertyOf rel:worksWith ;
+    rdfs:domain kb:Person ;
+    rdfs:range kb:Person ;
+    rdfs:comment "Meets at least monthly" .
+
+# ============================================
+# BOOK PROPERTIES (using Schema.org/Dublin Core)
+# ============================================
+
+kb:hasAuthor rdfs:subPropertyOf schema:author ;
+    rdfs:domain kb:Book ;
+    rdfs:range kb:Person ;
+    rdfs:comment "Book author (from [[book]] by [[author]] pattern)" .
+
+kb:isbn rdfs:subPropertyOf schema:isbn ;
+    rdfs:domain kb:Book ;
+    rdfs:comment "ISBN from front matter" .
+
+kb:publicationYear rdfs:subPropertyOf schema:datePublished ;
+    rdfs:domain kb:Book ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Year of publication" .
+
+kb:bookStatus a owl:DatatypeProperty ;
+    rdfs:domain kb:Book ;
+    rdfs:comment "reading, completed, to-read, abandoned" .
+
+kb:rating a owl:DatatypeProperty ;
+    rdfs:domain kb:Book ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Personal rating (1-5 stars)" .
+
+# ============================================
+# PLACE PROPERTIES (using Schema.org/GeoNames)
+# ============================================
+
+kb:locatedIn rdfs:subPropertyOf schema:containedInPlace ;
+    rdfs:domain kb:Place ;
+    rdfs:range kb:Place ;
+    rdfs:comment "Hierarchical location (city in country)" .
+
+kb:placeType a owl:DatatypeProperty ;
+    rdfs:domain kb:Place ;
+    rdfs:comment "city, country, venue, office, etc." .
+
+kb:visitedOn a owl:DatatypeProperty ;
+    rdfs:domain kb:Place ;
+    rdfs:range xsd:date ;
+    rdfs:comment "Dates when visited" .
+
+kb:coordinates rdfs:subPropertyOf schema:geo ;
+    rdfs:domain kb:Place ;
+    rdfs:comment "Geographic coordinates if known" .
+
+# ============================================
+# PROVENANCE PROPERTIES
+# ============================================
+
+kb:derivedFrom a owl:ObjectProperty ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:comment "Source document/link for inferred data" .
+
+kb:inferredAt a owl:DatatypeProperty ;
+    rdfs:subPropertyOf prov:generatedAtTime ;
+    rdfs:range xsd:dateTime ;
+    rdfs:comment "When this inference was made" .
+
+# ============================================
+# INFERENCE RULES (Conceptual)
+# ============================================
+
+kb:InferenceRule a owl:Class ;
+    rdfs:comment "Rules for deriving high-level facts" .
+
+kb:attendeeInference a kb:InferenceRule ;
+    rdfs:comment """
+    IF link appears in section with heading 'Attendees'
+    THEN document hasAttendee target-of-link
+    """ .
+
+kb:todoOwnerInference a kb:InferenceRule ;
+    rdfs:comment """
+    IF todo appears in 1on1-meeting document
+    THEN todo assignedTo attendee-of-meeting
+    """ .
+
+kb:relationshipStalenessInference a kb:InferenceRule ;
+    rdfs:comment """
+    IF relationship lastInteraction < 6-months-ago
+    THEN relationship isStale true
+    """ .
