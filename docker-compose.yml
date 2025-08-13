@@ -10,8 +10,9 @@ services:
       - ADMIN_PASSWORD=admin
       - JVM_ARGS=-Xmx2g
     volumes:
-      - fuseki-data:/fuseki
-      - ./data:/staging
+      - ./fuseki-data:/fuseki
+      - ./fuseki-staging:/staging
+    user: "1000:1000"
     command: ["/jena-fuseki/fuseki-server", "--update", "--mem", "/test"]
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
