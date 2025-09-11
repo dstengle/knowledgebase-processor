@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 from click.testing import CliRunner
 
-from knowledgebase_processor.cli_v2.main import cli
+from knowledgebase_processor.cli.main import cli
 
 
 class TestCLIEndToEnd:

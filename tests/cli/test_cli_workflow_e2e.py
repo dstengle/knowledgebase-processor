@@ -8,7 +8,7 @@ from click.testing import CliRunner
 import time
 import requests
 
-from knowledgebase_processor.cli_v2.main import cli
+from knowledgebase_processor.cli.main import cli
 
 
 class TestCLIWorkflowE2E:

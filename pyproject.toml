@@ -28,8 +28,8 @@ docker = "^6.1.0"
 requests = "^2.31.0"
 
 [tool.poetry.scripts]
-kbp = "knowledgebase_processor.cli:main"
-kb = "knowledgebase_processor.cli_v2.main:main"
+kbp = "knowledgebase_processor.cli.main:main"
+kb = "knowledgebase_processor.cli.main:main"
 test = "scripts.run_tests:main"
 
 [build-system]
