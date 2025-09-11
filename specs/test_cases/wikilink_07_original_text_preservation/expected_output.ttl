@@ -1,0 +1,23 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/G8wUSAEkiSswvqH2> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Custom Display"^^xsd:string ;
+    kb:alias "Custom Display"^^xsd:string ;
+    kb:originalText "[[Some Page|Custom Display]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> ;
+    kb:targetPath "Some Page"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/G8wUSAEkiSswvqH2> .
+
+<http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> .
+

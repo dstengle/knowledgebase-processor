@@ -1,0 +1,154 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/journaling> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Journaling"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/journaling> ;
+    schema:dateCreated "2025-09-10T22:58:49.088399+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088489+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088400+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088490+00:00"^^xsd:dateTime ;
+    schema:description "Journaling"^^xsd:string .
+
+<http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/medicine> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Medicine"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/medicine> ;
+    schema:dateCreated "2025-09-10T22:58:49.088440+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088515+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088440+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088516+00:00"^^xsd:dateTime ;
+    schema:description "Medicine"^^xsd:string .
+
+<http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/quantum-leap-corp-plan> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Quantum Leap Corp. plan"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/quantum-leap-corp-plan> ;
+    schema:dateCreated "2025-09-10T22:58:49.088462+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088535+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088462+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088535+00:00"^^xsd:dateTime ;
+    schema:description "Quantum Leap Corp. plan"^^xsd:string .
+
+<http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/review-schedule> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Review Schedule"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/review-schedule> ;
+    schema:dateCreated "2025-09-10T22:58:49.088451+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088524+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088451+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088524+00:00"^^xsd:dateTime ;
+    schema:description "Review Schedule"^^xsd:string .
+
+<http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/set-30-min-timer> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Set 30 min timer"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/set-30-min-timer> ;
+    schema:dateCreated "2025-09-10T22:58:49.088418+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088499+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088418+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088499+00:00"^^xsd:dateTime ;
+    schema:description "Set 30 min timer"^^xsd:string .
+
+<http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/walk> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Walk"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_corpus/daily_note_2024_11_07_Thursday/todo/walk> ;
+    schema:dateCreated "2025-09-10T22:58:49.088430+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088507+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088430+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.088507+00:00"^^xsd:dateTime ;
+    schema:description "Walk"^^xsd:string .
+
+<http://example.org/kb/wikilinks/UpYZhWWnN3HTnDm7> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Comet Technologies-11-07-Thursday-12:56:10"^^xsd:string ;
+    kb:originalText "[[Comet Technologies-11-07-Thursday-12:56:10]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    kb:targetPath "Comet Technologies-11-07-Thursday-12:56:10"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/UpYZhWWnN3HTnDm7> ;
+    schema:dateCreated "2025-09-10T22:58:49.088280+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088281+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/YFm2LbqEbpj4n1OZ> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Coffee Ops-2024-11-07"^^xsd:string ;
+    kb:originalText "[[Coffee Ops-2024-11-07]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    kb:targetPath "Coffee Ops-2024-11-07"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/YFm2LbqEbpj4n1OZ> ;
+    schema:dateCreated "2025-09-10T22:58:49.088292+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088292+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/npNtHnB2PZNBCFaj> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Galaxy Dynamics Co. Discussion-2024-11-07"^^xsd:string ;
+    kb:originalText "[[Galaxy Dynamics Co. Discussion-2024-11-07]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    kb:targetPath "Galaxy Dynamics Co. Discussion-2024-11-07"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/npNtHnB2PZNBCFaj> ;
+    schema:dateCreated "2025-09-10T22:58:49.088266+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088266+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/omtt9oAkx9JV8tBG> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Blair Quantum11-07"^^xsd:string ;
+    kb:originalText "[[Blair Quantum11-07]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    kb:targetPath "Blair Quantum11-07"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/omtt9oAkx9JV8tBG> ;
+    schema:dateCreated "2025-09-10T22:58:49.088311+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088311+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/pg6Vk7vntrEf-jXi> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Alex Cipher"^^xsd:string ;
+    kb:originalText "[[Alex Cipher]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    kb:targetPath "Alex Cipher"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/pg6Vk7vntrEf-jXi> ;
+    schema:dateCreated "2025-09-10T22:58:49.088301+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088302+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/vy1UkEhHeGmSFa6_> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Cosmic Ventures LLC CTO Coffee-2024-11-07"^^xsd:string ;
+    kb:originalText "[[Cosmic Ventures LLC CTO Coffee-2024-11-07]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    kb:targetPath "Cosmic Ventures LLC CTO Coffee-2024-11-07"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/vy1UkEhHeGmSFa6_> ;
+    schema:dateCreated "2025-09-10T22:58:49.088243+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.088245+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_corpus/daily_note_2024_11_07_Thursday> ;
+    schema:dateCreated "2025-09-10T22:58:49.085076+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.085080+00:00"^^xsd:dateTime .
+

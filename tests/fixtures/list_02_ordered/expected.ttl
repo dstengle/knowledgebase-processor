@@ -1,0 +1,17 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<test.md#list1> a kb:List ;
+    kb:elementType "list" ;
+    kb:ordered true ;
+    kb:hasItem <test.md#item1>, <test.md#item2>, <test.md#item3> .
+
+<test.md#item1> a kb:ListItem ;
+    kb:text "First item" .
+
+<test.md#item2> a kb:ListItem ;
+    kb:text "Second item" .
+
+<test.md#item3> a kb:ListItem ;
+    kb:text "Third item" .

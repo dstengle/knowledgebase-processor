@@ -1,0 +1,53 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<test.md#table1> a kb:Table ;
+    kb:elementType "table" ;
+    kb:hasHeader "Header 1", "Header 2", "Header 3" ;
+    kb:hasRow <test.md#row1>, <test.md#row2> ;
+    kb:hasCell <test.md#cell1_1>, <test.md#cell1_2>, <test.md#cell1_3>, 
+               <test.md#cell2_1>, <test.md#cell2_2>, <test.md#cell2_3>,
+               <test.md#headerCell1>, <test.md#headerCell2>, <test.md#headerCell3> .
+
+<test.md#row1> a kb:TableRow ;
+    kb:hasCell <test.md#cell1_1>, <test.md#cell1_2>, <test.md#cell1_3> .
+
+<test.md#row2> a kb:TableRow ;
+    kb:hasCell <test.md#cell2_1>, <test.md#cell2_2>, <test.md#cell2_3> .
+
+<test.md#headerCell1> a kb:TableCell ;
+    kb:text "Header 1" ;
+    kb:isHeader true .
+
+<test.md#headerCell2> a kb:TableCell ;
+    kb:text "Header 2" ;
+    kb:isHeader true .
+
+<test.md#headerCell3> a kb:TableCell ;
+    kb:text "Header 3" ;
+    kb:isHeader true .
+
+<test.md#cell1_1> a kb:TableCell ;
+    kb:text "Cell 1,1" ;
+    kb:isHeader false .
+
+<test.md#cell1_2> a kb:TableCell ;
+    kb:text "Cell 1,2" ;
+    kb:isHeader false .
+
+<test.md#cell1_3> a kb:TableCell ;
+    kb:text "Cell 1,3" ;
+    kb:isHeader false .
+
+<test.md#cell2_1> a kb:TableCell ;
+    kb:text "Cell 2,1" ;
+    kb:isHeader false .
+
+<test.md#cell2_2> a kb:TableCell ;
+    kb:text "Cell 2,2" ;
+    kb:isHeader false .
+
+<test.md#cell2_3> a kb:TableCell ;
+    kb:text "Cell 2,3" ;
+    kb:isHeader false .

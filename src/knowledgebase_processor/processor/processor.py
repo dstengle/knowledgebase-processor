@@ -218,6 +218,127 @@ class Processor:
         logger_proc_rdf.info(f"Successfully processed {processed_docs_count} documents.")
         return 0
 
+    def process_content_to_graph(self, content: str, document_id: Optional[str] = None) -> Graph:
+        """Processes markdown content string directly into an RDF graph.
+        
+        This method provides a simplified interface for processing markdown content
+        without requiring file I/O or external metadata stores.
+        
+        Args:
+            content: The markdown content string to process
+            document_id: Optional document ID (generates one if not provided)
+            
+        Returns:
+            rdflib.Graph: The generated RDF graph containing entities from the content
+        """
+        logger_proc_content = get_logger("knowledgebase_processor.processor.content_to_graph")
+        
+        # Generate document ID if not provided
+        if not document_id:
+            document_id = self.id_generator.generate_document_id("temp_document.md")
+        
+        # Create a temporary Document object
+        document = Document(
+            path="temp_document.md",
+            title="Temporary Document",
+            content=content
+        )
+        
+        # Create a temporary KbDocument entity for processing
+        temp_kb_document = KbDocument(
+            kb_id=document_id,
+            label="Temporary Document",
+            original_path="temp_document.md",
+            path_without_extension="temp_document",
+            source_document_uri=document_id,
+        )
+        
+        # Temporarily register the document (will be cleaned up)
+        original_documents = self.document_registry.get_all_documents().copy()
+        self.document_registry.register_document(temp_kb_document)
+        
+        try:
+            # Initialize RDF converter and graph
+            rdf_converter = RdfConverter()
+            graph = Graph()
+            graph.bind("kb", KB)
+            graph.bind("schema", SCHEMA)
+            graph.bind("rdfs", RDFS)
+            graph.bind("xsd", XSD)
+            
+            # Collect all entities for this document
+            all_entities: List[KbBaseEntity] = [temp_kb_document]
+            
+            # Create metadata for the document
+            doc_metadata = DocumentMetadata(
+                document_id=document_id,
+                path="temp_document.md",
+                title="Temporary Document"
+            )
+            
+            # Run extractors to get elements
+            for extractor in self.extractors:
+                elements = extractor.extract(document)
+                if elements:
+                    document.elements.extend(elements)
+                    if hasattr(extractor, "update_metadata"):
+                        extractor.update_metadata(elements, doc_metadata)
+            
+            # Extract and resolve wikilinks (if WikiLinkExtractor is available)
+            try:
+                from ..extractor.wikilink_extractor import WikiLinkExtractor
+                wikilink_extractor = WikiLinkExtractor(self.document_registry, self.id_generator)
+                wikilinks = wikilink_extractor.extract(document, document_id)
+                all_entities.extend(wikilinks)
+            except ImportError:
+                logger_proc_content.debug("WikiLinkExtractor not available, skipping wikilink extraction")
+            
+            # Extract and convert todo items to KB entities
+            for element in document.elements:
+                if isinstance(element, TodoItem):
+                    # Generate a stable ID for the todo
+                    todo_id = self.id_generator.generate_todo_id(document_id, element.text)
+                    
+                    # Create KbTodoItem entity
+                    kb_todo = KbTodoItem(
+                        kb_id=todo_id,
+                        label=element.text,
+                        description=element.text,
+                        is_completed=element.is_checked,
+                        source_document_uri=document_id,
+                        extracted_from_text_span=(
+                            element.position.get("start", 0),
+                            element.position.get("end", 0)
+                        ) if element.position else None
+                    )
+                    all_entities.append(kb_todo)
+            
+            # Run analyzers for NER (if enabled)
+            for analyzer in self.analyzers:
+                if isinstance(analyzer, EntityRecognizer):
+                    analyzer.analyze(document.content, doc_metadata)
+                    for extracted_entity in doc_metadata.entities:
+                        kb_entity = self._extracted_entity_to_kb_entity(extracted_entity, "temp_document.md")
+                        if kb_entity:
+                            all_entities.append(kb_entity)
+            
+            # Convert all entities to RDF and add to graph
+            for entity in all_entities:
+                entity_graph = rdf_converter.kb_entity_to_graph(entity, base_uri_str=str(KB))
+                graph += entity_graph
+            
+            logger_proc_content.info(f"Generated RDF graph with {len(graph)} triples from content")
+            return graph
+            
+        finally:
+            # Clean up: restore original document registry state
+            self.document_registry._documents_by_id.clear()
+            self.document_registry._id_by_original_path.clear()
+            self.document_registry._id_by_path_without_extension.clear()
+            self.document_registry._id_by_basename_without_extension.clear()
+            for original_doc in original_documents:
+                self.document_registry.register_document(original_doc)
+
     def _extracted_entity_to_kb_entity(
         self,
         extracted_entity: ModelExtractedEntity,

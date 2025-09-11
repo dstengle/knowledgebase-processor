@@ -1,0 +1,26 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/eO1HAxNLMJ53s4Qu> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Stellar Solutions Inc. Chat"^^xsd:string ;
+    kb:originalText "[[Stellar Solutions Inc. Chat]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Chat_2024_11_07_Thursday_12_56_10> ;
+    kb:targetPath "Stellar Solutions Inc. Chat"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/eO1HAxNLMJ53s4Qu> ;
+    schema:dateCreated "2025-09-10T22:58:49.117707+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.117708+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_corpus/DORA_Community_Chat_2024_11_07_Thursday_12_56_10> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Chat_2024_11_07_Thursday_12_56_10> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_corpus/DORA_Community_Chat_2024_11_07_Thursday_12_56_10> ;
+    schema:dateCreated "2025-09-10T22:58:49.116881+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.116882+00:00"^^xsd:dateTime .
+
