@@ -1,0 +1,32 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/todo_06_todo_text/todo/buy-milk> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Buy milk"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_06_todo_text> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_06_todo_text/todo/buy-milk> ;
+    schema:description "Buy milk"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_06_todo_text/todo/write-code> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Write code"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_06_todo_text> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_06_todo_text/todo/write-code> ;
+    schema:description "Write code"^^xsd:string .
+
+<http://example.org/kb/vocab#/test_cases/todo_06_todo_text> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_06_todo_text> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_06_todo_text> .
+

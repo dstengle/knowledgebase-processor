@@ -1,0 +1,78 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/0yRcy5yWDmQ9oDSr> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Stellar Solutions Inc."^^xsd:string ;
+    kb:originalText "[[Stellar Solutions Inc.]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    kb:targetPath "Stellar Solutions Inc."^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/0yRcy5yWDmQ9oDSr> ;
+    schema:dateCreated "2025-09-10T22:58:49.131439+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.131439+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/UzcVdwFU41_8Ddzm> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Alex Cipher"^^xsd:string ;
+    kb:originalText "[[Alex Cipher]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    kb:targetPath "Alex Cipher"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/UzcVdwFU41_8Ddzm> ;
+    schema:dateCreated "2025-09-10T22:58:49.131466+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.131467+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/byTwz5HxqNhOrEis> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Nebula Innovations Ltd. name"^^xsd:string ;
+    kb:originalText "[[ Nebula Innovations Ltd. name]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    kb:targetPath "Nebula Innovations Ltd. name"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/byTwz5HxqNhOrEis> ;
+    schema:dateCreated "2025-09-10T22:58:49.131454+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.131455+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/mu46WRiu0ZtrWkWH> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Blair Quantum"^^xsd:string ;
+    kb:originalText "[[Blair Quantum]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    kb:targetPath "Blair Quantum"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/mu46WRiu0ZtrWkWH> ;
+    schema:dateCreated "2025-09-10T22:58:49.131476+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.131493+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.131477+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.131494+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/nruACxDUf741UaiA> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Casey Nebula"^^xsd:string ;
+    kb:originalText "[[Casey Nebula]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    kb:targetPath "Casey Nebula"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/nruACxDUf741UaiA> ;
+    schema:dateCreated "2025-09-10T22:58:49.131485+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.131486+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/zzVNJM8hI8fKBoyI> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Emerson Galaxy"^^xsd:string ;
+    kb:originalText "[[Emerson Galaxy]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    kb:targetPath "Emerson Galaxy"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/zzVNJM8hI8fKBoyI> ;
+    schema:dateCreated "2025-09-10T22:58:49.131502+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.131503+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_corpus/DORA_Community_Discussion_2024_11_07> ;
+    schema:dateCreated "2025-09-10T22:58:49.126858+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.126859+00:00"^^xsd:dateTime .
+

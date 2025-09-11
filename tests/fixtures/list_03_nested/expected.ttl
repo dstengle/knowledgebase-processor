@@ -1,0 +1,41 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<test.md#list1> a kb:List ;
+    kb:elementType "list" ;
+    kb:ordered false ;
+    kb:hasItem <test.md#item1>, <test.md#item2>, <test.md#item3> .
+
+<test.md#item1> a kb:ListItem ;
+    kb:text "Item 1" ;
+    kb:hasNestedList <test.md#nestedList1> .
+
+<test.md#nestedList1> a kb:List ;
+    kb:elementType "list" ;
+    kb:ordered false ;
+    kb:hasItem <test.md#nestedItem1_1>, <test.md#nestedItem1_2> .
+
+<test.md#nestedItem1_1> a kb:ListItem ;
+    kb:text "Nested item 1.1" .
+
+<test.md#nestedItem1_2> a kb:ListItem ;
+    kb:text "Nested item 1.2" .
+
+<test.md#item2> a kb:ListItem ;
+    kb:text "Item 2" ;
+    kb:hasNestedList <test.md#nestedList2> .
+
+<test.md#nestedList2> a kb:List ;
+    kb:elementType "list" ;
+    kb:ordered true ;
+    kb:hasItem <test.md#nestedItem2_1>, <test.md#nestedItem2_2> .
+
+<test.md#nestedItem2_1> a kb:ListItem ;
+    kb:text "Nested ordered item 2.1" .
+
+<test.md#nestedItem2_2> a kb:ListItem ;
+    kb:text "Nested ordered item 2.2" .
+
+<test.md#item3> a kb:ListItem ;
+    kb:text "Item 3" .

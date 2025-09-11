@@ -1,0 +1,22 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/bvt2zMsRFBZhpYmg> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Page One"^^xsd:string ;
+    kb:originalText "[[Page One]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_01_basic> ;
+    kb:targetPath "Page One"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/bvt2zMsRFBZhpYmg> .
+
+<http://example.org/kb/vocab#/test_cases/wikilink_01_basic> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_01_basic> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_01_basic> .
+

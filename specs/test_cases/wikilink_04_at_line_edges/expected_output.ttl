@@ -1,0 +1,31 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/OJ6mUIY1cSRQpjAD> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Start"^^xsd:string ;
+    kb:originalText "[[Start]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
+    kb:targetPath "Start"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/OJ6mUIY1cSRQpjAD> .
+
+<http://example.org/kb/wikilinks/nv3bRXthVM98k0cN> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Finish"^^xsd:string ;
+    kb:alias "Finish"^^xsd:string ;
+    kb:originalText "[[End|Finish]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
+    kb:targetPath "End"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/nv3bRXthVM98k0cN> .
+
+<http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> .
+

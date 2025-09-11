@@ -1,0 +1,1 @@
+[[A]] and [[B|Bee]] are both links.

@@ -1,0 +1,182 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/0S6AJn9yTkEjSLDY> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Randal Stippington"^^xsd:string ;
+    kb:originalText "[[Randal Stippington]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Randal Stippington"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/0S6AJn9yTkEjSLDY> ;
+    schema:dateCreated "2025-09-10T22:58:49.104948+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104949+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/3aqux14d8QemFnf8> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Ned Jones"^^xsd:string ;
+    kb:originalText "[[Ned Jones]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Ned Jones"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/3aqux14d8QemFnf8> ;
+    schema:dateCreated "2025-09-10T22:58:49.104957+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104957+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/E-l9kuGMIb-PmmIE> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Dakota Starlight"^^xsd:string ;
+    kb:originalText "[[Dakota Starlight]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Dakota Starlight"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/E-l9kuGMIb-PmmIE> ;
+    schema:dateCreated "2025-09-10T22:58:49.104799+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104806+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104821+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104799+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104807+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104821+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/UHL1ADULcZNZw7Ax> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Blair Quantum"^^xsd:string ;
+    kb:originalText "[[Blair Quantum]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Blair Quantum"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/UHL1ADULcZNZw7Ax> ;
+    schema:dateCreated "2025-09-10T22:58:49.104772+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104845+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104860+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104940+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104965+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104973+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104773+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104845+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104860+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104940+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104966+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104973+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/WTp4D-WWLQgUHdcy> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Emerson Galaxy"^^xsd:string ;
+    kb:originalText "[[Emerson Galaxy]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Emerson Galaxy"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/WTp4D-WWLQgUHdcy> ;
+    schema:dateCreated "2025-09-10T22:58:49.104837+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104853+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104868+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104910+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104838+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104853+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104868+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104910+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/a2jCUD0tOJFm7wug> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Me"^^xsd:string ;
+    kb:originalText "[[Me]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Me"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/a2jCUD0tOJFm7wug> ;
+    schema:dateCreated "2025-09-10T22:58:49.104763+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104895+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104763+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104895+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/aK5KAcmj0gcmQ0fN> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Alex Cipher"^^xsd:string ;
+    kb:originalText "[[Alex Cipher]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Alex Cipher"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/aK5KAcmj0gcmQ0fN> ;
+    schema:dateCreated "2025-09-10T22:58:49.104753+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104925+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104753+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104925+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/dXibCkr3BvxUuyTt> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Casey Nebula"^^xsd:string ;
+    kb:originalText "[[Casey Nebula]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Casey Nebula"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/dXibCkr3BvxUuyTt> ;
+    schema:dateCreated "2025-09-10T22:58:49.104790+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104814+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104829+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104878+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104902+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104917+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104790+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104814+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104829+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104878+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104903+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104918+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/fXjHa_-T9ki_2meZ> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Nebula Innovations Ltd. name"^^xsd:string ;
+    kb:originalText "[[ Nebula Innovations Ltd. name]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Nebula Innovations Ltd. name"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/fXjHa_-T9ki_2meZ> ;
+    schema:dateCreated "2025-09-10T22:58:49.104732+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104732+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/iB0F5vAuCqeZMuhb> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "George Craft"^^xsd:string ;
+    kb:originalText "[[George Craft]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "George Craft"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/iB0F5vAuCqeZMuhb> ;
+    schema:dateCreated "2025-09-10T22:58:49.104743+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104743+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/lBSbvVGlYCj2aLGm> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Quantum Leap Corp. CTO Coffee"^^xsd:string ;
+    kb:originalText "[[Quantum Leap Corp. CTO Coffee]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Quantum Leap Corp. CTO Coffee"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/lBSbvVGlYCj2aLGm> ;
+    schema:dateCreated "2025-09-10T22:58:49.104716+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104717+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/oJVQRgBJTW_BZ-Fr> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Jonathan"^^xsd:string ;
+    kb:originalText "[[Jonathan]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Jonathan"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/oJVQRgBJTW_BZ-Fr> ;
+    schema:dateCreated "2025-09-10T22:58:49.104781+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104782+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/wikilinks/wFP5YFjXVq8vQB1u> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Mark Temperence"^^xsd:string ;
+    kb:originalText "[[Mark Temperence]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    kb:targetPath "Mark Temperence"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/wFP5YFjXVq8vQB1u> ;
+    schema:dateCreated "2025-09-10T22:58:49.104888+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104932+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.104888+00:00"^^xsd:dateTime,
+        "2025-09-10T22:58:49.104933+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_corpus/CTO_Coffee_2024_11_07> ;
+    schema:dateCreated "2025-09-10T22:58:49.100374+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.100375+00:00"^^xsd:dateTime .
+

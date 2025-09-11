@@ -1,0 +1,59 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/four-space-indent> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Four space indent"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/four-space-indent> ;
+    schema:description "Four space indent"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/no-indent> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "No indent"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/no-indent> ;
+    schema:description "No indent"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/single-space-indent> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Single space indent"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/single-space-indent> ;
+    schema:description "Single space indent"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/tab-indent> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Tab indent"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/tab-indent> ;
+    schema:description "Tab indent"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/two-space-indent> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Two space indent"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/two-space-indent> ;
+    schema:description "Two space indent"^^xsd:string .
+
+<http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> .
+

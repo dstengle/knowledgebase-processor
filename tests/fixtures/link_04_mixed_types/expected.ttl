@@ -1,0 +1,24 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<test.md#link1> a kb:Link ;
+    kb:text "inline links" ;
+    kb:url "https://example.com" ;
+    kb:isInternal false .
+
+<test.md#link2> a kb:Link ;
+    kb:text "reference links" ;
+    kb:url "https://reference.example.com" ;
+    kb:isInternal false .
+
+<test.md#ref1> a kb:Reference ;
+    kb:key "ref1" ;
+    kb:url "https://reference.example.com" ;
+    kb:title "Reference Example" .
+
+<test.md#citation1> a kb:Citation ;
+    kb:text "Author, 2023" .
+
+<test.md#citation2> a kb:Citation ;
+    kb:text "citation-key" .

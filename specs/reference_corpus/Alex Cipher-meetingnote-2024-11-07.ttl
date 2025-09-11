@@ -1,0 +1,26 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/wikilinks/kI4CgckKMyRwyZWO> a kb:Entity,
+        kb:WikiLink ;
+    rdfs:label "Alex Cipher"^^xsd:string ;
+    kb:originalText "[[Alex Cipher]]"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/Alex_Cipher_meetingnote_2024_11_07> ;
+    kb:targetPath "Alex Cipher"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/wikilinks/kI4CgckKMyRwyZWO> ;
+    schema:dateCreated "2025-09-10T22:58:49.099164+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.099165+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_corpus/Alex_Cipher_meetingnote_2024_11_07> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_corpus/Alex_Cipher_meetingnote_2024_11_07> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_corpus/Alex_Cipher_meetingnote_2024_11_07> ;
+    schema:dateCreated "2025-09-10T22:58:49.097418+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-09-10T22:58:49.097420+00:00"^^xsd:dateTime .
+

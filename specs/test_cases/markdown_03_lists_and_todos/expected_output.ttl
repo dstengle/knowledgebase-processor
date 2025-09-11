@@ -1,0 +1,32 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/completed-todo-item> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Completed todo item"^^xsd:string ;
+    kb:isCompleted true ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/completed-todo-item> ;
+    schema:description "Completed todo item"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/todo-item-1> a kb:Entity,
+        kb:TodoItem,
+        schema:Action ;
+    rdfs:label "Todo item 1"^^xsd:string ;
+    kb:isCompleted false ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/todo-item-1> ;
+    schema:description "Todo item 1"^^xsd:string .
+
+<http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> .
+

@@ -1,0 +1,18 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<test.md#link1> a kb:Link ;
+    kb:text "link to Google" ;
+    kb:url "https://www.google.com" ;
+    kb:isInternal false .
+
+<test.md#link2> a kb:Link ;
+    kb:text "another link" ;
+    kb:url "https://example.com" ;
+    kb:isInternal false .
+
+<test.md#link3> a kb:Link ;
+    kb:text "internal link" ;
+    kb:url "../path/to/file.md" ;
+    kb:isInternal true .

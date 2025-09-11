@@ -1,0 +1,40 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<test.md#link1> a kb:Link ;
+    kb:text "reference link" ;
+    kb:url "https://www.example.com" ;
+    kb:isInternal false .
+
+<test.md#link2> a kb:Link ;
+    kb:text "another reference" ;
+    kb:url "https://www.example.org" ;
+    kb:isInternal false .
+
+<test.md#link3> a kb:Link ;
+    kb:text "shorthand" ;
+    kb:url "https://shorthand.example.com" ;
+    kb:isInternal false .
+
+<test.md#link4> a kb:Link ;
+    kb:text "text itself" ;
+    kb:url "https://text.example.com" ;
+    kb:isInternal false .
+
+<test.md#ref1> a kb:Reference ;
+    kb:key "ref1" ;
+    kb:url "https://www.example.com" .
+
+<test.md#ref2> a kb:Reference ;
+    kb:key "ref2" ;
+    kb:url "https://www.example.org" ;
+    kb:title "Example.org" .
+
+<test.md#ref3> a kb:Reference ;
+    kb:key "shorthand" ;
+    kb:url "https://shorthand.example.com" .
+
+<test.md#ref4> a kb:Reference ;
+    kb:key "text itself" ;
+    kb:url "https://text.example.com" .

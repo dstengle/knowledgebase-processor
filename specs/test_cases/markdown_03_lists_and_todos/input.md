@@ -1,0 +1,3 @@
+- Item 1
+- [ ] Todo item 1
+- [x] Completed todo item
