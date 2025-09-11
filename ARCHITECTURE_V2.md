@@ -2,7 +2,7 @@
 
 ## 🏗️ Service-Oriented Architecture
 
-The CLI v2 introduces a **service-oriented architecture** that separates the user interface from business logic, making the system more testable, maintainable, and extensible.
+The CLI introduces a **service-oriented architecture** that separates the user interface from business logic, making the system more testable, maintainable, and extensible.
 
 ## 📐 Architecture Overview
 
@@ -66,7 +66,7 @@ class OrchestratorService:
 ```
 
 ### 🖥️ CLI Commands
-**Location**: `src/knowledgebase_processor/cli_v2/commands/`
+**Location**: `src/knowledgebase_processor/cli/commands/`
 
 **Purpose**: Thin wrappers that provide beautiful UI around service operations.
 
@@ -147,7 +147,7 @@ class ProjectStats:
 - ✅ Error handling for uninitialized projects
 
 ### 2. **End-to-End Tests** (Minimal)
-**Location**: `tests/cli_v2/test_cli_e2e.py`
+**Location**: `tests/cli/test_cli_e2e.py`
 
 **Scope**:
 - Test CLI interface with Click test runner

@@ -1,3 +1,3 @@
-"""Command-line interface for the Knowledge Base Processor."""
+"""Modern CLI for Knowledge Base Processor v2."""
 
-from .main import main
+__version__ = "2.0.0"

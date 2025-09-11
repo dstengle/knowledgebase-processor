@@ -77,7 +77,7 @@ jobs:
     
   #   - name: Build executable
   #     run: |
-  #       poetry run pyinstaller --onefile --name kb src/knowledgebase_processor/cli_v2/main.py
+  #       poetry run pyinstaller --onefile --name kb src/knowledgebase_processor/cli/main.py
     
   #   - name: Upload executable
   #     uses: actions/upload-artifact@v4

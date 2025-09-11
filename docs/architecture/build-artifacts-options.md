@@ -146,7 +146,7 @@ Create a custom buildpack extension that includes pre-compiled wheels for srsly 
 # BUILD.bazel
 py_binary(
     name = "kb",
-    srcs = ["src/knowledgebase_processor/cli_v2/main.py"],
+    srcs = ["src/knowledgebase_processor/cli/main.py"],
     deps = [
         requirement("spacy"),
         requirement("srsly"),
