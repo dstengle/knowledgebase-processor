@@ -25,6 +25,138 @@ The project uses an RDF vocabulary from https://github.com/dstengle/knowledgebas
    ./scripts/sync-vocabulary.sh sync
    ```
 
+## Specification-Based Testing Workflow
+
+This project uses a **specification-driven testing approach** where system behavior is captured in declarative artifacts (input/output file pairs) rather than imperative Python test code.
+
+### Directory Structure
+
+```
+specs/
+├── README.md                    # Overview of the specification approach
+├── reference_corpus/            # Integration test suite (real-world documents)
+│   ├── *.md                     # Real-world markdown files
+│   └── *.ttl                    # Expected RDF outputs (one per .md)
+└── test_cases/                  # Unit test specifications (61 total)
+    └── [test_name]/
+        ├── input.md             # Markdown input for the test
+        └── expected_output.ttl   # Expected RDF output in Turtle format
+```
+
+### Test Categories (61 Unit Tests)
+
+The `specs/test_cases/` directory contains test cases organized by feature:
+
+- **code** (8 tests): Empty doc, no language, with language, multiple blocks, blockquotes
+- **frontmatter** (8 tests): YAML/TOML parsing, tag extraction, model creation
+- **heading** (7 tests): Empty, single, multiple, complex, non-sequential, integration, hierarchy
+- **markdown** (7 tests): Empty doc, headings, lists, todos, code blocks, tables, blockquotes
+- **markdown_structure** (5 tests): Single heading, code block, list, table, blockquote
+- **tag** (10 tests): Hashtags, inline, category, frontmatter, mixed, all tags, edge cases
+- **todo** (8 tests): Empty, no todos, unchecked, checked, mixed, text, context, whitespace
+- **wikilink** (8 tests): Basic, display text, multiple, line edges, none, nested/broken, preservation, resolution
+
+### Naming Convention
+
+Test cases follow this pattern:
+```
+[feature]_[number]_[description]
+```
+
+Examples:
+- `code_01_empty_document`
+- `heading_03_multiple`
+- `tag_08_hashtag_preceded_by_non_whitespace`
+- `wikilink_08_document_resolution`
+
+### How Tests Work
+
+**Test execution** (`tests/test_specifications.py` and `tests/test_reference_corpus.py`):
+
+1. **Discovery**: Pytest automatically discovers all subdirectories in `specs/test_cases/`
+2. **Input Processing**:
+   - Reads markdown from `input.md`
+   - Creates a Processor instance with all extractors registered
+   - Processes markdown → RDF graph
+3. **Comparison**:
+   - Loads expected RDF from `expected_output.ttl`
+   - Removes timestamp predicates (dateCreated, dateModified) from both graphs
+   - Performs **RDF graph isomorphism** comparison (not string comparison)
+4. **Result**: Pass if graphs are isomorphic, fail with detailed diagnostics if not
+
+### Workflow for Adding New Features
+
+#### Step 1: Create Test Case Structure
+```bash
+mkdir specs/test_cases/[feature]_[number]_[description]
+```
+
+#### Step 2: Add Input File
+Create `specs/test_cases/[name]/input.md` with markdown content that tests the feature
+
+#### Step 3: Generate Expected Output
+Run the regeneration script to create the expected RDF output:
+```bash
+python scripts/regenerate_spec_outputs.py
+```
+
+This script:
+- Iterates through all test_cases directories
+- Processes each input.md
+- Serializes resulting RDF to expected_output.ttl
+- Handles errors gracefully with detailed reporting
+
+#### Step 4: Run Tests
+```bash
+# Run all specification tests
+pytest tests/test_specifications.py -v
+
+# Run reference corpus tests
+pytest tests/test_reference_corpus.py -v
+
+# Run all tests
+pytest -v
+```
+
+### Key Principles for Agents
+
+1. **Declarative over Imperative**: Test behavior is captured in files, not Python code
+2. **Version Controlled**: Changes to expected behavior are tracked in git history
+3. **Agent-Friendly**: AI agents can easily understand and modify specifications
+4. **Deterministic IDs**: Entities use position-based IDs (e.g., `pos-{start}-{end}`) for reproducibility
+5. **RDF Isomorphism**: Tests compare semantic RDF graphs, not string representations
+6. **Maintainable**: Reduces complex Python test code maintenance
+
+### Important Notes for Development
+
+- **Always regenerate outputs** after changing processor behavior:
+  ```bash
+  python scripts/regenerate_spec_outputs.py
+  ```
+
+- **Test first**: When adding features, create spec test cases BEFORE implementation
+
+- **Keep specs isolated**: Each test case should test ONE specific feature or edge case
+
+- **Use reference corpus** for integration tests with real-world documents
+
+- **Commit both files**: Always commit both `input.md` and `expected_output.ttl` together
+
+### Supporting Tools
+
+- **`scripts/regenerate_spec_outputs.py`**: Batch update all expected outputs
+- **`tests/test_specifications.py`**: Parametrized pytest for all unit test cases
+- **`tests/test_reference_corpus.py`**: Integration tests for real-world documents
+- **`specs/README.md`**: Detailed documentation on the specification approach
+
+### Benefits
+
+- **Easy to understand**: Simple markdown input → RDF output pairs
+- **Fast feedback**: All tests run in seconds
+- **Complete coverage**: 61 unit tests + 6 integration tests
+- **Traceable changes**: Git history shows behavior evolution
+- **Agent-friendly**: Minimal Python knowledge required to add tests
+
 ## 🚨 CRITICAL: PARALLEL EXECUTION AFTER SWARM INIT
 
 **MANDATORY RULE**: Once swarm is initialized with memory, ALL subsequent operations MUST be parallel:
