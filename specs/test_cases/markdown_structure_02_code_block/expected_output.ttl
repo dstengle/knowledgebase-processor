@@ -1,0 +1,47 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_02_code_block/code/python-pos-0-3> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 3 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_02_code_block> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_02_code_block/code/python-pos-0-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.763366+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.763367+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello():
+    print("Hello, world!")"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_02_code_block/code/python-pos-0-4> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 4 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_02_code_block> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_02_code_block/code/python-pos-0-4> ;
+    schema:dateCreated "2025-11-05T14:56:11.763336+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.763338+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello():
+    print("Hello, world!")
+"""^^xsd:string .
+
+<http://example.org/kb/vocab#/test_cases/markdown_structure_02_code_block> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_02_code_block> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_structure_02_code_block> ;
+    schema:dateCreated "2025-11-05T14:56:11.762969+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.762971+00:00"^^xsd:dateTime .
+

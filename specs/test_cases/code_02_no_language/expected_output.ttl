@@ -3,6 +3,34 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_02_no_language/code/unknown-pos-0-2> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "unknown code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 2 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_02_no_language> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_02_no_language/code/unknown-pos-0-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.536445+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.536445+00:00"^^xsd:dateTime ;
+    schema:text "print('Hello, world!')"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_02_no_language/code/unknown-pos-0-3> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "unknown code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 3 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_02_no_language> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_02_no_language/code/unknown-pos-0-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.536400+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.536402+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage ""^^xsd:string ;
+    schema:text """print('Hello, world!')
+"""^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_02_no_language> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +38,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_02_no_language> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_02_no_language> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_02_no_language> ;
+    schema:dateCreated "2025-11-05T14:56:11.535768+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.535770+00:00"^^xsd:dateTime .
 

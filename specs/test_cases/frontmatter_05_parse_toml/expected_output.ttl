@@ -3,6 +3,34 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/frontmatter_05_parse_toml/section/pos-0-8> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-8"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/frontmatter_05_parse_toml/heading/h1-test-content-for-toml-parsing> ;
+    kb:positionEnd 8 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_05_parse_toml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_05_parse_toml/section/pos-0-8> ;
+    schema:dateCreated "2025-11-05T14:56:11.615387+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.615388+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/frontmatter_05_parse_toml/heading/h1-test-content-for-toml-parsing> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Test content for TOML parsing"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0,
+        7 ;
+    kb:positionStart 7 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_05_parse_toml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_05_parse_toml/heading/h1-test-content-for-toml-parsing> ;
+    schema:dateCreated "2025-11-05T14:56:11.615356+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.615414+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.615358+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.615414+00:00"^^xsd:dateTime ;
+    schema:headline "Test content for TOML parsing"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/frontmatter_05_parse_toml> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +38,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_05_parse_toml> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_05_parse_toml> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_05_parse_toml> ;
+    schema:dateCreated "2025-11-05T14:56:11.614513+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.614514+00:00"^^xsd:dateTime .
 

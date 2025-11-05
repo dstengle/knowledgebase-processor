@@ -9,7 +9,9 @@
     kb:originalText "[[Start]]"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
     kb:targetPath "Start"^^xsd:string ;
-    rdfs:seeAlso <http://example.org/kb/wikilinks/OJ6mUIY1cSRQpjAD> .
+    rdfs:seeAlso <http://example.org/kb/wikilinks/OJ6mUIY1cSRQpjAD> ;
+    schema:dateCreated "2025-11-05T14:56:11.924614+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.924615+00:00"^^xsd:dateTime .
 
 <http://example.org/kb/wikilinks/nv3bRXthVM98k0cN> a kb:Entity,
         kb:WikiLink ;
@@ -18,7 +20,9 @@
     kb:originalText "[[End|Finish]]"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
     kb:targetPath "End"^^xsd:string ;
-    rdfs:seeAlso <http://example.org/kb/wikilinks/nv3bRXthVM98k0cN> .
+    rdfs:seeAlso <http://example.org/kb/wikilinks/nv3bRXthVM98k0cN> ;
+    schema:dateCreated "2025-11-05T14:56:11.924639+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.924640+00:00"^^xsd:dateTime .
 
 <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> a kb:Document,
         kb:Entity,
@@ -27,5 +31,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_04_at_line_edges> ;
+    schema:dateCreated "2025-11-05T14:56:11.924279+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.924281+00:00"^^xsd:dateTime .
 

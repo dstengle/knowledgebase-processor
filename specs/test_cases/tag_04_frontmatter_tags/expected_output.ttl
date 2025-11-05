@@ -3,6 +3,31 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/tag_04_frontmatter_tags/section/pos-0-3> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-3"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/tag_04_frontmatter_tags/heading/h2-tags-tag1-tag2> ;
+    kb:positionEnd 3 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_04_frontmatter_tags> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_04_frontmatter_tags/section/pos-0-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.799958+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.799958+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/tag_04_frontmatter_tags/heading/h2-tags-tag1-tag2> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "tags: [tag1, tag2]"^^xsd:string ;
+    kb:headingLevel 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_04_frontmatter_tags> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_04_frontmatter_tags/heading/h2-tags-tag1-tag2> ;
+    schema:dateCreated "2025-11-05T14:56:11.799930+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.799932+00:00"^^xsd:dateTime ;
+    schema:headline "tags: [tag1, tag2]"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/tag_04_frontmatter_tags> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +35,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_04_frontmatter_tags> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/tag_04_frontmatter_tags> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/tag_04_frontmatter_tags> ;
+    schema:dateCreated "2025-11-05T14:56:11.799502+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.799503+00:00"^^xsd:dateTime .
 

@@ -3,6 +3,107 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-0-8> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-8"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h1-h1>,
+        <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h3-h3-skipping-h2>,
+        <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h5-h5-skipping-h4> ;
+    kb:positionEnd 8 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-0-8> ;
+    schema:dateCreated "2025-11-05T14:56:11.686500+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686541+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686575+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686500+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686541+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686576+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-1-2> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-2"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h1-h1> ;
+    kb:positionEnd 2 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-1-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.686633+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686634+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-4-5> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 4-5"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h3-h3-skipping-h2> ;
+    kb:positionEnd 5 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-4-5> ;
+    schema:dateCreated "2025-11-05T14:56:11.686650+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686651+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-7-7> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 7-7"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h5-h5-skipping-h4> ;
+    kb:positionEnd 7 ;
+    kb:positionStart 7 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/section/pos-7-7> ;
+    schema:dateCreated "2025-11-05T14:56:11.686667+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686667+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h1-h1> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "H1"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h1-h1> ;
+    schema:dateCreated "2025-11-05T14:56:11.686465+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686589+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686466+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686589+00:00"^^xsd:dateTime ;
+    schema:headline "H1"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h3-h3-skipping-h2> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "H3 (skipping H2)"^^xsd:string ;
+    kb:headingLevel 3 ;
+    kb:positionEnd 0,
+        3 ;
+    kb:positionStart 3 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h3-h3-skipping-h2> ;
+    schema:dateCreated "2025-11-05T14:56:11.686523+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686603+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686524+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686603+00:00"^^xsd:dateTime ;
+    schema:headline "H3 (skipping H2)"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h5-h5-skipping-h4> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "H5 (skipping H4)"^^xsd:string ;
+    kb:headingLevel 5 ;
+    kb:positionEnd 0,
+        6 ;
+    kb:positionStart 6 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/heading_05_non_sequential/heading/h5-h5-skipping-h4> ;
+    schema:dateCreated "2025-11-05T14:56:11.686559+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686617+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.686559+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.686617+00:00"^^xsd:dateTime ;
+    schema:headline "H5 (skipping H4)"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +111,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/heading_05_non_sequential> ;
+    schema:dateCreated "2025-11-05T14:56:11.685629+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.685631+00:00"^^xsd:dateTime .
 

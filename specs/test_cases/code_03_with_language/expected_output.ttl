@@ -3,6 +3,35 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_03_with_language/code/python-pos-0-2> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 2 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_03_with_language> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_03_with_language/code/python-pos-0-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.540675+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.540676+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text "print('Hello, world!')"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_03_with_language/code/python-pos-0-3> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 3 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_03_with_language> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_03_with_language/code/python-pos-0-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.540647+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.540648+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """print('Hello, world!')
+"""^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_03_with_language> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +39,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_03_with_language> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_03_with_language> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_03_with_language> ;
+    schema:dateCreated "2025-11-05T14:56:11.540293+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.540294+00:00"^^xsd:dateTime .
 

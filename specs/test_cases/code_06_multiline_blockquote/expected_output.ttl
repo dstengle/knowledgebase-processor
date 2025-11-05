@@ -3,6 +3,26 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_06_multiline_blockquote/blockquote/this-is-a-blockquote-with-multiple-lines-spanning> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label """This is a blockquote
+with multiple lines
+spanning """^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0,
+        2 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_06_multiline_blockquote> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_06_multiline_blockquote/blockquote/this-is-a-blockquote-with-multiple-lines-spanning> ;
+    schema:dateCreated "2025-11-05T14:56:11.561652+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.561678+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.561653+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.561678+00:00"^^xsd:dateTime ;
+    schema:text """This is a blockquote
+with multiple lines
+spanning three lines."""^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_06_multiline_blockquote> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +30,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_06_multiline_blockquote> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_06_multiline_blockquote> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_06_multiline_blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.561148+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.561149+00:00"^^xsd:dateTime .
 

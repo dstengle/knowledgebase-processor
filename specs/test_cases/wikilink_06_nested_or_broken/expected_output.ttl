@@ -10,7 +10,9 @@
     kb:originalText "[[Nested|Display]]"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_06_nested_or_broken> ;
     kb:targetPath "Nested"^^xsd:string ;
-    rdfs:seeAlso <http://example.org/kb/wikilinks/gbqYp7bCAOwUIcp9> .
+    rdfs:seeAlso <http://example.org/kb/wikilinks/gbqYp7bCAOwUIcp9> ;
+    schema:dateCreated "2025-11-05T14:56:11.930849+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.930850+00:00"^^xsd:dateTime .
 
 <http://example.org/kb/vocab#/test_cases/wikilink_06_nested_or_broken> a kb:Document,
         kb:Entity,
@@ -19,5 +21,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_06_nested_or_broken> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_06_nested_or_broken> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_06_nested_or_broken> ;
+    schema:dateCreated "2025-11-05T14:56:11.930473+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.930475+00:00"^^xsd:dateTime .
 

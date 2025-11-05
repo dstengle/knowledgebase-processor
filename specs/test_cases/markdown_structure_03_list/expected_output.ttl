@@ -1,0 +1,70 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_03_list/list-item/first-item> a kb:Entity,
+        kb:ListItem,
+        schema:ListItem ;
+    rdfs:label "First item"^^xsd:string ;
+    kb:partOfList <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list/pos-0-0> ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list-item/first-item> ;
+    schema:dateCreated "2025-11-05T14:56:11.767721+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.767722+00:00"^^xsd:dateTime ;
+    schema:text "First item"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_03_list/list-item/second-item> a kb:Entity,
+        kb:ListItem,
+        schema:ListItem ;
+    rdfs:label "Second item"^^xsd:string ;
+    kb:partOfList <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list/pos-0-0> ;
+    kb:positionEnd 0 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list-item/second-item> ;
+    schema:dateCreated "2025-11-05T14:56:11.767746+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.767746+00:00"^^xsd:dateTime ;
+    schema:text "Second item"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_03_list/list-item/third-item> a kb:Entity,
+        kb:ListItem,
+        schema:ListItem ;
+    rdfs:label "Third item"^^xsd:string ;
+    kb:partOfList <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list/pos-0-0> ;
+    kb:positionEnd 0 ;
+    kb:positionStart 2 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list-item/third-item> ;
+    schema:dateCreated "2025-11-05T14:56:11.767765+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.767765+00:00"^^xsd:dateTime ;
+    schema:text "Third item"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_03_list/list/pos-0-0> a kb:Entity,
+        kb:List,
+        schema:ItemList ;
+    rdfs:label "Unordered list"^^xsd:string ;
+    kb:isOrdered false ;
+    kb:itemCount 3 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_03_list/list/pos-0-0> ;
+    schema:dateCreated "2025-11-05T14:56:11.767682+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.767783+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.767684+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.767784+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_structure_03_list> ;
+    schema:dateCreated "2025-11-05T14:56:11.767100+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.767102+00:00"^^xsd:dateTime .
+

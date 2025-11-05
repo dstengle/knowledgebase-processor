@@ -155,14 +155,15 @@ class MarkdownStructureProcessor:
         Returns:
             KbSection entity
         """
+        position_start = section.position.get('start') if section.position else 0
+        position_end = section.position.get('end') if section.position else 0
+
+        # Use position for deterministic ID generation
         entity_id = self.id_generator.generate_markdown_element_id(
             "section",
-            section.id,
+            f"pos-{position_start}-{position_end}",
             document_id
         )
-
-        position_start = section.position.get('start') if section.position else None
-        position_end = section.position.get('end') if section.position else None
 
         # Resolve heading URI if heading_id is present
         heading_uri = None
@@ -171,7 +172,7 @@ class MarkdownStructureProcessor:
 
         return KbSection(
             kb_id=entity_id,
-            label=f"Section {section.id[:8]}",
+            label=f"Section {position_start}-{position_end}",
             source_document_uri=document_id,
             heading_uri=heading_uri,
             position_start=position_start,
@@ -194,14 +195,15 @@ class MarkdownStructureProcessor:
         Returns:
             KbList entity
         """
+        position_start = markdown_list.position.get('start') if markdown_list.position else 0
+        position_end = markdown_list.position.get('end') if markdown_list.position else 0
+
+        # Use position for deterministic ID generation
         entity_id = self.id_generator.generate_markdown_element_id(
             "list",
-            markdown_list.id,
+            f"pos-{position_start}-{position_end}",
             document_id
         )
-
-        position_start = markdown_list.position.get('start') if markdown_list.position else None
-        position_end = markdown_list.position.get('end') if markdown_list.position else None
 
         list_type = "ordered" if markdown_list.ordered else "unordered"
 
@@ -270,14 +272,15 @@ class MarkdownStructureProcessor:
         Returns:
             KbTable entity
         """
+        position_start = table.position.get('start') if table.position else 0
+        position_end = table.position.get('end') if table.position else 0
+
+        # Use position for deterministic ID generation
         entity_id = self.id_generator.generate_markdown_element_id(
             "table",
-            table.id,
+            f"pos-{position_start}-{position_end}",
             document_id
         )
-
-        position_start = table.position.get('start') if table.position else None
-        position_end = table.position.get('end') if table.position else None
 
         row_count = len(table.rows) + (1 if table.headers else 0)
         column_count = len(table.headers) if table.headers else (len(table.rows[0]) if table.rows else 0)
@@ -307,14 +310,16 @@ class MarkdownStructureProcessor:
         Returns:
             KbCodeBlock entity
         """
+        position_start = code_block.position.get('start') if code_block.position else 0
+        position_end = code_block.position.get('end') if code_block.position else 0
+
+        # Use position for deterministic ID generation
+        lang = code_block.language or 'unknown'
         entity_id = self.id_generator.generate_markdown_element_id(
             "code",
-            f"{code_block.language or 'unknown'}-{code_block.id}",
+            f"{lang}-pos-{position_start}-{position_end}",
             document_id
         )
-
-        position_start = code_block.position.get('start') if code_block.position else None
-        position_end = code_block.position.get('end') if code_block.position else None
 
         line_count = len(code_block.code.splitlines())
 

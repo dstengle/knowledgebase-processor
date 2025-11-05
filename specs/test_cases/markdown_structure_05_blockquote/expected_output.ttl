@@ -1,0 +1,34 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_05_blockquote/blockquote/this-is-a-quote-from-someone-wise> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label """This is a quote
+from someone wise."""^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0,
+        1 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_05_blockquote> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_05_blockquote/blockquote/this-is-a-quote-from-someone-wise> ;
+    schema:dateCreated "2025-11-05T14:56:11.777737+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.777764+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.777739+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.777765+00:00"^^xsd:dateTime ;
+    schema:text """This is a quote
+from someone wise."""^^xsd:string .
+
+<http://example.org/kb/vocab#/test_cases/markdown_structure_05_blockquote> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_05_blockquote> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_structure_05_blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.777308+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.777309+00:00"^^xsd:dateTime .
+
