@@ -14,6 +14,7 @@ from .wikilink_processor import WikilinkProcessor
 from .named_entity_processor import NamedEntityProcessor
 from .element_extraction_processor import ElementExtractionProcessor
 from .metadata_processor import MetadataProcessor
+from .markdown_structure_processor import MarkdownStructureProcessor
 
 
 logger = get_logger("knowledgebase_processor.processor.entity")
@@ -37,6 +38,7 @@ class EntityProcessor:
         self.named_entity_processor = NamedEntityProcessor(document_registry, id_generator)
         self.element_processor = ElementExtractionProcessor()
         self.metadata_processor = MetadataProcessor()
+        self.markdown_structure_processor = MarkdownStructureProcessor(id_generator)
     
     def register_extractor(self, extractor):
         """Register an extractor component."""
@@ -84,15 +86,34 @@ class EntityProcessor:
         document_id: str
     ) -> List:
         """Extract todos using specialized processor.
-        
+
         Args:
             document: Document to extract from
             document_id: ID of source document
-            
+
         Returns:
             List of KbTodoItem entities
         """
         return self.todo_processor.extract_todos_from_elements(document.elements, document_id)
+
+    def extract_markdown_structure(
+        self,
+        document: Document,
+        document_id: str
+    ) -> List:
+        """Extract markdown structure entities using specialized processor.
+
+        Args:
+            document: Document to extract from
+            document_id: ID of source document
+
+        Returns:
+            List of markdown structure KB entities
+        """
+        return self.markdown_structure_processor.extract_markdown_structure_entities(
+            document,
+            document_id
+        )
     
     def analyze_document(
         self,
@@ -161,7 +182,11 @@ class EntityProcessor:
         # Extract todos using todo processor
         todos = self.extract_todos_as_entities(document, kb_document.kb_id)
         all_entities.extend(todos)
-        
+
+        # Extract markdown structure entities using markdown structure processor
+        structure_entities = self.extract_markdown_structure(document, kb_document.kb_id)
+        all_entities.extend(structure_entities)
+
         # Analyze document for named entities using named entity processor
         extracted_entities = self.analyze_document(document, doc_metadata)
         kb_entities = self.named_entity_processor.convert_extracted_entities(
@@ -169,7 +194,7 @@ class EntityProcessor:
             kb_document.original_path
         )
         all_entities.extend(kb_entities)
-        
+
         logger.info(f"Processed {len(all_entities)} entities from document {kb_document.original_path}")
         return all_entities
     
@@ -194,3 +219,7 @@ class EntityProcessor:
     def get_extraction_summary(self, document):
         """Get extraction summary using element processor."""
         return self.element_processor.get_extraction_summary(document)
+
+    def get_structure_statistics(self, structure_entities):
+        """Get markdown structure statistics using markdown structure processor."""
+        return self.markdown_structure_processor.get_structure_statistics(structure_entities)

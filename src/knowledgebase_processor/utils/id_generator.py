@@ -227,11 +227,11 @@ class EntityIdGenerator:
         normalized_text = re.sub(r'-+', '-', normalized_text)
         # Remove leading/trailing hyphens
         normalized_text = normalized_text.strip('-')
-        
+
         # Ensure the text is not empty after normalization
         if not normalized_text:
             normalized_text = "unnamed-todo"
-        
+
         # If source_document_id is already a full URI, append to it
         # Otherwise, construct from base URL
         if source_document_id.startswith('http://') or source_document_id.startswith('https://'):
@@ -241,3 +241,37 @@ class EntityIdGenerator:
         else:
             # Fallback: construct from base URL
             return urljoin(self.base_url, f"documents/{source_document_id}/todo/{normalized_text}")
+
+    def generate_markdown_element_id(self, element_type: str, identifier: str, source_document_id: str) -> str:
+        """
+        Generates a unique, deterministic URI for a markdown structure element.
+
+        Pattern: DOCUMENT_IRI + "/{element_type}/" + normalized_identifier
+
+        Args:
+            element_type: The type of markdown element (e.g., 'heading', 'section', 'list', etc.)
+            identifier: A unique identifier for the element (e.g., heading text, element ID)
+            source_document_id: The unique ID/URI of the document containing the element
+
+        Returns:
+            A full URI for the markdown element entity.
+        """
+        normalized_identifier = self._normalize_text_for_id(identifier)
+
+        # Ensure the identifier is not empty
+        if not normalized_identifier:
+            normalized_identifier = "unnamed-element"
+
+        # Limit identifier length to keep URIs reasonable
+        if len(normalized_identifier) > 100:
+            normalized_identifier = normalized_identifier[:100]
+
+        # If source_document_id is already a full URI, append to it
+        # Otherwise, construct from base URL
+        if source_document_id.startswith('http://') or source_document_id.startswith('https://'):
+            # Remove trailing slash if present
+            doc_uri = source_document_id.rstrip('/')
+            return f"{doc_uri}/{element_type}/{normalized_identifier}"
+        else:
+            # Fallback: construct from base URL
+            return urljoin(self.base_url, f"documents/{source_document_id}/{element_type}/{normalized_identifier}")
