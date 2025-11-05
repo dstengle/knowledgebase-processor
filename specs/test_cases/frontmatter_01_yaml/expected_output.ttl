@@ -3,6 +3,54 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/frontmatter_01_yaml/section/pos-0-7> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-7"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/frontmatter_01_yaml/heading/h1-content-here>,
+        <http://example.org/kb/documents/test_cases/frontmatter_01_yaml/heading/h2-title-test-document-date-2023-01-01-tags-tag1> ;
+    kb:positionEnd 7 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_01_yaml/section/pos-0-7> ;
+    schema:dateCreated "2025-11-05T14:56:11.588782+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.588822+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.588783+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.588823+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/frontmatter_01_yaml/heading/h1-content-here> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Content here"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0,
+        6 ;
+    kb:positionStart 6 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_01_yaml/heading/h1-content-here> ;
+    schema:dateCreated "2025-11-05T14:56:11.588805+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.588860+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.588806+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.588861+00:00"^^xsd:dateTime ;
+    schema:headline "Content here"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/frontmatter_01_yaml/heading/h2-title-test-document-date-2023-01-01-tags-tag1> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label """title: Test Document
+date: 2023-01-01
+tags: [tag1, tag2]"""^^xsd:string ;
+    kb:headingLevel 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_01_yaml/heading/h2-title-test-document-date-2023-01-01-tags-tag1> ;
+    schema:dateCreated "2025-11-05T14:56:11.588749+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.588750+00:00"^^xsd:dateTime ;
+    schema:headline """title: Test Document
+date: 2023-01-01
+tags: [tag1, tag2]"""^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +58,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_01_yaml> ;
+    schema:dateCreated "2025-11-05T14:56:11.587432+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.587434+00:00"^^xsd:dateTime .
 

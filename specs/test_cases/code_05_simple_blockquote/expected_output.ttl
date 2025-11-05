@@ -3,6 +3,21 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_05_simple_blockquote/blockquote/this-is-a-blockquote> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "This is a blockquote."^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_05_simple_blockquote> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_05_simple_blockquote/blockquote/this-is-a-blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.557517+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.557547+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.557518+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.557547+00:00"^^xsd:dateTime ;
+    schema:text "This is a blockquote."^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_05_simple_blockquote> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +25,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_05_simple_blockquote> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_05_simple_blockquote> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_05_simple_blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.557057+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.557058+00:00"^^xsd:dateTime .
 

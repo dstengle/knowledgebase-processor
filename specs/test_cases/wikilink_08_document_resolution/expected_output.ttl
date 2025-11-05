@@ -9,7 +9,9 @@
     kb:originalText "[[Existing Page]]"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_08_document_resolution> ;
     kb:targetPath "Existing Page"^^xsd:string ;
-    rdfs:seeAlso <http://example.org/kb/wikilinks/KGg1yjhcE3uRD_hB> .
+    rdfs:seeAlso <http://example.org/kb/wikilinks/KGg1yjhcE3uRD_hB> ;
+    schema:dateCreated "2025-11-05T14:56:11.937003+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.937004+00:00"^^xsd:dateTime .
 
 <http://example.org/kb/vocab#/test_cases/wikilink_08_document_resolution> a kb:Document,
         kb:Entity,
@@ -18,5 +20,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_08_document_resolution> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_08_document_resolution> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_08_document_resolution> ;
+    schema:dateCreated "2025-11-05T14:56:11.936711+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.936712+00:00"^^xsd:dateTime .
 

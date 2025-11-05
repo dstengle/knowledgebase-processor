@@ -3,6 +3,162 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/another-blockquote> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "Another blockquote"^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 9 ;
+    kb:positionStart 9 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/another-blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.574461+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574462+00:00"^^xsd:dateTime ;
+    schema:text "Another blockquote"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/another-blockquote-with-nesting> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label """Another blockquote
+With nesting"""^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 9 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/another-blockquote-with-nesting> ;
+    schema:dateCreated "2025-11-05T14:56:11.574329+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574329+00:00"^^xsd:dateTime ;
+    schema:text """Another blockquote
+With nesting"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/this-is-a-blockquote> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "This is a blockquote"^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0,
+        2 ;
+    kb:positionStart 2 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/this-is-a-blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.574281+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.574444+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574281+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.574444+00:00"^^xsd:dateTime ;
+    schema:text "This is a blockquote"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/with-nesting> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "With nesting"^^xsd:string ;
+    kb:nestingLevel 2 ;
+    kb:positionEnd 10 ;
+    kb:positionStart 10 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/blockquote/with-nesting> ;
+    schema:dateCreated "2025-11-05T14:56:11.574486+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574487+00:00"^^xsd:dateTime ;
+    schema:text "With nesting"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/code/javascript-pos-12-14> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "javascript code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 14 ;
+    kb:positionStart 12 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/code/javascript-pos-12-14> ;
+    schema:dateCreated "2025-11-05T14:56:11.574427+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574427+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "javascript"^^xsd:string ;
+    schema:text "console.log('Hello!');"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/code/javascript-pos-12-15> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "javascript code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 15 ;
+    kb:positionStart 12 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/code/javascript-pos-12-15> ;
+    schema:dateCreated "2025-11-05T14:56:11.574351+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574351+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "javascript"^^xsd:string ;
+    schema:text """console.log('Hello!');
+"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/code/python-pos-4-7> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 7 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/code/python-pos-4-7> ;
+    schema:dateCreated "2025-11-05T14:56:11.574406+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574406+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello():
+    print('Hello, world!')"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/code/python-pos-4-8> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 8 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/code/python-pos-4-8> ;
+    schema:dateCreated "2025-11-05T14:56:11.574305+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574306+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello():
+    print('Hello, world!')
+"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/section/pos-0-15> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-15"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/code_08_mixed_content/heading/h1-mixed-content-example> ;
+    kb:positionEnd 15 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/section/pos-0-15> ;
+    schema:dateCreated "2025-11-05T14:56:11.574254+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574255+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/section/pos-1-14> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-14"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/code_08_mixed_content/heading/h1-mixed-content-example> ;
+    kb:positionEnd 14 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/section/pos-1-14> ;
+    schema:dateCreated "2025-11-05T14:56:11.574386+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574386+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/code_08_mixed_content/heading/h1-mixed-content-example> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Mixed Content Example"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_08_mixed_content/heading/h1-mixed-content-example> ;
+    schema:dateCreated "2025-11-05T14:56:11.574217+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.574367+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.574219+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.574367+00:00"^^xsd:dateTime ;
+    schema:headline "Mixed Content Example"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +166,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_08_mixed_content> ;
+    schema:dateCreated "2025-11-05T14:56:11.573240+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.573241+00:00"^^xsd:dateTime .
 

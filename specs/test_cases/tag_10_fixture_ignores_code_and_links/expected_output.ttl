@@ -3,6 +3,74 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/code/unknown-pos-1-3> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "unknown code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 3 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/code/unknown-pos-1-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.828166+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.828167+00:00"^^xsd:dateTime ;
+    schema:text "don't render #hashtags in code blocks"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/code/unknown-pos-1-4> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "unknown code block"^^xsd:string ;
+    kb:lineCount 1 ;
+    kb:positionEnd 4 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/code/unknown-pos-1-4> ;
+    schema:dateCreated "2025-11-05T14:56:11.828005+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.828006+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage ""^^xsd:string ;
+    schema:text """don't render #hashtags in code blocks
+"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/section/pos-0-13> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-13"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/heading/h1-hashtag> ;
+    kb:positionEnd 13 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/section/pos-0-13> ;
+    schema:dateCreated "2025-11-05T14:56:11.828058+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.828059+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/section/pos-11-12> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 11-12"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/heading/h1-hashtag> ;
+    kb:positionEnd 12 ;
+    kb:positionStart 11 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/section/pos-11-12> ;
+    schema:dateCreated "2025-11-05T14:56:11.828093+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.828094+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/heading/h1-hashtag> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "hashtag"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0,
+        10 ;
+    kb:positionStart 10 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_10_fixture_ignores_code_and_links/heading/h1-hashtag> ;
+    schema:dateCreated "2025-11-05T14:56:11.828034+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.828075+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.828034+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.828075+00:00"^^xsd:dateTime ;
+    schema:headline "hashtag"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +78,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/tag_10_fixture_ignores_code_and_links> ;
+    schema:dateCreated "2025-11-05T14:56:11.826237+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.826238+00:00"^^xsd:dateTime .
 

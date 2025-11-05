@@ -374,3 +374,339 @@ class KbPlaceholderDocument(KbBaseEntity):
             "rdf_types": [KB.PlaceholderDocument, SCHEMA.CreativeWork],
             "rdfs_label_fallback_fields": ["title", "normalized_name"],
         }
+
+
+class KbHeading(KbBaseEntity):
+    """
+    Pydantic model for heading entities representing markdown headings.
+    """
+    level: int = Field(
+        ...,
+        description="Heading level (1-6 for h1-h6)",
+        json_schema_extra={
+            "rdf_property": KB.headingLevel,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    text: str = Field(
+        ...,
+        description="The text content of the heading",
+        json_schema_extra={
+            "rdf_property": SCHEMA.headline,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    parent_heading_uri: Optional[str] = Field(
+        None,
+        description="URI of the parent heading entity",
+        json_schema_extra={
+            "rdf_property": KB.parentHeading,
+            "is_object_property": True,
+            "rdf_datatype": XSD.anyURI,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Heading, SCHEMA.Article],
+            "rdfs_label_fallback_fields": ["text"],
+        }
+
+
+class KbSection(KbBaseEntity):
+    """
+    Pydantic model for section entities representing content sections.
+    """
+    heading_uri: Optional[str] = Field(
+        None,
+        description="URI of the associated heading entity",
+        json_schema_extra={
+            "rdf_property": KB.hasHeading,
+            "is_object_property": True,
+            "rdf_datatype": XSD.anyURI,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Section, SCHEMA.Article],
+            "rdfs_label_fallback_fields": ["label"],
+        }
+
+
+class KbList(KbBaseEntity):
+    """
+    Pydantic model for list entities representing markdown lists.
+    """
+    ordered: bool = Field(
+        False,
+        description="Whether the list is ordered (numbered) or unordered (bulleted)",
+        json_schema_extra={
+            "rdf_property": KB.isOrdered,
+            "rdf_datatype": XSD.boolean,
+        },
+    )
+    item_count: int = Field(
+        0,
+        description="Number of items in the list",
+        json_schema_extra={
+            "rdf_property": KB.itemCount,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    parent_list_uri: Optional[str] = Field(
+        None,
+        description="URI of the parent list entity (for nested lists)",
+        json_schema_extra={
+            "rdf_property": KB.parentList,
+            "is_object_property": True,
+            "rdf_datatype": XSD.anyURI,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.List, SCHEMA.ItemList],
+            "rdfs_label_fallback_fields": ["label"],
+        }
+
+
+class KbListItem(KbBaseEntity):
+    """
+    Pydantic model for list item entities.
+    """
+    text: str = Field(
+        ...,
+        description="The text content of the list item",
+        json_schema_extra={
+            "rdf_property": SCHEMA.text,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    parent_list_uri: Optional[str] = Field(
+        None,
+        description="URI of the parent list entity",
+        json_schema_extra={
+            "rdf_property": KB.partOfList,
+            "is_object_property": True,
+            "rdf_datatype": XSD.anyURI,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.ListItem, SCHEMA.ListItem],
+            "rdfs_label_fallback_fields": ["text"],
+        }
+
+
+class KbTable(KbBaseEntity):
+    """
+    Pydantic model for table entities representing markdown tables.
+    """
+    row_count: int = Field(
+        0,
+        description="Number of rows in the table",
+        json_schema_extra={
+            "rdf_property": KB.rowCount,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    column_count: int = Field(
+        0,
+        description="Number of columns in the table",
+        json_schema_extra={
+            "rdf_property": KB.columnCount,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    headers: Optional[List[str]] = Field(
+        None,
+        description="List of column headers",
+        json_schema_extra={
+            "rdf_property": KB.tableHeader,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Table, SCHEMA.Table],
+            "rdfs_label_fallback_fields": ["label"],
+        }
+
+
+class KbCodeBlock(KbBaseEntity):
+    """
+    Pydantic model for code block entities representing markdown code blocks.
+    """
+    language: Optional[str] = Field(
+        None,
+        description="Programming language of the code block",
+        json_schema_extra={
+            "rdf_property": SCHEMA.programmingLanguage,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    code: str = Field(
+        ...,
+        description="The code content",
+        json_schema_extra={
+            "rdf_property": SCHEMA.text,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    line_count: int = Field(
+        0,
+        description="Number of lines in the code block",
+        json_schema_extra={
+            "rdf_property": KB.lineCount,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.CodeBlock, SCHEMA.SoftwareSourceCode],
+            "rdfs_label_fallback_fields": ["language", "label"],
+        }
+
+
+class KbBlockquote(KbBaseEntity):
+    """
+    Pydantic model for blockquote entities representing markdown blockquotes.
+    """
+    level: int = Field(
+        1,
+        description="Nesting level of the blockquote",
+        json_schema_extra={
+            "rdf_property": KB.nestingLevel,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    text: str = Field(
+        ...,
+        description="The quoted text content",
+        json_schema_extra={
+            "rdf_property": SCHEMA.text,
+            "rdf_datatype": XSD.string,
+        },
+    )
+    position_start: Optional[int] = Field(
+        None,
+        description="Starting line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionStart,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+    position_end: Optional[int] = Field(
+        None,
+        description="Ending line number in the document",
+        json_schema_extra={
+            "rdf_property": KB.positionEnd,
+            "rdf_datatype": XSD.integer,
+        },
+    )
+
+    class Config:
+        json_schema_extra = {
+            "rdf_types": [KB.Blockquote, SCHEMA.Quotation],
+            "rdfs_label_fallback_fields": ["text"],
+        }

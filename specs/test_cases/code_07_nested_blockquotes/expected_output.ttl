@@ -3,6 +3,90 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/back-to-level-1> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "Back to level 1"^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 4 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/back-to-level-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.565878+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565878+00:00"^^xsd:dateTime ;
+    schema:text "Back to level 1"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/back-to-level-2> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "Back to level 2"^^xsd:string ;
+    kb:nestingLevel 2 ;
+    kb:positionEnd 3 ;
+    kb:positionStart 3 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/back-to-level-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.565861+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565861+00:00"^^xsd:dateTime ;
+    schema:text "Back to level 2"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-1-blockquote> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "Level 1 blockquote"^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-1-blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.565801+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565801+00:00"^^xsd:dateTime ;
+    schema:text "Level 1 blockquote"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-1-blockquote-level-2-blockquote-level-3-bloc> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label """Level 1 blockquote
+Level 2 blockquote
+Level 3 bloc"""^^xsd:string ;
+    kb:nestingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-1-blockquote-level-2-blockquote-level-3-bloc> ;
+    schema:dateCreated "2025-11-05T14:56:11.565769+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565770+00:00"^^xsd:dateTime ;
+    schema:text """Level 1 blockquote
+Level 2 blockquote
+Level 3 blockquote
+Back to level 2
+Back to level 1"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-2-blockquote> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "Level 2 blockquote"^^xsd:string ;
+    kb:nestingLevel 2 ;
+    kb:positionEnd 1 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-2-blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.565823+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565824+00:00"^^xsd:dateTime ;
+    schema:text "Level 2 blockquote"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-3-blockquote> a kb:Blockquote,
+        kb:Entity,
+        schema:Quotation ;
+    rdfs:label "Level 3 blockquote"^^xsd:string ;
+    kb:nestingLevel 3 ;
+    kb:positionEnd 2 ;
+    kb:positionStart 2 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_07_nested_blockquotes/blockquote/level-3-blockquote> ;
+    schema:dateCreated "2025-11-05T14:56:11.565842+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565843+00:00"^^xsd:dateTime ;
+    schema:text "Level 3 blockquote"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +94,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_07_nested_blockquotes> ;
+    schema:dateCreated "2025-11-05T14:56:11.565111+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.565113+00:00"^^xsd:dateTime .
 

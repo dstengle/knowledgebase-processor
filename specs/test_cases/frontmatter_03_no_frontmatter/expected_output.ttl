@@ -3,6 +3,45 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/section/pos-0-2> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-2"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/heading/h1-content-here> ;
+    kb:positionEnd 2 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/section/pos-0-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.600701+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.600702+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/section/pos-1-1> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-1"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/heading/h1-content-here> ;
+    kb:positionEnd 1 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/section/pos-1-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.600738+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.600738+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/heading/h1-content-here> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Content here"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_03_no_frontmatter/heading/h1-content-here> ;
+    schema:dateCreated "2025-11-05T14:56:11.600673+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.600719+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.600674+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.600720+00:00"^^xsd:dateTime ;
+    schema:headline "Content here"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +49,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_03_no_frontmatter> ;
+    schema:dateCreated "2025-11-05T14:56:11.600187+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.600188+00:00"^^xsd:dateTime .
 

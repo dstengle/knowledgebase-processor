@@ -3,6 +3,109 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/javascript-pos-11-15> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "javascript code block"^^xsd:string ;
+    kb:lineCount 3 ;
+    kb:positionEnd 15 ;
+    kb:positionStart 11 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/javascript-pos-11-15> ;
+    schema:dateCreated "2025-11-05T14:56:11.545508+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545508+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "javascript"^^xsd:string ;
+    schema:text """function hello() {
+    console.log('Hello, world!');
+}"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/javascript-pos-11-16> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "javascript code block"^^xsd:string ;
+    kb:lineCount 3 ;
+    kb:positionEnd 16 ;
+    kb:positionStart 11 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/javascript-pos-11-16> ;
+    schema:dateCreated "2025-11-05T14:56:11.545423+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545423+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "javascript"^^xsd:string ;
+    schema:text """function hello() {
+    console.log('Hello, world!');
+}
+"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/python-pos-4-7> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 7 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/python-pos-4-7> ;
+    schema:dateCreated "2025-11-05T14:56:11.545482+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545483+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello():
+    print('Hello, world!')"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/python-pos-4-8> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 8 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/code/python-pos-4-8> ;
+    schema:dateCreated "2025-11-05T14:56:11.545399+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545400+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello():
+    print('Hello, world!')
+"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/section/pos-0-16> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-16"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/heading/h1-code-examples> ;
+    kb:positionEnd 16 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/section/pos-0-16> ;
+    schema:dateCreated "2025-11-05T14:56:11.545371+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545372+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/section/pos-1-15> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-15"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/heading/h1-code-examples> ;
+    kb:positionEnd 15 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/section/pos-1-15> ;
+    schema:dateCreated "2025-11-05T14:56:11.545461+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545462+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/code_04_multiple_blocks/heading/h1-code-examples> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Code Examples"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/code_04_multiple_blocks/heading/h1-code-examples> ;
+    schema:dateCreated "2025-11-05T14:56:11.545336+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.545441+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.545337+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.545441+00:00"^^xsd:dateTime ;
+    schema:headline "Code Examples"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +113,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/code_04_multiple_blocks> ;
+    schema:dateCreated "2025-11-05T14:56:11.544454+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.544455+00:00"^^xsd:dateTime .
 

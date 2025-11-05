@@ -3,6 +3,19 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/list-item/item-1> a kb:Entity,
+        kb:ListItem,
+        schema:ListItem ;
+    rdfs:label "Item 1"^^xsd:string ;
+    kb:partOfList <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/list/pos-0-0> ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/list-item/item-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.740281+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.740282+00:00"^^xsd:dateTime ;
+    schema:text "Item 1"^^xsd:string .
+
 <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/completed-todo-item> a kb:Entity,
         kb:TodoItem,
         schema:Action ;
@@ -10,6 +23,10 @@
     kb:isCompleted true ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/completed-todo-item> ;
+    schema:dateCreated "2025-11-05T14:56:11.740175+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.740208+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.740175+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.740209+00:00"^^xsd:dateTime ;
     schema:description "Completed todo item"^^xsd:string .
 
 <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/todo-item-1> a kb:Entity,
@@ -19,7 +36,26 @@
     kb:isCompleted false ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/todo/todo-item-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.740132+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.740193+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.740133+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.740194+00:00"^^xsd:dateTime ;
     schema:description "Todo item 1"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/list/pos-0-0> a kb:Entity,
+        kb:List,
+        schema:ItemList ;
+    rdfs:label "Unordered list"^^xsd:string ;
+    kb:isOrdered false ;
+    kb:itemCount 3 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_03_lists_and_todos/list/pos-0-0> ;
+    schema:dateCreated "2025-11-05T14:56:11.740247+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.740305+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.740248+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.740305+00:00"^^xsd:dateTime .
 
 <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> a kb:Document,
         kb:Entity,
@@ -28,5 +64,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_03_lists_and_todos> ;
+    schema:dateCreated "2025-11-05T14:56:11.739130+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.739132+00:00"^^xsd:dateTime .
 

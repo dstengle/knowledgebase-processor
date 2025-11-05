@@ -3,6 +3,60 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/list/pos-2-0> a kb:Entity,
+        kb:List,
+        schema:ItemList ;
+    rdfs:label "Unordered list"^^xsd:string ;
+    kb:isOrdered false ;
+    kb:itemCount 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 2 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/list/pos-2-0> ;
+    schema:dateCreated "2025-11-05T14:56:11.897787+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897858+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897788+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897858+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/list/pos-4-0> a kb:Entity,
+        kb:List,
+        schema:ItemList ;
+    rdfs:label "Unordered list"^^xsd:string ;
+    kb:isOrdered false ;
+    kb:itemCount 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/list/pos-4-0> ;
+    schema:dateCreated "2025-11-05T14:56:11.897807+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897873+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897808+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897873+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/section/pos-0-7> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-7"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/heading/h1-test-document> ;
+    kb:positionEnd 7 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/section/pos-0-7> ;
+    schema:dateCreated "2025-11-05T14:56:11.897765+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897766+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/section/pos-1-6> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-6"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/heading/h1-test-document> ;
+    kb:positionEnd 6 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/section/pos-1-6> ;
+    schema:dateCreated "2025-11-05T14:56:11.897841+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897842+00:00"^^xsd:dateTime .
+
 <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/four-space-indent> a kb:Entity,
         kb:TodoItem,
         schema:Action ;
@@ -10,6 +64,10 @@
     kb:isCompleted false ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/four-space-indent> ;
+    schema:dateCreated "2025-11-05T14:56:11.897619+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897693+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897619+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897694+00:00"^^xsd:dateTime ;
     schema:description "Four space indent"^^xsd:string .
 
 <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/no-indent> a kb:Entity,
@@ -19,6 +77,10 @@
     kb:isCompleted false ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/no-indent> ;
+    schema:dateCreated "2025-11-05T14:56:11.897652+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897717+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897652+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897717+00:00"^^xsd:dateTime ;
     schema:description "No indent"^^xsd:string .
 
 <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/single-space-indent> a kb:Entity,
@@ -28,6 +90,10 @@
     kb:isCompleted false ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/single-space-indent> ;
+    schema:dateCreated "2025-11-05T14:56:11.897574+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897668+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897576+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897668+00:00"^^xsd:dateTime ;
     schema:description "Single space indent"^^xsd:string .
 
 <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/tab-indent> a kb:Entity,
@@ -37,6 +103,10 @@
     kb:isCompleted true ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/tab-indent> ;
+    schema:dateCreated "2025-11-05T14:56:11.897636+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897705+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897637+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897705+00:00"^^xsd:dateTime ;
     schema:description "Tab indent"^^xsd:string .
 
 <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/two-space-indent> a kb:Entity,
@@ -46,7 +116,26 @@
     kb:isCompleted true ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/todo/two-space-indent> ;
+    schema:dateCreated "2025-11-05T14:56:11.897599+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897681+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897599+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897681+00:00"^^xsd:dateTime ;
     schema:description "Two space indent"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/heading/h1-test-document> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Test Document"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_08_todos_with_leading_whitespace/heading/h1-test-document> ;
+    schema:dateCreated "2025-11-05T14:56:11.897742+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897824+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.897742+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.897824+00:00"^^xsd:dateTime ;
+    schema:headline "Test Document"^^xsd:string .
 
 <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> a kb:Document,
         kb:Entity,
@@ -55,5 +144,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_08_todos_with_leading_whitespace> ;
+    schema:dateCreated "2025-11-05T14:56:11.896406+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.896407+00:00"^^xsd:dateTime .
 

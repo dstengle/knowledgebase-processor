@@ -3,6 +3,45 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/todo_04_checked_todos/list/pos-2-0> a kb:Entity,
+        kb:List,
+        schema:ItemList ;
+    rdfs:label "Unordered list"^^xsd:string ;
+    kb:isOrdered false ;
+    kb:itemCount 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 2 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_04_checked_todos/list/pos-2-0> ;
+    schema:dateCreated "2025-11-05T14:56:11.856235+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856290+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.856236+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856290+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_04_checked_todos/section/pos-0-4> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-4"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/todo_04_checked_todos/heading/h1-test-document> ;
+    kb:positionEnd 4 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_04_checked_todos/section/pos-0-4> ;
+    schema:dateCreated "2025-11-05T14:56:11.856213+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.856213+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_04_checked_todos/section/pos-1-3> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-3"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/todo_04_checked_todos/heading/h1-test-document> ;
+    kb:positionEnd 3 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_04_checked_todos/section/pos-1-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.856274+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.856274+00:00"^^xsd:dateTime .
+
 <http://example.org/kb/documents/test_cases/todo_04_checked_todos/todo/completed-todo-item-1> a kb:Entity,
         kb:TodoItem,
         schema:Action ;
@@ -10,6 +49,10 @@
     kb:isCompleted true ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_04_checked_todos/todo/completed-todo-item-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.856093+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856136+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.856095+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856136+00:00"^^xsd:dateTime ;
     schema:description "Completed todo item 1"^^xsd:string .
 
 <http://example.org/kb/documents/test_cases/todo_04_checked_todos/todo/completed-todo-item-2> a kb:Entity,
@@ -19,7 +62,26 @@
     kb:isCompleted true ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
     rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_04_checked_todos/todo/completed-todo-item-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.856118+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856165+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.856119+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856165+00:00"^^xsd:dateTime ;
     schema:description "Completed todo item 2"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_04_checked_todos/heading/h1-test-document> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Test Document"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_04_checked_todos/heading/h1-test-document> ;
+    schema:dateCreated "2025-11-05T14:56:11.856190+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856253+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.856191+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.856254+00:00"^^xsd:dateTime ;
+    schema:headline "Test Document"^^xsd:string .
 
 <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> a kb:Document,
         kb:Entity,
@@ -28,5 +90,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_04_checked_todos> ;
+    schema:dateCreated "2025-11-05T14:56:11.855363+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.855364+00:00"^^xsd:dateTime .
 

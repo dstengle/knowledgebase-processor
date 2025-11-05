@@ -1,0 +1,32 @@
+@prefix kb: <http://example.org/kb/vocab#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/kb/documents/test_cases/markdown_structure_04_table/table/pos-0-83> a kb:Entity,
+        kb:Table,
+        schema:Table ;
+    rdfs:label "Table with 3 rows"^^xsd:string ;
+    kb:columnCount 3 ;
+    kb:positionEnd 83 ;
+    kb:positionStart 0 ;
+    kb:rowCount 3 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_04_table> ;
+    kb:tableHeader "Age"^^xsd:string,
+        "City"^^xsd:string,
+        "Name"^^xsd:string ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_structure_04_table/table/pos-0-83> ;
+    schema:dateCreated "2025-11-05T14:56:11.774322+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.774324+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/vocab#/test_cases/markdown_structure_04_table> a kb:Document,
+        kb:Entity,
+        schema:CreativeWork ;
+    rdfs:label "Temporary Document"^^xsd:string ;
+    kb:originalPath "temp_document.md"^^xsd:string ;
+    kb:pathWithoutExtension "temp_document"^^xsd:string ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_structure_04_table> ;
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_structure_04_table> ;
+    schema:dateCreated "2025-11-05T14:56:11.773703+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.773704+00:00"^^xsd:dateTime .
+

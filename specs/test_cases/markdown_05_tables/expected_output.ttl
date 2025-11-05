@@ -10,5 +10,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_05_tables> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_05_tables> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_05_tables> ;
+    schema:dateCreated "2025-11-05T14:56:11.751210+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.751212+00:00"^^xsd:dateTime .
 

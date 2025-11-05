@@ -3,6 +3,86 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/todo_02_no_todos/list-item/another-regular-item> a kb:Entity,
+        kb:ListItem,
+        schema:ListItem ;
+    rdfs:label "Another regular item"^^xsd:string ;
+    kb:partOfList <http://example.org/kb/documents/test_cases/todo_02_no_todos/list/pos-4-0> ;
+    kb:positionEnd 0 ;
+    kb:positionStart 5 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_02_no_todos/list-item/another-regular-item> ;
+    schema:dateCreated "2025-11-05T14:56:11.838107+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.838107+00:00"^^xsd:dateTime ;
+    schema:text "Another regular item"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_02_no_todos/list-item/regular-list-item> a kb:Entity,
+        kb:ListItem,
+        schema:ListItem ;
+    rdfs:label "Regular list item"^^xsd:string ;
+    kb:partOfList <http://example.org/kb/documents/test_cases/todo_02_no_todos/list/pos-4-0> ;
+    kb:positionEnd 0 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_02_no_todos/list-item/regular-list-item> ;
+    schema:dateCreated "2025-11-05T14:56:11.838087+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.838087+00:00"^^xsd:dateTime ;
+    schema:text "Regular list item"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_02_no_todos/section/pos-0-6> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-6"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/todo_02_no_todos/heading/h1-test-document> ;
+    kb:positionEnd 6 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_02_no_todos/section/pos-0-6> ;
+    schema:dateCreated "2025-11-05T14:56:11.838034+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.838035+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_02_no_todos/section/pos-1-5> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-5"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/todo_02_no_todos/heading/h1-test-document> ;
+    kb:positionEnd 5 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_02_no_todos/section/pos-1-5> ;
+    schema:dateCreated "2025-11-05T14:56:11.838158+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.838160+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/todo_02_no_todos/heading/h1-test-document> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Test Document"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_02_no_todos/heading/h1-test-document> ;
+    schema:dateCreated "2025-11-05T14:56:11.838004+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.838122+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.838005+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.838123+00:00"^^xsd:dateTime ;
+    schema:headline "Test Document"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/todo_02_no_todos/list/pos-4-0> a kb:Entity,
+        kb:List,
+        schema:ItemList ;
+    rdfs:label "Unordered list"^^xsd:string ;
+    kb:isOrdered false ;
+    kb:itemCount 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/todo_02_no_todos/list/pos-4-0> ;
+    schema:dateCreated "2025-11-05T14:56:11.838060+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.838186+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.838060+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.838187+00:00"^^xsd:dateTime .
+
 <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +90,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/todo_02_no_todos> ;
+    schema:dateCreated "2025-11-05T14:56:11.836982+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.836983+00:00"^^xsd:dateTime .
 

@@ -3,6 +3,50 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/section/pos-0-5> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-5"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/heading/h1-test-content-for-string-format-tags-extraction>,
+        <http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/heading/h2-tags-tag1-tag2-tag3> ;
+    kb:positionEnd 5 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/section/pos-0-5> ;
+    schema:dateCreated "2025-11-05T14:56:11.634693+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.634733+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.634694+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.634734+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/heading/h1-test-content-for-string-format-tags-extraction> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Test content for string-format tags extraction"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0,
+        4 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/heading/h1-test-content-for-string-format-tags-extraction> ;
+    schema:dateCreated "2025-11-05T14:56:11.634717+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.634755+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.634717+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.634755+00:00"^^xsd:dateTime ;
+    schema:headline "Test content for string-format tags extraction"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/heading/h2-tags-tag1-tag2-tag3> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "tags: \"tag1, tag2, tag3\""^^xsd:string ;
+    kb:headingLevel 2 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_08_extract_tags_string/heading/h2-tags-tag1-tag2-tag3> ;
+    schema:dateCreated "2025-11-05T14:56:11.634665+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.634667+00:00"^^xsd:dateTime ;
+    schema:headline "tags: \"tag1, tag2, tag3\""^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +54,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_08_extract_tags_string> ;
+    schema:dateCreated "2025-11-05T14:56:11.633917+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.633918+00:00"^^xsd:dateTime .
 

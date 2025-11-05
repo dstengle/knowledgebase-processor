@@ -3,6 +3,34 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/frontmatter_02_toml/section/pos-0-7> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-7"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/frontmatter_02_toml/heading/h1-content-here> ;
+    kb:positionEnd 7 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_02_toml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_02_toml/section/pos-0-7> ;
+    schema:dateCreated "2025-11-05T14:56:11.595600+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.595600+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/frontmatter_02_toml/heading/h1-content-here> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Content here"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0,
+        6 ;
+    kb:positionStart 6 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_02_toml> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/frontmatter_02_toml/heading/h1-content-here> ;
+    schema:dateCreated "2025-11-05T14:56:11.595570+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.595624+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.595571+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.595625+00:00"^^xsd:dateTime ;
+    schema:headline "Content here"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/frontmatter_02_toml> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +38,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/frontmatter_02_toml> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_02_toml> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/frontmatter_02_toml> ;
+    schema:dateCreated "2025-11-05T14:56:11.594750+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.594752+00:00"^^xsd:dateTime .
 

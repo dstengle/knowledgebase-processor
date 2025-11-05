@@ -10,7 +10,9 @@
     kb:originalText "[[Some Page|Custom Display]]"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> ;
     kb:targetPath "Some Page"^^xsd:string ;
-    rdfs:seeAlso <http://example.org/kb/wikilinks/G8wUSAEkiSswvqH2> .
+    rdfs:seeAlso <http://example.org/kb/wikilinks/G8wUSAEkiSswvqH2> ;
+    schema:dateCreated "2025-11-05T14:56:11.933909+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.933911+00:00"^^xsd:dateTime .
 
 <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> a kb:Document,
         kb:Entity,
@@ -19,5 +21,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/wikilink_07_original_text_preservation> ;
+    schema:dateCreated "2025-11-05T14:56:11.933607+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.933608+00:00"^^xsd:dateTime .
 

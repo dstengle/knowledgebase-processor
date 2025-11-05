@@ -3,6 +3,45 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/tag_01_hashtags/section/pos-0-3> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-3"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/tag_01_hashtags/heading/h1-document-title> ;
+    kb:positionEnd 3 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_01_hashtags/section/pos-0-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.782053+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.782053+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/tag_01_hashtags/section/pos-1-2> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-2"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/tag_01_hashtags/heading/h1-document-title> ;
+    kb:positionEnd 2 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_01_hashtags/section/pos-1-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.782093+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.782093+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/tag_01_hashtags/heading/h1-document-title> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Document Title"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/tag_01_hashtags/heading/h1-document-title> ;
+    schema:dateCreated "2025-11-05T14:56:11.782020+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.782072+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.782022+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.782072+00:00"^^xsd:dateTime ;
+    schema:headline "Document Title"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +49,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/tag_01_hashtags> ;
+    schema:dateCreated "2025-11-05T14:56:11.781425+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.781426+00:00"^^xsd:dateTime .
 

@@ -3,6 +3,95 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/markdown_02_headings/section/pos-0-5> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 0-5"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h1-heading-1>,
+        <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h2-heading-2>,
+        <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h3-heading-3> ;
+    kb:positionEnd 5 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_02_headings/section/pos-0-5> ;
+    schema:dateCreated "2025-11-05T14:56:11.729384+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729421+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729453+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.729385+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729422+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729453+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/markdown_02_headings/section/pos-1-1> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 1-1"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h1-heading-1> ;
+    kb:positionEnd 1 ;
+    kb:positionStart 1 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_02_headings/section/pos-1-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.729518+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.729519+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/markdown_02_headings/section/pos-3-3> a kb:Entity,
+        kb:Section,
+        schema:Article ;
+    rdfs:label "Section 3-3"^^xsd:string ;
+    kb:hasHeading <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h2-heading-2> ;
+    kb:positionEnd 3 ;
+    kb:positionStart 3 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_02_headings/section/pos-3-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.729537+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.729537+00:00"^^xsd:dateTime .
+
+<http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h3-heading-3> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Heading 3"^^xsd:string ;
+    kb:headingLevel 3 ;
+    kb:positionEnd 0,
+        4 ;
+    kb:positionStart 4 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h3-heading-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.729438+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729499+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.729438+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729499+00:00"^^xsd:dateTime ;
+    schema:headline "Heading 3"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h1-heading-1> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Heading 1"^^xsd:string ;
+    kb:headingLevel 1 ;
+    kb:positionEnd 0 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h1-heading-1> ;
+    schema:dateCreated "2025-11-05T14:56:11.729356+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729467+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.729357+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729467+00:00"^^xsd:dateTime ;
+    schema:headline "Heading 1"^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h2-heading-2> a kb:Entity,
+        kb:Heading,
+        schema:Article ;
+    rdfs:label "Heading 2"^^xsd:string ;
+    kb:headingLevel 2 ;
+    kb:positionEnd 0,
+        2 ;
+    kb:positionStart 2 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_02_headings/heading/h2-heading-2> ;
+    schema:dateCreated "2025-11-05T14:56:11.729404+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729486+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.729404+00:00"^^xsd:dateTime,
+        "2025-11-05T14:56:11.729486+00:00"^^xsd:dateTime ;
+    schema:headline "Heading 2"^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/markdown_02_headings> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +99,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_02_headings> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_02_headings> ;
+    schema:dateCreated "2025-11-05T14:56:11.728593+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.728598+00:00"^^xsd:dateTime .
 

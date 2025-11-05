@@ -3,6 +3,37 @@
 @prefix schema: <https://schema.org/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+<http://example.org/kb/documents/test_cases/markdown_04_code_blocks/code/python-pos-0-3> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 3 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_04_code_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_04_code_blocks/code/python-pos-0-3> ;
+    schema:dateCreated "2025-11-05T14:56:11.747481+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.747482+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello_world():
+    print("Hello, world!")"""^^xsd:string .
+
+<http://example.org/kb/documents/test_cases/markdown_04_code_blocks/code/python-pos-0-4> a kb:CodeBlock,
+        kb:Entity,
+        schema:SoftwareSourceCode ;
+    rdfs:label "python code block"^^xsd:string ;
+    kb:lineCount 2 ;
+    kb:positionEnd 4 ;
+    kb:positionStart 0 ;
+    kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_04_code_blocks> ;
+    rdfs:seeAlso <http://example.org/kb/documents/test_cases/markdown_04_code_blocks/code/python-pos-0-4> ;
+    schema:dateCreated "2025-11-05T14:56:11.747438+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.747440+00:00"^^xsd:dateTime ;
+    schema:programmingLanguage "python"^^xsd:string ;
+    schema:text """def hello_world():
+    print("Hello, world!")
+"""^^xsd:string .
+
 <http://example.org/kb/vocab#/test_cases/markdown_04_code_blocks> a kb:Document,
         kb:Entity,
         schema:CreativeWork ;
@@ -10,5 +41,7 @@
     kb:originalPath "temp_document.md"^^xsd:string ;
     kb:pathWithoutExtension "temp_document"^^xsd:string ;
     kb:sourceDocument <http://example.org/kb/vocab#/test_cases/markdown_04_code_blocks> ;
-    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_04_code_blocks> .
+    rdfs:seeAlso <http://example.org/kb/vocab#/test_cases/markdown_04_code_blocks> ;
+    schema:dateCreated "2025-11-05T14:56:11.747069+00:00"^^xsd:dateTime ;
+    schema:dateModified "2025-11-05T14:56:11.747070+00:00"^^xsd:dateTime .
 
