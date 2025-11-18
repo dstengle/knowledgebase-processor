@@ -1,4 +1,4 @@
-name: Build and Push Webapp to GCR
+name: Build and Push Webapp to GHCR
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
     paths:
       - 'webapp/**'
       - 'knowledgebase_processor/**'
-      - '.github/workflows/publish-webapp-gcr.yml'
+      - '.github/workflows/publish-webapp-ghcr.yml'
   pull_request:
     branches:
       - main
@@ -23,17 +23,17 @@ on:
         default: 'latest'
 
 env:
-  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  GCR_REGION: us-central1
-  IMAGE_NAME: kb-processor-webapp
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/kb-processor-webapp
 
 jobs:
   build-and-push:
-    name: Build and Push to GCR
+    name: Build and Push to GHCR
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
+      packages: write
       id-token: write
 
     steps:
@@ -45,19 +45,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-          token_format: 'access_token'
-
-      - name: Login to GCR
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: gcr.io
-          username: _json_key
-          password: ${{ secrets.GCP_SA_KEY }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata
         id: meta
@@ -74,6 +67,10 @@ jobs:
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
           echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
 
+          # Get repository name (lowercase)
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "repo_lower=${REPO_LOWER}" >> $GITHUB_OUTPUT
+
           # Determine tags
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.tag }}" ]]; then
             CUSTOM_TAG="${{ github.event.inputs.tag }}"
@@ -83,27 +80,27 @@ jobs:
       - name: Build Docker image tags
         id: docker_tags
         run: |
-          GCR_IMAGE="gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}"
+          GHCR_IMAGE="ghcr.io/${{ steps.meta.outputs.repo_lower }}/kb-processor-webapp"
 
-          TAGS="${GCR_IMAGE}:${{ steps.meta.outputs.short_sha }}"
-          TAGS="${TAGS},${GCR_IMAGE}:${{ steps.meta.outputs.timestamp }}"
+          TAGS="${GHCR_IMAGE}:${{ steps.meta.outputs.short_sha }}"
+          TAGS="${TAGS},${GHCR_IMAGE}:${{ steps.meta.outputs.timestamp }}"
 
           # Add branch-specific tag
           if [[ "${{ steps.meta.outputs.branch }}" == "main" ]]; then
-            TAGS="${TAGS},${GCR_IMAGE}:latest"
-            TAGS="${TAGS},${GCR_IMAGE}:stable"
+            TAGS="${TAGS},${GHCR_IMAGE}:latest"
+            TAGS="${TAGS},${GHCR_IMAGE}:stable"
           else
             SAFE_BRANCH=$(echo "${{ steps.meta.outputs.branch }}" | sed 's/\//-/g')
-            TAGS="${TAGS},${GCR_IMAGE}:${SAFE_BRANCH}"
+            TAGS="${TAGS},${GHCR_IMAGE}:${SAFE_BRANCH}"
           fi
 
           # Add custom tag if provided
           if [[ -n "${{ steps.meta.outputs.custom_tag }}" ]]; then
-            TAGS="${TAGS},${GCR_IMAGE}:${{ steps.meta.outputs.custom_tag }}"
+            TAGS="${TAGS},${GHCR_IMAGE}:${{ steps.meta.outputs.custom_tag }}"
           fi
 
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
-          echo "gcr_image=${GCR_IMAGE}" >> $GITHUB_OUTPUT
+          echo "ghcr_image=${GHCR_IMAGE}" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -122,6 +119,7 @@ jobs:
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.meta.outputs.timestamp }}
+            org.opencontainers.image.licenses=MIT
 
       - name: Generate deployment summary
         if: github.event_name != 'pull_request'
@@ -129,8 +127,8 @@ jobs:
           echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Image Details" >> $GITHUB_STEP_SUMMARY
-          echo "- **Registry:** GCR (Google Container Registry)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Image:** \`${{ steps.docker_tags.outputs.gcr_image }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Registry:** GitHub Container Registry (GHCR)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image:** \`${{ steps.docker_tags.outputs.ghcr_image }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit SHA:** \`${{ steps.meta.outputs.short_sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** \`${{ steps.meta.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- **Timestamp:** \`${{ steps.meta.outputs.timestamp }}\`" >> $GITHUB_STEP_SUMMARY
@@ -142,20 +140,24 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 📦 Pull Command" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker pull ${{ steps.docker_tags.outputs.gcr_image }}:${{ steps.meta.outputs.short_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ steps.docker_tags.outputs.ghcr_image }}:${{ steps.meta.outputs.short_sha }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### 🚀 Run Command" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "docker run -p 8000:8000 ${{ steps.docker_tags.outputs.gcr_image }}:${{ steps.meta.outputs.short_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "docker run -p 8000:8000 ${{ steps.docker_tags.outputs.ghcr_image }}:${{ steps.meta.outputs.short_sha }}" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Package URL" >> $GITHUB_STEP_SUMMARY
+          echo "https://github.com/${{ github.repository }}/pkgs/container/kb-processor-webapp" >> $GITHUB_STEP_SUMMARY
 
       - name: Output image URL
         if: github.event_name != 'pull_request'
         run: |
           echo "✅ Image published successfully!"
-          echo "📍 Image URL: ${{ steps.docker_tags.outputs.gcr_image }}:${{ steps.meta.outputs.short_sha }}"
+          echo "📍 Image URL: ${{ steps.docker_tags.outputs.ghcr_image }}:${{ steps.meta.outputs.short_sha }}"
           echo "🌐 Access the webapp at: http://localhost:8000 (after running the container)"
+          echo "📦 View package: https://github.com/${{ github.repository }}/pkgs/container/kb-processor-webapp"
 
   verify-image:
     name: Verify Published Image
@@ -163,23 +165,26 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
 
-    steps:
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+    permissions:
+      packages: read
 
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify image exists
         run: |
           SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)
-          IMAGE="gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${SHORT_SHA}"
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE="ghcr.io/${REPO_LOWER}/kb-processor-webapp:${SHORT_SHA}"
 
           echo "Verifying image: ${IMAGE}"
 
-          if gcloud container images describe ${IMAGE} --format="get(image_summary.fully_qualified_digest)"; then
+          if docker manifest inspect ${IMAGE} > /dev/null 2>&1; then
             echo "✅ Image verified successfully!"
           else
             echo "❌ Image verification failed!"

@@ -62,14 +62,14 @@ docker build -t kb-processor-webapp -f webapp/Dockerfile .
 docker run -p 8000:8000 kb-processor-webapp
 ```
 
-**Pull from Google Container Registry:**
+**Pull from GitHub Container Registry:**
 
 ```bash
-# Pull the latest published image
-docker pull gcr.io/YOUR_PROJECT_ID/kb-processor-webapp:latest
+# Pull the latest published image (replace owner/repo with your repository)
+docker pull ghcr.io/owner/repo/kb-processor-webapp:latest
 
 # Run the container
-docker run -p 8000:8000 gcr.io/YOUR_PROJECT_ID/kb-processor-webapp:latest
+docker run -p 8000:8000 ghcr.io/owner/repo/kb-processor-webapp:latest
 ```
 
 ### Option 2: Local Python Environment
@@ -242,7 +242,7 @@ Click "Load Example Markdown" to see it in action.
 
 ### Building the Image
 
-The Docker image is automatically built and published to Google Container Registry (GCR) via GitHub Actions on:
+The Docker image is automatically built and published to GitHub Container Registry (GHCR) via GitHub Actions on:
 - Pushes to `main` branch
 - Pushes to `claude/**` branches
 - Changes to `webapp/**` or `knowledgebase_processor/**` directories
@@ -269,12 +269,12 @@ Images are built for:
 - `linux/amd64` (x86_64)
 - `linux/arm64` (ARM64/Apple Silicon)
 
-### Setting Up GCR Publishing
+### Setting Up GHCR Publishing
 
-See [GCP_SETUP.md](./GCP_SETUP.md) for detailed instructions on:
-1. Creating a GCP service account
-2. Setting up GitHub secrets
-3. Configuring repository access
+See [GHCR_SETUP.md](./GHCR_SETUP.md) for detailed instructions on:
+1. Enabling GitHub Container Registry
+2. Managing package permissions
+3. Authentication options
 4. Verifying deployments
 
 ## Development

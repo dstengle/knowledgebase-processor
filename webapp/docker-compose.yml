@@ -2,9 +2,14 @@ version: '3.8'
 
 services:
   webapp:
+    # Option 1: Build locally
     build:
       context: ..
       dockerfile: webapp/Dockerfile
+
+    # Option 2: Use published image from GHCR (uncomment to use)
+    # image: ghcr.io/owner/repo/kb-processor-webapp:latest
+
     container_name: kb-processor-webapp
     ports:
       - "8000:8000"
