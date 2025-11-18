@@ -43,7 +43,38 @@ pip install -e .
 
 ## Running the Webapp
 
-### Start the Server
+### Option 1: Docker (Recommended)
+
+**Using Docker Compose (easiest):**
+
+```bash
+cd webapp
+docker-compose up
+```
+
+**Using Docker directly:**
+
+```bash
+# Build the image
+docker build -t kb-processor-webapp -f webapp/Dockerfile .
+
+# Run the container
+docker run -p 8000:8000 kb-processor-webapp
+```
+
+**Pull from Google Container Registry:**
+
+```bash
+# Pull the latest published image
+docker pull gcr.io/YOUR_PROJECT_ID/kb-processor-webapp:latest
+
+# Run the container
+docker run -p 8000:8000 gcr.io/YOUR_PROJECT_ID/kb-processor-webapp:latest
+```
+
+### Option 2: Local Python Environment
+
+**Start the Server:**
 
 From the `webapp` directory:
 
@@ -55,6 +86,13 @@ Or using uvicorn directly:
 
 ```bash
 uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Using the startup script:**
+
+```bash
+cd webapp
+./start.sh
 ```
 
 ### Access the Interface
@@ -200,9 +238,65 @@ Click "Load Example Markdown" to see it in action.
 - **app.js**: Vanilla JavaScript for API interactions
 - No build process required - works in any modern browser
 
+## Docker Deployment
+
+### Building the Image
+
+The Docker image is automatically built and published to Google Container Registry (GCR) via GitHub Actions on:
+- Pushes to `main` branch
+- Pushes to `claude/**` branches
+- Changes to `webapp/**` or `knowledgebase_processor/**` directories
+
+**Manual build:**
+
+```bash
+# From project root
+docker build -t kb-processor-webapp -f webapp/Dockerfile .
+```
+
+### Image Tags
+
+Published images are tagged with:
+- `latest` - Latest stable version from main branch
+- `stable` - Alias for latest from main branch
+- `<sha>` - Git commit SHA (e.g., `a1b2c3d`)
+- `<timestamp>` - Build timestamp (e.g., `20240115-143022`)
+- `<branch>` - Branch name for non-main branches
+
+### Multi-Architecture Support
+
+Images are built for:
+- `linux/amd64` (x86_64)
+- `linux/arm64` (ARM64/Apple Silicon)
+
+### Setting Up GCR Publishing
+
+See [GCP_SETUP.md](./GCP_SETUP.md) for detailed instructions on:
+1. Creating a GCP service account
+2. Setting up GitHub secrets
+3. Configuring repository access
+4. Verifying deployments
+
 ## Development
 
 ### Run in Development Mode
+
+**With Docker Compose (recommended):**
+
+```bash
+cd webapp
+docker-compose up
+```
+
+Uncomment the volumes section in `docker-compose.yml` to enable hot-reload:
+
+```yaml
+volumes:
+  - ./backend:/app/webapp/backend
+  - ./frontend:/app/webapp/frontend
+```
+
+**Without Docker:**
 
 ```bash
 uvicorn backend.main:app --reload
@@ -222,6 +316,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+```
+
+### Health Checks
+
+The Docker image includes a health check endpoint at `/api/stats` that runs every 30 seconds:
+
+```bash
+curl http://localhost:8000/api/stats
 ```
 
 ## Troubleshooting
