@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  webapp:
+    # Option 1: Build locally
+    build:
+      context: ..
+      dockerfile: webapp/Dockerfile
+
+    # Option 2: Use published image from GHCR (uncomment to use)
+    # image: ghcr.io/owner/repo/kb-processor-webapp:latest
+
+    container_name: kb-processor-webapp
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/stats')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    volumes:
+      # Optional: Mount local directory for development
+      # - ./backend:/app/webapp/backend
+      # - ./frontend:/app/webapp/frontend
+      - webapp-data:/data
+
+volumes:
+  webapp-data:
+    driver: local
+
+networks:
+  default:
+    name: kb-processor-network
